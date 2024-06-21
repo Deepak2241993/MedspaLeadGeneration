@@ -237,7 +237,7 @@
                                     id="receiveTextMessages" name="receiveTextMessages">
                                 <label class="form-check-label" for="receiveTextMessages">
                                     I agree to receive text messages from Forever Medspa Wellness Center for appointment
-                                    reminders and exclusive offers.
+                                    reminders and exclusive offers...
                                 </label>
                             </div>
                             <!--  <div class="mb-3">-->
