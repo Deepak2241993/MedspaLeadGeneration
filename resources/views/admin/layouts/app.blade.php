@@ -9,22 +9,22 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon.png') }}">
 
     <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="{{ asset('vendor/css/all.min.css') }}" defer="defer">
+    <link rel="stylesheet" href="{{ env('APP_URL').'vendor/css/all.min.css' }}" defer="defer">
 
     <!-- Simple Line Icons -->
-    <link rel="stylesheet" href="{{ asset('vendor/css/simple-line-icons.css') }}" defer="defer">
+    <link rel="stylesheet" href="{{ env('APP_URL').'vendor/css/simple-line-icons.css' }}" defer="defer">
 
     <!-- Datepicker -->
-    <link rel="stylesheet" href="{{ asset('vendor/css/datepicker.min.css') }}" defer="defer">
+    <link rel="stylesheet" href="{{ env('APP_URL').'vendor/css/datepicker.min.css' }}" defer="defer">
 
     <!-- TimePicker -->
-    <link rel="stylesheet" href="{{ asset('vendor/css/bootstrap-timepicker.min.css') }}" defer="defer">
+    <link rel="stylesheet" href="{{ env('APP_URL').'vendor/css/bootstrap-timepicker.min.css' }}" defer="defer">
 
     <!-- Select Plugin -->
-    <link rel="stylesheet" href="{{ asset('vendor/css/select2.min.css') }}" defer="defer">
+    <link rel="stylesheet" href="{{ env('APP_URL').'vendor/css/select2.min.css' }}" defer="defer">
 
     <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="{{ asset('vendor/css/bootstrap-icons.css') }}" defer="defer">
+    <link rel="stylesheet" href="{{ env('APP_URL').'vendor/css/bootstrap-icons.css' }}" defer="defer">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.0.0/css/buttons.dataTables.min.css">
 
@@ -32,15 +32,15 @@
     {{-- @stack('datatable-styles') --}}
 
     <!-- Template CSS -->
-    <link type="text/css" rel="stylesheet" media="all" href="{{ asset('css/main.css') }}">
+    <link type="text/css" rel="stylesheet" media="all" href="{{ env('APP_URL').'css/main.css' }}">
      <!-- Styles -->
-     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-     <link href="{{ asset('node_modules/summernote/dist/summernote.css') }}" rel="stylesheet">
-     <script src="{{ asset('node_modules/summernote/dist/summernote.js') }}"></script>
+     <link rel="stylesheet" href="{{ env('APP_URL').'css/app.css' }}">
+     <link href="{{ env('APP_URL').'node_modules/summernote/dist/summernote.css'}}" rel="stylesheet">
+     <script src="{{ env('APP_URL').'node_modules/summernote/dist/summernote.js'}}"></script>
 
 
      <!-- Scripts -->
-     <script src="{{ asset('js/app.js') }}" defer></script>
+     <script src="{{ env('APP_URL').'js/app.js' }}" defer></script>
 
     <title>{{ $pageTitle}}</title>
     <meta name="msapplication-TileColor" content="#ffffff">
@@ -118,11 +118,11 @@
         <link href="{{ asset('css/app-custom.css') }}" rel="stylesheet">
     @endif --}}
 
-    <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('vendor/jquery/modernizr.min.js') }}"></script>
+    <script src="{{ env('APP_URL').'vendor/jquery/jquery.min.js' }}"></script>
+    <script src="{{ env('APP_URL').'vendor/jquery/modernizr.min.js' }}"></script>
 
     {{-- Timepicker --}}
-    <script src="{{ asset('vendor/jquery/bootstrap-timepicker.min.js') }}" defer="defer"></script>
+    <script src="{{ env('APP_URL').'vendor/jquery/bootstrap-timepicker.min.js' }}" defer="defer"></script>
 
     {{-- @includeif('sections.push-setting-include') --}}
 
@@ -175,7 +175,7 @@
 {{-- @include('admin.sections.modals') --}}
 
 <!-- Global Required Javascript -->
-<script src="{{ asset('js/main.js') }}"></script>
+<script src="{{ env('APP_URL').'js/main.js' }}"></script>
 
 
 <!-- Scripts -->
