@@ -15,26 +15,35 @@ class CallController extends Controller
     {
         $this->twilio = new Client(env('TWILIO_SID'), env('TWILIO_AUTH_TOKEN'));
     }
+
     public function outboundCall(Request $request)
     {
-        $sid = env('TWILIO_SID');
-        $token = env('TWILIO_AUTH_TOKEN');
         $twilio_number = env('TWILIO_PHONE_NUMBER');
-        $client = new Client($sid, $token);
-
         $userPhoneNumber = "+919599328948"; // The phone number of the user to connect first
-        $clientPhoneNumber = $request->input('phone'); // The phone number of the client to connect after the user
+        $clientPhoneNumber = '+91' . $request->input('phone'); // The phone number of the client to connect after the user
 
-        // Call the user first
-        $call = $client->calls->create(
-            $userPhoneNumber, // To
-            $twilio_number, // From
-            [
-                'url' => route('twilio.user-gather', ['client_phone' => $clientPhoneNumber])
-            ]
-        );
+        try {
+            // Call the user first
+            $call = $this->twilio->calls->create(
+                $userPhoneNumber, // To
+                $twilio_number, // From
+                [
+                    'url' => route('twilio.user-gather', ['client_phone' => $clientPhoneNumber]),
+                    'method' => 'POST',
+                ]
+            );
 
-        return response()->json(['status' => 'Call initiated', 'call_sid' => $call->sid]);
+            // Log the Call SID for debugging
+            Log::info('Call initiated with SID: ' . $call->sid);
+
+            // Store the Call SID in the session for later use (optional)
+            session(['twilio_call_sid' => $call->sid]);
+
+            return response()->json(['status' => 'Call initiated', 'call_sid' => $call->sid]);
+        } catch (\Exception $e) {
+            Log::error('Error initiating call: ' . $e->getMessage());
+            return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
+        }
     }
 
     public function userGather(Request $request)
@@ -44,44 +53,58 @@ class CallController extends Controller
         $response = new VoiceResponse();
         $dial = $response->dial();
         $dial->number($clientPhoneNumber);
-         // Log the Call SID for debugging
-         Log::info('Call initiated with SID: ' . $response );
+
+        // Log the Call SID for debugging
+        Log::info('Connecting to client phone number: ' . $clientPhoneNumber);
 
         return response($response, 200)->header('Content-Type', 'text/xml');
     }
 
-    public function endCall(Request $request)
+    public function endCall()
     {
-        $callSid = $request->input('callSid');
-
         try {
+            $callSid = session('twilio_call_sid');
+
+            if (!$callSid) {
+                return response()->json(['error' => 'No active call found.']);
+            }
+
+            // End the call
             $this->twilio->calls($callSid)->update(['status' => 'completed']);
-            return response()->json(['success' => true, 'message' => 'Call ended successfully.']);
+
+            // Clear the Call SID from the session
+            session()->forget('twilio_call_sid');
+
+            return response()->json(['success' => 'Call ended successfully.']);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            return response()->json(['error' => 'Failed to end call: ' . $e->getMessage()]);
         }
     }
 
     public function muteCall(Request $request)
     {
-        $callSid = $request->input('callSid');
+        $callSid = session('twilio_call_sid');
 
         try {
             $this->twilio->calls($callSid)->update(['muted' => true]);
             return response()->json(['success' => true, 'message' => 'Call muted successfully.']);
         } catch (\Exception $e) {
+            Log::error('Error muting call: ' . $e->getMessage());
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
 
     public function holdCall(Request $request)
     {
-        $callSid = $request->input('callSid');
+        $callSid = session('twilio_call_sid');
 
         try {
-            $this->twilio->calls($callSid)->update(['status' => 'in-progress', 'hold' => true]);
+            // Update the call to hold status
+            $this->twilio->calls($callSid)->update(['status' => 'in-progress']);
+            $this->twilio->calls($callSid)->update(['hold' => true]);
             return response()->json(['success' => true, 'message' => 'Call put on hold successfully.']);
         } catch (\Exception $e) {
+            Log::error('Error putting call on hold: ' . $e->getMessage());
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }

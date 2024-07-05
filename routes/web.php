@@ -88,7 +88,7 @@ Route::post('/end-call', [TwilioController::class, 'endCall'])->name('end-call')
 
 
 Route::post('/outbound-call', [CallController::class, 'outboundCall'])->name('outbound-call');
-Route::post('/twilio/user-gather', [CallController::class, 'userGather'])->name('twilio.user-gather');
+Route::match(['get', 'post'], '/twilio/user-gather', [CallController::class, 'userGather'])->name('twilio.user-gather');
 
 
 

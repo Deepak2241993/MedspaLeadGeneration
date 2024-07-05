@@ -15,6 +15,9 @@ class VerifyCsrfToken extends Middleware
         '/handle-call',
         '/connect-to-agent',
         'ivr/*',
+        '/outbound',
+        'twilio/user-gather',
+        
 
     ];
 }
