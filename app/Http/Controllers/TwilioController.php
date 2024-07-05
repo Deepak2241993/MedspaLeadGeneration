@@ -51,7 +51,7 @@ class TwilioController extends Controller
             'action' => route('connectToAgent'), // Use named route for clarity
             'method' => 'POST',
         ]);
-        $gather->say('Hello! This is a call from MedSpa. Please press 1 to connect to an agent.', ['voice' => 'alice']);
+        $gather->say('Hello! This is a call from MedSpa. Please press 1 for Sales, 2 for Support, or 3 for Billing.', ['voice' => 'alice']);
         $response->say('We did not receive any input. Goodbye!', ['voice' => 'alice']);
 
         return response($response, 200)->header('Content-Type', 'text/xml');
@@ -64,11 +64,24 @@ class TwilioController extends Controller
         $inputDigit = $request->input('Digits');
 
         if ($inputDigit === '1') {
-            $response->say('Connecting you to an agent.', ['voice' => 'alice']);
+            $response->say('Connecting you to an Sales agent.', ['voice' => 'alice']);
+            $response->dial('+919955053774'); // Replace with the agent's phone number
+        } else {
+            $response->say('Invalid input. Goodbye!', ['voice' => 'alice']);
+        }
+        if ($inputDigit === '2') {
+            $response->say('Connecting you to an Support agent.', ['voice' => 'alice']);
             $response->dial('+918920504677'); // Replace with the agent's phone number
         } else {
             $response->say('Invalid input. Goodbye!', ['voice' => 'alice']);
         }
+        if ($inputDigit === '3') {
+            $response->say('Connecting you to an Billing agent.', ['voice' => 'alice']);
+            $response->dial('+918920005414'); // Replace with the agent's phone number
+        } else {
+            $response->say('Invalid input. Goodbye!', ['voice' => 'alice']);
+        }
+       
 
         return response($response, 200)->header('Content-Type', 'text/xml');
     }
