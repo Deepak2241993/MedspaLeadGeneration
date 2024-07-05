@@ -100,7 +100,7 @@
                 </li>
 
 
-                <li>
+                {{-- <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="uim uim-window-grid"></i>
                         <span>Layouts</span>
@@ -295,7 +295,7 @@
                             </ul>
                         </li>
                     </ul>
-                </li>
+                </li> --}}
 
             </ul>
 
