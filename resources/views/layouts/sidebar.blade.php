@@ -14,10 +14,10 @@
 
         <a href="index" class="logo logo-light">
             <span class="logo-sm">
-                <img src="{{ URL::asset('build/images/light-logo.png') }}" alt="logo-sm-light" height="50" width="50">
+                <img src="{{ URL::asset('build/images/light-logo.png') }}" alt="logo-sm-light" height="80" width="150">
             </span>
             <span class="logo-lg">
-                <img src="{{ URL::asset('build/images/light-logo.png') }}" alt="logo-light" height="50" width="50">
+                <img src="{{ URL::asset('build/images/light-logo.png') }}" alt="logo-light" height="80" width="150">
             </span>
         </a>
     </div>
@@ -37,30 +37,30 @@
 
                 <li>
                     <a href="index" class="waves-effect">
-                        <i class="uim uim-airplay"></i><span class="badge rounded-pill bg-success float-end">3</span>
+                        <i class="fas fa-tv"></i><span class="badge rounded-pill bg-success float-end">3</span>
                         <span>Dashboard</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('leads.index') }}" class="waves-effect">
-                        <i class="uim uim-airplay"></i><span class="badge rounded-pill bg-success float-end"></span>
+                        <i class="fas fa-database"></i><span class="badge rounded-pill bg-success float-end"></span>
                         <span>Leads</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('leads.archived') }}" class="waves-effect">
-                        <i class="uim uim-airplay"></i><span class="badge rounded-pill bg-success float-end"></span>
+                        <i class="fas fa-trash-alt"></i><span class="badge rounded-pill bg-success float-end"></span>
                         <span>Archived Leads</span>
                     </a>
                 </li>
                 <li>
                     <a href="#" class="waves-effect">
-                        <i class="uim uim-airplay"></i><span class="badge rounded-pill bg-success float-end"></span>
+                        <i class="fas fa-envelope-open-text"></i><span class="badge rounded-pill bg-success float-end"></span>
                         <span>Email Template</span>
                     </a>
                 </li>
 
-                {{-- <li>
+                <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="uim uim-comment-message"></i>
                         <span>Apps</span>
@@ -295,7 +295,7 @@
                             </ul>
                         </li>
                     </ul>
-                </li> --}}
+                </li>
 
             </ul>
 

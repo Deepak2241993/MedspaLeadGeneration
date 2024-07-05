@@ -25,7 +25,7 @@ use App\Http\Controllers\CallController;
 Auth::routes();
 
 Route::get('/', [HomeController::class, 'root']);
-// Route::get('{any}', [HomeController::class, 'index'])->name('index');
+Route::get('{any}', [HomeController::class, 'index'])->name('index');
 
 Route::get('/lead', [LeadController::class, 'index'])->name('leads.index');
 Route::get('/lead/{id}/edit', [LeadController::class, 'edit'])->name('leads.edit');
@@ -65,13 +65,6 @@ Route::put('/email-templates/{id}', [EmailTemplateController::class, 'update'])-
 Route::post('/lead/permanentdeleteAll', [LeadController::class, 'permanentdeleteAll'])->name('leads.permanentdeleteAll');
 
 
-
-// Route::post('/make-call', 'TwilioController@makeCall')->name('make-call');
-
-// Route::post('/make-call', [TwilioController::class, 'makeCall'])->name('make-call');
-// Route::match(['get', 'post'], '/connect-to-agent', [TwilioController::class, 'connectToAgent'])->name('connectToAgent');
-// Route::match(['get', 'post'], '/handle-call', [TwilioController::class, 'handleCall'])->name('handleCall');
-// Route::post('/status-callback', [TwilioController::class, 'statusCallback'])->name('statusCallback');
 
 Route::post('/make-call', [TwilioController::class, 'makeCall'])->name('make-call');
 Route::post('/hold-call', [TwilioController::class, 'holdCall'])->name('hold-call');
