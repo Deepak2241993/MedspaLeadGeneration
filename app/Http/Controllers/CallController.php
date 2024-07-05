@@ -13,6 +13,38 @@ class CallController extends Controller
     {
         $this->twilio = new Client(env('TWILIO_SID'), env('TWILIO_AUTH_TOKEN'));
     }
+    public function outboundCall(Request $request)
+    {
+        $sid = env('TWILIO_SID');
+        $token = env('TWILIO_AUTH_TOKEN');
+        $twilio_number = env('TWILIO_PHONE_NUMBER');
+        $client = new Client($sid, $token);
+
+        $userPhoneNumber = "+918920504677"; // The phone number of the user to connect first
+        $clientPhoneNumber = $request->input('phone'); // The phone number of the client to connect after the user
+
+        // Call the user first
+        $call = $client->calls->create(
+            $userPhoneNumber, // To
+            $twilio_number, // From
+            [
+                'url' => route('twilio.user-gather', ['client_phone' => $clientPhoneNumber])
+            ]
+        );
+
+        return response()->json(['status' => 'Call initiated', 'call_sid' => $call->sid]);
+    }
+
+    public function userGather(Request $request)
+    {
+        $clientPhoneNumber = $request->query('client_phone');
+
+        $response = new \Twilio\TwiML\VoiceResponse();
+        $dial = $response->dial();
+        $dial->number($clientPhoneNumber);
+
+        return response($response, 200)->header('Content-Type', 'text/xml');
+    }
 
     public function endCall(Request $request)
     {

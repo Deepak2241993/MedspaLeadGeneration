@@ -16,6 +16,11 @@ class TwilioController extends Controller
         $this->twilio = new Client(env('TWILIO_SID'), env('TWILIO_AUTH_TOKEN'));
     }
 
+    public function outbondCall(Request $request) 
+    {
+        // I want to cannect the call to the User and then connect to the clint 
+    }
+
     public function makeCall(Request $request)
     {
         $leadPhone = '+91' . $request->input('phone'); // Prepend +91 to the phone number
