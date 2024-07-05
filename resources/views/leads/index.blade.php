@@ -200,7 +200,7 @@
             function makeCall(e, phone) {
                 e.preventDefault(); // Prevent the default link behavior
 
-                var url = "{{ route('make-call') }}";
+                var url = "{{ route('outbound-call') }}";
 
                 $.ajax({
                     type: 'POST',
