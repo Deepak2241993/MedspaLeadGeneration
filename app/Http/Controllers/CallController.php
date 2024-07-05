@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Twilio\Rest\Client;
+use Illuminate\Support\Facades\Log;
+use Twilio\TwiML\VoiceResponse;
 
 class CallController extends Controller
 {
@@ -39,9 +41,11 @@ class CallController extends Controller
     {
         $clientPhoneNumber = $request->query('client_phone');
 
-        $response = new \Twilio\TwiML\VoiceResponse();
+        $response = new VoiceResponse();
         $dial = $response->dial();
         $dial->number($clientPhoneNumber);
+         // Log the Call SID for debugging
+         Log::info('Call initiated with SID: ' . $response );
 
         return response($response, 200)->header('Content-Type', 'text/xml');
     }
