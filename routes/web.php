@@ -86,11 +86,14 @@ Route::post('/end-call', [TwilioController::class, 'endCall'])->name('end-call')
 
 
 
-
+// outbound call 
 Route::post('/outbound-call', [CallController::class, 'outboundCall'])->name('outbound-call');
 Route::match(['get', 'post'], '/twilio/user-gather', [CallController::class, 'userGather'])->name('twilio.user-gather');
 
 
+// inbound call 
+Route::post('/twilio/inbound-call', [TwilioController::class, 'handleIncomingCall']);
+Route::post('/handle-gather', [TwilioController::class, 'handleGather'])->name('handle-gather');
 
 Route::get('/clear-cache', function () {
     $exitCode = Artisan::call('cache:clear');
