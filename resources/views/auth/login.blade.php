@@ -14,7 +14,7 @@
                                 <div class="text-center mb-4">
                                     <a href="index" class="">
                                         <img src="{{ URL::asset('build/images/dark-logo.png') }}" alt=""
-                                            height="45%" width="50%" class="auth-logo logo-dark mx-auto">
+                                            height="100%" width="25%" class="auth-logo logo-dark mx-auto">
                                         <img src="{{ URL::asset('build/images/light-logo.png') }}" alt=""
                                             height="22" class="auth-logo logo-light mx-auto">
                                     </a>
@@ -87,14 +87,9 @@
                                                                 <h5 class="font-size-14 mb-4 title">Sign In with</h5>
                                                             </div>
                                                             <div class="pt-2 hstack gap-2 justify-content-center">
-                                                                <button type="button" class="btn btn-primary btn-sm"><i
-                                                                        class="ri-facebook-fill font-size-16"></i></button>
-                                                                <button type="button" class="btn btn-danger btn-sm"><i
-                                                                        class="ri-google-fill font-size-16"></i></button>
-                                                                <button type="button" class="btn btn-dark btn-sm"><i
-                                                                        class="ri-github-fill font-size-16"></i></button>
-                                                                <button type="button" class="btn btn-info btn-sm"><i
-                                                                        class="ri-twitter-fill font-size-16"></i></button>
+                                                                <button type="button" class="btn btn-primary btn-sm"><i class="fab fa-facebook-f"></i></button>
+                                                                <button type="button" class="btn btn-info btn-sm"><i class="fab fa-instagram"></i></button>
+                                                                <button type="button" class="btn btn-info btn-sm"><i class="fab fa-twitter"></i></button>
                                                             </div>
                                                         </div>
                                                     </form>

@@ -60,7 +60,7 @@
                     </a>
                 </li>
 
-                {{-- <li>
+                <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="uim uim-comment-message"></i>
                         <span>Apps</span>
@@ -97,10 +97,8 @@
                             </ul>
                         </li>
                     </ul>
-                </li> --}}
-
-
-                {{-- <li>
+                </li> 
+                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="uim uim-window-grid"></i>
                         <span>Layouts</span>
@@ -295,7 +293,7 @@
                             </ul>
                         </li>
                     </ul>
-                </li> --}}
+                </li>
 
             </ul>
 
@@ -304,7 +302,7 @@
     </div>
 
     <div class="dropdown px-3 sidebar-user sidebar-user-info">
-        {{-- <button type="button" class="btn w-100 px-0 border-0" id="page-header-user-dropdown"
+        <button type="button" class="btn w-100 px-0 border-0" id="page-header-user-dropdown"
             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <span class="d-flex align-items-center">
                 <div class="flex-shrink-0">
@@ -320,7 +318,7 @@
                     <i class="mdi mdi-dots-vertical font-size-16"></i>
                 </div>
             </span>
-        </button> --}}
+        </button>
         <div class="dropdown-menu dropdown-menu-end">
             <!-- item-->
             <a class="dropdown-item" href="pages-profile"><i
