@@ -45,12 +45,12 @@ class TwilioController extends Controller
             Log::info('Caller pressed 1. Initiating call to sales team.');
     
             // Dial to connect to the sales team (replace with your actual sales team number)
-            $response->dial('+917453085088');
+            $response->dial('+918920005414');
         } elseif ($digitsPressed == '2') {
             Log::info('Caller pressed 2. Initiating call to accounts team.');
     
             // Dial to connect to the accounts team (replace with your actual accounts team number)
-            $response->dial('+919955053774');
+            $response->dial('+918920005414');
         } else {
             Log::info('Invalid input. Ending call.');
     
