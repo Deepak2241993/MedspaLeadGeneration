@@ -1,0 +1,79 @@
+/*
+Template Name: Tocly -  Admin & Dashboard Template
+Author: Themesdesign
+Version: 1.0.0
+Contact: themesdesign.in@gmail.com
+File: Main Css File
+*/
+
+
+//Fonts
+@import "fonts/fonts";
+
+//Core files
+@import "./node_modules/bootstrap/scss/functions";
+@import "./node_modules/bootstrap/scss/variables";
+@import "variables";
+@import "variables-dark";
+@import "./node_modules/bootstrap/scss/mixins.scss";
+
+// Structure
+@import "structure/general";
+@import "structure/topbar";
+@import "structure/page-head";
+@import "structure/footer";
+@import "structure/right-sidebar";
+@import "structure/vertical";
+@import "structure/horizontal-nav";
+@import "structure/layouts";
+
+// Components
+@import "components/root";
+@import "components/waves";
+@import "components/avatar";
+@import "components/accordion";
+@import "components/alerts";
+@import "components/helper";
+@import "components/preloader";
+@import "components/forms";
+@import "components/widgets";
+@import "components/demos";
+@import "components/print";
+
+// Plugins
+@import "plugins/custom-scrollbar";
+@import "plugins/calendar";
+@import "plugins/color-picker";
+@import "plugins/session-timeout";
+@import "plugins/round-slider";
+@import "plugins/range-slider";
+@import "plugins/sweatalert2";
+@import "plugins/rating";
+@import "plugins/toastr";
+@import "plugins/parsley";
+@import "plugins/select2";
+@import "plugins/switch";
+@import "plugins/datepicker";
+@import "plugins/bootstrap-touchspin";
+@import "plugins/datatable";
+@import "plugins/form-editors";
+@import "plugins/form-upload";
+@import "plugins/form-wizard";
+@import "plugins/responsive-table";
+@import "plugins/table-editable";
+@import "plugins/apexcharts";
+@import "plugins/flot";
+@import "plugins/sparkline-chart";
+@import "plugins/google-map";
+@import "plugins/vector-maps";
+@import "plugins/x-editable";
+
+// Pages
+@import "pages/authentication";
+@import "pages/ecommerce";
+@import "pages/email";
+@import "pages/chat";
+@import "pages/file-manager";
+@import "pages/coming-soon";
+@import "pages/timeline";
+@import "pages/extras-pages";

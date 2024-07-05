@@ -1,0 +1,20 @@
+// 
+// backgrounds.scss
+//
+
+
+@each $color,
+$value in $theme-colors {
+    .bg-subtle-#{$color} {
+        background-color: rgba(($value), 0.15) !important;
+    }
+}
+
+
+.bg-dark-subtle{
+    background-color: rgba(var(--#{$prefix}dark-rgb),.25)!important;
+}
+
+.bg-light-subtle{
+    background-color: rgba(var(--#{$prefix}light-rgb),.5)!important;
+}

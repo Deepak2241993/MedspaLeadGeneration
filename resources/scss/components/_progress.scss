@@ -1,0 +1,46 @@
+// 
+// _progress.scss
+// 
+
+.custom-progress {
+  height: 14px;
+  padding: 4px;
+  border-radius: 30px;
+}
+
+// Progress height small
+.progress-sm {
+  height: 5px;
+}
+
+
+// Progress height medium
+.progress-md {
+  height: 8px;
+}
+
+
+// Progress height large
+.progress-lg {
+  height: 12px;
+}
+
+// Progress height Extra large
+.progress-xl {
+  height: 16px;
+}
+
+.animated-progess{
+  position: relative;
+  .progress-bar {
+    position: relative;
+    border-radius: 6px;
+    animation: animate-positive 2s;
+  }
+}
+
+@keyframes animate-positive {
+  0% {
+      width: 0;
+  }
+}

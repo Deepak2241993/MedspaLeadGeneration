@@ -1,0 +1,55 @@
+//
+// Forms.scss
+//
+
+
+// checkbox input right
+
+.form-check-right{
+  padding-left: 0;
+  display: inline-block;
+  padding-right: $form-check-padding-start;;
+  .form-check-input{
+    float: right;
+    margin-left: 0;
+    margin-right: $form-check-padding-start * -1;
+  }
+  .form-check-label{
+    display: block;
+  }
+}
+
+.form-check{
+  position: relative;
+  text-align: left /*rtl: right*/;
+}
+
+.form-check-label{
+  cursor: pointer;
+  margin-bottom: 0;
+}
+
+.form-select:focus{
+  box-shadow: none;
+}
+
+
+[data-bs-theme ="dark"] {
+  .form-select {
+    background-image: escape-svg(url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='none' stroke='#{$gray-400}' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/></svg>"));
+  }
+
+  .form-switch {
+    .form-check-input,
+    .form-check-input:focus {
+      background-image: escape-svg(url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'><circle r='3' fill='#{$gray-400}'/></svg>"));
+    }
+  }
+}
+
+// RTL
+[dir="rtl"] {
+  input {
+    text-align: end;
+  }
+}

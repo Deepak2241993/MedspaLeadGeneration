@@ -1,0 +1,95 @@
+//
+// Form Wizard
+//
+
+// twitter-bs-wizard
+
+.twitter-bs-wizard {
+
+    .twitter-bs-wizard-nav {
+        position: relative;
+        @media (min-width: 1024px) {
+            .wizard-border{
+                &:before{
+                    content: "";
+                    width: 203px;
+                    height: 2px;
+                    background: rgba($primary, 0.15);
+                    position: absolute;
+                    top: 26px;
+                    margin-left: 100px;
+                }
+            }
+        }
+        .step-number {
+            display: inline-block;
+            background-color: rgba($primary, 0.15);
+            color: $primary;
+            text-align: center;
+            position: relative;
+            padding: 8px 16px;
+            width: 200px;
+            border-radius: 4px;
+            @media (max-width: 991.98px) {
+                display: block;
+                margin: 0 auto 8px !important;
+            }
+        }
+
+        .nav-link {
+            .step-title {
+                display: block;
+                margin-top: 8px;
+
+                @media (max-width: 575.98px) {
+                    display: none;
+                }
+            }
+
+            &.active {
+                background-color: transparent;
+                color: var(--#{$prefix}secondary-color);
+
+                .step-number {
+                    background-color: $primary;
+                    color: $white;
+                }
+            }
+        }
+    }
+
+    .twitter-bs-wizard-pager-link {
+        padding-top: 24px;
+        padding-left: 0;
+        list-style: none;
+        margin-bottom: 0;
+
+        li {
+            display: inline-block;
+
+            a {
+                display: inline-block;
+                padding: .47rem .75rem;
+                background-color: $primary;
+                color: $white;
+                border-radius: .25rem;
+            }
+
+            &.disabled {
+                a {
+                    cursor: not-allowed;
+                    background-color: lighten($primary, 8%);
+                }
+            }
+
+            &.next {
+                float: right;
+            }
+        }
+    }
+}
+
+.twitter-bs-wizard-tab-content {
+    padding-top: 24px;
+    min-height: 262px;
+}

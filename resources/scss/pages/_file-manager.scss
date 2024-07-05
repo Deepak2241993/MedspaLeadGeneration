@@ -1,0 +1,33 @@
+// 
+// File manager.scss
+//
+
+.categories-list{
+  padding: 4px 0;
+  li{
+      a{
+          display: block;
+          padding: 6px 8px;
+          color: $body-color;
+      }
+
+      &.active{
+          a{
+              color: $primary;
+          }
+      }
+
+      ul{
+          padding-left: 20px;
+          li{
+              a{
+                  padding: 4px 12px;
+                  color: $text-muted;
+                  font-size: 14px;
+              }
+          }
+      }
+  }
+}
+
+
