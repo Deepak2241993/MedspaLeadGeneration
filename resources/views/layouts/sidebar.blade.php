@@ -60,7 +60,7 @@
                     </a>
                 </li>
 
-                <li>
+                {{-- <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="uim uim-comment-message"></i>
                         <span>Apps</span>
@@ -293,7 +293,7 @@
                             </ul>
                         </li>
                     </ul>
-                </li>
+                </li> --}}
 
             </ul>
 
@@ -311,7 +311,7 @@
                 </div>
 
                 <div class="flex-grow-1 ms-2 text-start">
-                    <span class="ms-1 fw-medium user-name-text">Steven Deese</span>
+                    <span class="ms-1 fw-medium user-name-text">Medspa</span>
                 </div>
 
                 <div class="flex-shrink-0 text-end">
@@ -321,7 +321,7 @@
         </button>
         <div class="dropdown-menu dropdown-menu-end">
             <!-- item-->
-            <a class="dropdown-item" href="pages-profile"><i
+            {{-- <a class="dropdown-item" href="pages-profile"><i
                     class="mdi mdi-account-circle text-muted font-size-16 align-middle me-1"></i> <span
                     class="align-middle">Profile</span></a>
             <a class="dropdown-item" href="apps-chat"><i
@@ -336,7 +336,7 @@
                     class="align-middle">Balance : <b>$5971.67</b></span></a>
             <a class="dropdown-item" href="#"><span class="badge bg-primary mt-1 float-end">New</span><i
                     class="mdi mdi-cog-outline text-muted font-size-16 align-middle me-1"></i> <span
-                    class="align-middle">Settings</span></a>
+                    class="align-middle">Settings</span></a> --}}
             <a class="dropdown-item" href="javascript:void();"
                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i
                     class="mdi mdi-lock text-muted font-size-16 align-middle me-1"></i> <span
