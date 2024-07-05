@@ -25,7 +25,7 @@ use App\Http\Controllers\CallController;
 Auth::routes();
 
 Route::get('/', [HomeController::class, 'root']);
-Route::get('{any}', [HomeController::class, 'index'])->name('index');
+// Route::get('{any}', [HomeController::class, 'index'])->name('index');
 
 Route::get('/lead', [LeadController::class, 'index'])->name('leads.index');
 Route::get('/lead/{id}/edit', [LeadController::class, 'edit'])->name('leads.edit');
