@@ -34,7 +34,86 @@ class MessageController extends Controller
         // $messages = Message::orderBy('created_at', 'asc')->get();
         // return view('messages.index', compact('messages'));
     }
-    public function getMessages($currentUserPhone)
+//     public function getMessages($currentUserPhone)
+// {
+//     // Initialize Twilio client with your credentials
+//     $client = new Client(env('TWILIO_SID'), env('TWILIO_AUTH_TOKEN'));
+
+//     // Format the phone number
+//     $currentUser = '+91' . $currentUserPhone;
+
+//     // Fetch messages where the user is the recipient
+//     $receivedMessages = $client->messages->read([
+//         'to' => $currentUser,
+//         'limit' => 20,
+//     ]);
+
+//     // Fetch messages where the user is the sender
+//     $sentMessages = $client->messages->read([
+//         'from' => $currentUser,
+//         'limit' => 20,
+//     ]);
+
+//     // Fetch call records where the user is the recipient or sender
+//     $receivedCalls = $client->calls->read([
+//         'to' => $currentUser,
+//         'limit' => 2,
+//     ]);
+
+//     $sentCalls = $client->calls->read([
+//         'from' => $currentUser,
+//         'limit' => 2,
+//     ]);
+
+
+//     // Combine both received and sent messages
+//     $messages = array_merge($receivedMessages, $sentMessages);
+//     $calls = array_merge($receivedCalls, $sentCalls);
+
+//     // print_r($calls); die;
+
+//     // Prepare an array to hold formatted messages
+//     $formattedMessages = [];
+
+//     foreach ($messages as $message) {
+//         // Determine if the user is the sender or recipient
+//         $direction = $message->from == $currentUser ? 'outgoing' : 'incoming';
+
+//         $formattedMessages[] = [
+//             'sid' => $message->sid,
+//             'from' => $message->from,
+//             'to' => $message->to,
+//             'body' => $message->body,
+//             'direction' => $direction,
+//             'formatted_created_at' => $message->dateSent ? $message->dateSent->format('Y-m-d H:i:s') : null,
+//         ];
+//     }
+//      // Format calls
+//      foreach ($calls as $call) {
+//         $direction = $call->from == $currentUser ? 'outgoing' : 'incoming';
+//         $duration = gmdate("H:i:s", $call->duration);
+
+//         $formattedMessages[] = [
+//             'type' => 'call',
+//             'sid' => $call->sid,
+//             'from' => $call->from,
+//             'to' => $call->to,
+//             'duration' => $duration,
+//             'recording_url' => $call->recordings ? $call->recordings->fetch()->uri : null,
+//             'direction' => $direction,
+//             'formatted_created_at' => $call->startTime ? $call->startTime->format('Y-m-d H:i:s') : null,
+//         ];
+//     }
+
+//     // Optionally, you can sort messages by date if needed
+//     usort($formattedMessages, function($a, $b) {
+//         return strtotime($b['formatted_created_at']) - strtotime($a['formatted_created_at']);
+//     });
+
+//     return response()->json($formattedMessages);
+// }
+
+public function getMessages($currentUserPhone)
 {
     // Initialize Twilio client with your credentials
     $client = new Client(env('TWILIO_SID'), env('TWILIO_AUTH_TOKEN'));
@@ -57,35 +136,65 @@ class MessageController extends Controller
     // Fetch call records where the user is the recipient or sender
     $receivedCalls = $client->calls->read([
         'to' => $currentUser,
-        'limit' => 20,
+        'limit' => 2,
     ]);
 
     $sentCalls = $client->calls->read([
         'from' => $currentUser,
-        'limit' => 20,
+        'limit' => 2,
     ]);
-
 
     // Combine both received and sent messages
     $messages = array_merge($receivedMessages, $sentMessages);
     $calls = array_merge($receivedCalls, $sentCalls);
 
-    dd($calls);
-
     // Prepare an array to hold formatted messages
     $formattedMessages = [];
 
+    // Format messages
     foreach ($messages as $message) {
         // Determine if the user is the sender or recipient
         $direction = $message->from == $currentUser ? 'outgoing' : 'incoming';
 
         $formattedMessages[] = [
+            'type' => 'message',
             'sid' => $message->sid,
             'from' => $message->from,
             'to' => $message->to,
             'body' => $message->body,
             'direction' => $direction,
             'formatted_created_at' => $message->dateSent ? $message->dateSent->format('Y-m-d H:i:s') : null,
+        ];
+    }
+
+    // Format calls
+    foreach ($calls as $call) {
+        $direction = $call->from == $currentUser ? 'outgoing' : 'incoming';
+        $duration = gmdate("H:i:s", $call->duration);
+
+        // Fetch call recordings
+        $recordings = $client->recordings->read([
+            'callSid' => $call->sid
+        ]);
+
+        $recordingUrl = null;
+        $downloadUrl = null;
+        if (!empty($recordings)) {
+            $recording = $recordings[0];
+            $recordingUrl = 'https://api.twilio.com' . $recording->uri;
+            $downloadUrl = $recordingUrl . '.mp3?Download=true';
+        }
+
+        $formattedMessages[] = [
+            'type' => 'call',
+            'sid' => $call->sid,
+            'from' => $call->from,
+            'to' => $call->to,
+            'duration' => $duration,
+            'recording_url' => $recordingUrl,
+            'download_url' => $downloadUrl,
+            'direction' => $direction,
+            'formatted_created_at' => $call->startTime ? $call->startTime->format('Y-m-d H:i:s') : null,
         ];
     }
 
@@ -96,6 +205,7 @@ class MessageController extends Controller
 
     return response()->json($formattedMessages);
 }
+
     public function receiveMessage(Request $request)
     {
 
@@ -119,7 +229,7 @@ class MessageController extends Controller
     public function sendMessage(Request $request)
     {
         // dd($request);
-        $request->merge(['to' => '+1' . $request->input('to')]);
+        $request->merge(['to' => '+91' . $request->input('to')]);
 
         // Validate the request inputs
         $validated = $request->validate([

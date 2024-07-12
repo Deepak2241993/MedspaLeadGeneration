@@ -119,7 +119,7 @@
 
 @section('scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pusher/7.0.3/pusher.min.js"></script>
-    <script>
+    {{-- <script>
         document.addEventListener('DOMContentLoaded', function() {
             const chatUsers = document.querySelectorAll('.chat-user');
             const chatUserName = document.getElementById('chat-user-name');
@@ -246,7 +246,163 @@
                 });
             });
         });
-    </script>
+    </script> --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatUsers = document.querySelectorAll('.chat-user');
+            const chatUserName = document.getElementById('chat-user-name');
+            const chatMessages = document.getElementById('chat-messages');
+            let currentUserPhone = null;
+
+            chatUsers.forEach(user => {
+                user.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    // Get user data
+                    const userName = this.dataset.name;
+                    currentUserPhone = this.dataset.phone;
+
+                    // Update chat window
+                    chatUserName.textContent = userName;
+
+                    // Fetch and display messages for this user
+                    fetch(`/get-messages/${currentUserPhone}`)
+                        .then(response => response.json())
+                        .then(messages => {
+                            chatMessages.innerHTML = '';
+                            messages.forEach(message => {
+                                if (message.type === 'message') {
+                                    const messageClass = message.direction === 'outgoing' ? 'right' : '';
+                                    const avatarSrc = message.direction === 'outgoing' ? '{{ URL::asset('build/images/users/avatar-2.jpg') }}' : '{{ URL::asset('build/images/users/avatar-4.jpg') }}';
+                                    const messageHtml = `
+                                        <li class="${messageClass}">
+                                            <div class="conversation-list">
+                                                <div class="d-flex">
+                                                    ${messageClass === '' ? `<div class="chat-avatar"><img src="${avatarSrc}" alt="avatar-2"></div>` : ''}
+                                                    <div class="flex-grow-1">
+                                                        <div class="ctext-wrap">
+                                                            <div class="ctext-wrap-content">
+                                                                <p class="mb-0">${message.body}</p>
+                                                                <span class="chat-time text-muted">${message.formatted_created_at}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    ${messageClass === '' ? `<div class="chat-avatar"><img src="${avatarSrc}" alt="avatar-2"></div>` : ''}
+                                                </div>
+                                            </div>
+                                        </li>
+                                    `;
+                                    chatMessages.innerHTML += messageHtml;
+                                } else if (message.type === 'call') {
+                                    const callHtml = `
+                                        <li class="call-record">
+                                            <div class="conversation-list">
+                                                <div class="d-flex">
+                                                    <div class="flex-grow-1">
+                                                        <div class="ctext-wrap">
+                                                            <div class="ctext-wrap-content">
+                                                                <p class="mb-0">Call from ${message.from} to ${message.to}</p>
+                                                                <p class="mb-0">Duration: ${message.duration}</p>
+                                                                <span class="chat-time text-muted">${message.formatted_created_at}</span>
+                                                                ${message.recording_url ? `
+                                                                    <audio controls>
+                                                                        <source src="${message.recording_url}.mp3" type="audio/mpeg">
+                                                                        Your browser does not support the audio element.
+                                                                    </audio>
+                                                                    <a href="${message.download_url}" class="btn btn-primary btn-sm" download>Download</a>
+                                                                ` : '<p>No recording available</p>'}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    `;
+                                    chatMessages.innerHTML += callHtml;
+                                }
+                            });
+                        })
+                        .catch(error => console.error('Error fetching messages:', error));
+                });
+            });
+
+            const sendMessageBtn = document.getElementById('send-message-btn');
+            sendMessageBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                const body = document.getElementById('body').value;
+
+                if (!currentUserPhone || !body) {
+                    return;
+                }
+
+                fetch('/messages/send', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        to: currentUserPhone,
+                        body: body
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Show SweetAlert success message
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Message Sent!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        // Append the sent message to the chat
+                        const messageHtml = `
+                            <li class="right">
+                                <div class="conversation-list">
+                                    <div class="d-flex">
+                                        <div class="flex-grow-1">
+                                            <div class="ctext-wrap">
+                                                <div class="ctext-wrap-content">
+                                                    <p class="mb-0">${body}</p>
+                                                    <span class="chat-time text-muted">${new Date().toLocaleString()}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="chat-avatar">
+                                            <img src="{{ URL::asset('build/images/users/avatar-2.jpg') }}" alt="avatar-2">
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        `;
+                        chatMessages.innerHTML += messageHtml;
+                        document.getElementById('body').value = '';
+                    } else {
+                        // Show SweetAlert error message if sending failed
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Failed to send message!'
+                        });
+                        console.error('Error sending message:', data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error sending message:', error);
+                    // Show SweetAlert error message if an error occurred
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Error sending message. Please try again later!'
+                    });
+                });
+            });
+        });
+        </script>
+
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
