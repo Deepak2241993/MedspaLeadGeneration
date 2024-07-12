@@ -9,6 +9,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TwilioController;
 use App\Http\Controllers\EmailTemplateController;
 use App\Http\Controllers\CallController;
+use App\Http\Controllers\MessageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -79,14 +80,30 @@ Route::post('/end-call', [TwilioController::class, 'endCall'])->name('end-call')
 
 
 
-// outbound call 
+// outbound call
 Route::post('/outbound-call', [CallController::class, 'outboundCall'])->name('outbound-call');
 Route::match(['get', 'post'], '/twilio/user-gather', [CallController::class, 'userGather'])->name('twilio.user-gather');
 
 
-// inbound call 
+// inbound call
 Route::post('/twilio/inbound-call', [TwilioController::class, 'handleIncomingCall']);
 Route::post('/handle-gather', [TwilioController::class, 'handleGather'])->name('handle-gather');
+
+// recorde the call
+
+Route::post('/twilio/connect-client', [CallController::class, 'connectClient'])->name('twilio.connect-client');
+Route::post('/twilio/recording-status', [TwilioController::class, 'handleRecordingStatus'])->name('twilio.recording-status');
+
+
+
+
+// message
+Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');
+Route::post('/messages/send', [MessageController::class, 'sendMessage'])->name('messages.send');
+Route::get('/messages/receive', [MessageController::class, 'receiveMessage'])->name('messages.receive');
+Route::get('/sendPusher', [MessageController::class, 'sendpusher'])->name('messages.sendPusher');
+Route::get('/get-messages/{currentUserPhone}', [MessageController::class, 'getMessages'])->name('messages.getMessages');
+
 
 Route::get('/clear-cache', function () {
     $exitCode = Artisan::call('cache:clear');

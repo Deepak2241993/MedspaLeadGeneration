@@ -59,6 +59,12 @@
                         <span>Email Template</span>
                     </a>
                 </li>
+                <li>
+                    <a href="{{ route('messages.index') }}" class="waves-effect">
+                        <i class="fas fa-envelope"></i><span class="badge rounded-pill bg-success float-end"></span>
+                        <span>Message</span>
+                    </a>
+                </li>
 
                 {{-- <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
@@ -97,7 +103,7 @@
                             </ul>
                         </li>
                     </ul>
-                </li> 
+                </li>
                  <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="uim uim-window-grid"></i>

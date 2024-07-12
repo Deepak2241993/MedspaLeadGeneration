@@ -30,6 +30,9 @@ class CallController extends Controller
                 [
                     'url' => route('twilio.user-gather', ['client_phone' => $clientPhoneNumber]),
                     'method' => 'POST',
+                    'record' => 'true', // Enable call recording
+                    'recordingStatusCallback' => route('twilio.recording-status'), // URL to receive recording status updates
+                    'recordingStatusCallbackMethod' => 'POST' // Method to send recording status updates
                 ]
             );
 
@@ -108,4 +111,27 @@ class CallController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
+
+    public function connectClient(Request $request)
+    {
+        $clientPhoneNumber = $request->input('client_phone');
+
+        $response = new \Twilio\TwiML\VoiceResponse();
+        $dial = $response->dial('', ['record' => 'record-from-answer']); // Record both sides of the call
+        $dial->number($clientPhoneNumber);
+
+        return response($response, 200)->header('Content-Type', 'text/xml');
+    }
+
+    public function handleRecordingStatus(Request $request)
+    {
+        // Log the recording status information for debugging
+        Log::info('Recording Status Callback: ', $request->all());
+
+        // Handle the recording status update (e.g., save recording SID to the database)
+        // $recordingSid = $request->input('RecordingSid');
+
+        return response()->json(['status' => 'Recording status received']);
+    }
+
 }
