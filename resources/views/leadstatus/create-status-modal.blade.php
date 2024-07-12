@@ -9,7 +9,7 @@
 <!-- Modal Form -->
 <form id="createStatus" method="POST" class="ajax-form">
     <div class="modal-header">
-        <h5 class="modal-title" id="modelHeading">Add New Lead Status</h5>
+        <h5 class="modal-title" id="modelHeading">Add New LeadStatus</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">×</span>
         </button>
