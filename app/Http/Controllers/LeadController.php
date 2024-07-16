@@ -13,16 +13,32 @@ class LeadController extends Controller
         $api = new CommonModel();
         $result = $api->getAPI('lead/list/0');
 
-        // dd($result);
-        if ($result['status'] == "success") {
-            $data = ['data' => $result['data']]; // Pass data as an array
+        // Check if $result is null or not an array
+        if (is_array($result) && isset($result['status'])) {
+            if ($result['status'] == "success") {
+                $data = $result['data'];
 
-            return view('leads.index', $data);
+                // Check if data is empty
+                if (empty($data)) {
+                    $message = 'No data found.';
+                } else {
+                    $message = null; // No error message if data is found
+                }
+
+                return view('leads.index', compact('data', 'message'));
+            } else {
+                // Handle the case where API call was successful but status is not "success"
+                $error_message = 'Failed to retrieve leads.';
+                return view('leads.index', compact('error_message'));
+            }
         } else {
-            // Handle the error case
-            return redirect()->back()->with('error', 'Failed to retrieve leads.');
+            // Handle the case where $result is null or not an array (API call failed)
+            $error_message = 'Failed to retrieve data from API.';
+            return view('leads.index', compact('error_message'));
         }
     }
+
+
     public function edit($id)
     {
         $api = new CommonModel();
@@ -54,7 +70,7 @@ class LeadController extends Controller
 
         // Check if the API call was successful based on the API response
         if ($apiResult && $apiResult['status'] === 'success') {
-            
+
             return redirect()->route('leads.index')->with('success', 'Lead updated successfully');
         } else {
             // Handle the case where the API call did not return success
@@ -107,5 +123,4 @@ class LeadController extends Controller
             return response()->json(['error' => 'Internal Server Error'], 500);
         }
     }
-
 }

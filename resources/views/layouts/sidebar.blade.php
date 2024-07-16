@@ -37,16 +37,8 @@
             <ul class="metismenu list-unstyled" id="side-menu">
                 <li class="menu-title">Menu</li>
 
-<<<<<<< HEAD
-                <li>
-                    <a href="/" class="waves-effect">
-                        <i class="fas fa-tv"></i><span class="badge rounded-pill bg-success float-end">3</span>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                @role('super-admin')
 
-=======
+
                 @if (Auth::check() && Auth::user()->role === 'super_admin')
                     <li>
                         <a href="/admin/dashboard" class="waves-effect">
@@ -62,14 +54,14 @@
                         </a>
                     </li>
                 @endif
->>>>>>> 85527fdbbbbec6cf0382eb425459fc2e187c98ec
+
                 <li>
                     <a href="{{ route('leads.index') }}" class="waves-effect">
                         <i class="fas fa-database"></i><span class="badge rounded-pill bg-success float-end"></span>
                         <span>Leads</span>
                     </a>
                 </li>
-            @endrole
+
                 <li>
                     <a href="{{ route('leads.archived') }}" class="waves-effect">
                         <i class="fas fa-trash-alt"></i><span class="badge rounded-pill bg-success float-end"></span>

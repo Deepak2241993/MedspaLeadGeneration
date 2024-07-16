@@ -28,94 +28,97 @@
     @endsection
 
     @section('content')
-    <div class="content-wrapper">
-        <!-- Add Task Export Buttons Start -->
-        <div class="d-grid d-lg-flex d-md-flex action-bar">
-            <div id="table-actions" class="flex-grow-1 align-items-center">
+        <div class="content-wrapper">
+            <!-- Add Task Export Buttons Start -->
+            <div class="d-grid d-lg-flex d-md-flex action-bar">
+                <div id="table-actions" class="flex-grow-1 align-items-center">
 
-            </div>
-            <div class="btn-group mt-2 mt-lg-0 mt-md-0 ml-0 ml-lg-3 ml-md-3" role="group">
-                <a href="{{ route('leads.index')}}" class="btn btn-secondary f-14 btn-active" data-toggle="tooltip" data-original-title="Table View"><i class="uim uim-grip-horizontal-line"></i></a>
-                <a href="{{ route('leadboard')}}" class="btn btn-secondary f-14" data-toggle="tooltip" data-original-title="Lead Status"><i class=" uim uim-columns"></i></a>
+                </div>
+                <div class="btn-group mt-2 mt-lg-0 mt-md-0 ml-0 ml-lg-3 ml-md-3" role="group">
+                    <a href="{{ route('leads.index') }}" class="btn btn-secondary f-14 btn-active" data-toggle="tooltip"
+                        data-original-title="Table View"><i class="uim uim-grip-horizontal-line"></i></a>
+                    <a href="{{ route('leadboard') }}" class="btn btn-secondary f-14" data-toggle="tooltip"
+                        data-original-title="Lead Status"><i class=" uim uim-columns"></i></a>
+                </div>
             </div>
         </div>
-    </div>
         <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        @if (session('success'))
-                            <div class="alert alert-success">
-                                {{ session('success') }}
-                            </div>
-                        @endif
-                        @if (session('error'))
+                        @if (isset($error_message))
                             <div class="alert alert-danger">
-                                {{ session('error') }}
+                                {{ $error_message }}
                             </div>
-                        @endif
-                        <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap"
-                            style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                            <thead>
-                                <tr>
-                                    <th><input type="checkbox" id="check-all"></th>
-                                    <th>Sr No.</th>
-                                    <th>First Name</th>
-                                    <th>Last Name</th>
-                                    <th>Email</th>
-                                    <th>Phone Number</th>
-                                    <th>Text</th>
-                                    <th>Source</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse ($data as $lead)
+                        @else
+                            @if (isset($message))
+                                <div class="alert alert-info">
+                                    {{ $message }}
+                                </div>
+                            @endif
+
+                            <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap"
+                                style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                <thead>
                                     <tr>
-                                        <td style="width: 60px;">
-                                            <div class="form-check font-size-16 text-center">
-                                                <input type="checkbox" class="row-checkbox" data-ids="{{ $lead['_id'] }}"
-                                                    class="tasks-activeCheck2" id="tasks-activeCheck2">
-                                                <label class="form-check-label" for="tasks-activeCheck2"></label>
-                                            </div>
-                                        </td>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $lead['first_name'] }}</td>
-                                        <td>{{ $lead['last_name'] }}</td>
-                                        <td>{{ $lead['email'] }}</td>
-                                        <td>{{ $lead['phone'] }}</td>
-                                        <td>{{ $lead['message'] }}</td>
-                                        <td>{{ $lead['source'] }}</td>
-                                        <td>
-                                            <a href="{{ route('leads.edit', $lead['_id']) }}"
-                                                class="btn btn-primary btn-sm">Edit</a>
-                                            <form action="{{ route('leads.destroy', $lead['_id']) }}" method="POST"
-                                                style="display:inline;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                                            </form>
-                                            <a class="btn btn-success btn-sm btn-call" data-phone="{{ $lead['phone'] }}"
-                                                onclick="makeCall(event, '{{ $lead['phone'] }}')">Call</a>
-                                            <a class="btn btn-info btn-sm btn-sms" data-phone="{{ $lead['phone'] }}"
-                                                onclick="sendMessage(event, '{{ $lead['phone'] }}')">Message</a>
-
-
-
-                                        </td>
+                                        <th><input type="checkbox" id="check-all"></th>
+                                        <th>Sr No.</th>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>Email</th>
+                                        <th>Phone Number</th>
+                                        <th>Text</th>
+                                        <th>Source</th>
+                                        <th>Action</th>
                                     </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="9">No data found.</td>
-                                </tr>
-                                @endforelse
-
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @forelse ($data as $lead)
+                                        <tr>
+                                            <td style="width: 60px;">
+                                                <div class="form-check font-size-16 text-center">
+                                                    <input type="checkbox" class="row-checkbox"
+                                                        data-ids="{{ $lead['_id'] }}" class="tasks-activeCheck2"
+                                                        id="tasks-activeCheck2">
+                                                    <label class="form-check-label" for="tasks-activeCheck2"></label>
+                                                </div>
+                                            </td>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $lead['first_name'] }}</td>
+                                            <td>{{ $lead['last_name'] }}</td>
+                                            <td>{{ $lead['email'] }}</td>
+                                            <td>{{ $lead['phone'] }}</td>
+                                            <td>{{ $lead['message'] }}</td>
+                                            <td>{{ $lead['source'] }}</td>
+                                            <td>
+                                                <a href="{{ route('leads.edit', $lead['_id']) }}"
+                                                    class="btn btn-primary btn-sm">Edit</a>
+                                                <form action="{{ route('leads.destroy', $lead['_id']) }}" method="POST"
+                                                    style="display:inline;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                                </form>
+                                                <a class="btn btn-success btn-sm btn-call"
+                                                    data-phone="{{ $lead['phone'] }}"
+                                                    onclick="makeCall(event, '{{ $lead['phone'] }}')">Call</a>
+                                                <a class="btn btn-info btn-sm btn-sms" data-phone="{{ $lead['phone'] }}"
+                                                    onclick="sendMessage(event, '{{ $lead['phone'] }}')">Message</a>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="9">No data found.</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        @endif
                     </div>
                 </div>
             </div> <!-- end col -->
         </div> <!-- end row -->
+
         <!-- Call Modal -->
         <div class="modal fade" id="callModal" tabindex="-1" role="dialog" aria-labelledby="callModalLabel"
             aria-hidden="true">

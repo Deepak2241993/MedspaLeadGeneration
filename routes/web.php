@@ -29,9 +29,9 @@ use App\Http\Controllers\PermissionController;
 
 Auth::routes();
 
-// Route::get('/roles', function () {
-//     // Your route logic here
-// })->middleware('super_admin');
+Route::get('/roles', function () {
+    // Your route logic here
+})->middleware('super_admin');
 
 
 
