@@ -253,47 +253,52 @@
             const chatUserName = document.getElementById('chat-user-name');
             const chatMessages = document.getElementById('chat-messages');
             let currentUserPhone = null;
-
+        
             chatUsers.forEach(user => {
                 user.addEventListener('click', function(e) {
                     e.preventDefault();
-
+        
                     // Get user data
                     const userName = this.dataset.name;
                     currentUserPhone = this.dataset.phone;
-
+        
                     // Update chat window
                     chatUserName.textContent = userName;
-
-                    // Fetch and display messages for this user
+        
+                    // Fetch and display messages and calls for this user
                     fetch(`/get-messages/${currentUserPhone}`)
                         .then(response => response.json())
-                        .then(messages => {
+                        .then(items => {
                             chatMessages.innerHTML = '';
-                            messages.forEach(message => {
-                                if (message.type === 'message') {
-                                    const messageClass = message.direction === 'outgoing' ? 'right' : '';
-                                    const avatarSrc = message.direction === 'outgoing' ? '{{ URL::asset('build/images/users/avatar-2.jpg') }}' : '{{ URL::asset('build/images/users/avatar-4.jpg') }}';
+        
+                            // Sort items by time
+                            items.sort((a, b) => new Date(a.formatted_created_at) - new Date(b.formatted_created_at));
+        
+                            // Display sorted items
+                            items.forEach(item => {
+                                if (item.type === 'message') {
+                                    const messageClass = item.direction === 'outgoing' ? 'right' : '';
+                                    const avatarSrc = item.direction === 'outgoing' ? '{{ URL::asset('build/images/users/avatar-2.jpg') }}' : '{{ URL::asset('build/images/users/avatar-4.jpg') }}';
                                     const messageHtml = `
                                         <li class="${messageClass}">
                                             <div class="conversation-list">
                                                 <div class="d-flex">
-                                                    ${messageClass === '' ? `<div class="chat-avatar"><img src="${avatarSrc}" alt="avatar-2"></div>` : ''}
+                                                    ${messageClass === '' ? `<div class="chat-avatar"><img src="${avatarSrc}" alt="avatar"></div>` : ''}
                                                     <div class="flex-grow-1">
                                                         <div class="ctext-wrap">
                                                             <div class="ctext-wrap-content">
-                                                                <p class="mb-0">${message.body}</p>
-                                                                <span class="chat-time text-muted">${message.formatted_created_at}</span>
+                                                                <p class="mb-0">${item.body}</p>
+                                                                <span class="chat-time text-muted">${item.formatted_created_at}</span>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    ${messageClass === '' ? `<div class="chat-avatar"><img src="${avatarSrc}" alt="avatar-2"></div>` : ''}
+                                                    ${messageClass === 'right' ? `<div class="chat-avatar"><img src="${avatarSrc}" alt="avatar"></div>` : ''}
                                                 </div>
                                             </div>
                                         </li>
                                     `;
                                     chatMessages.innerHTML += messageHtml;
-                                } else if (message.type === 'call') {
+                                } else if (item.type === 'call') {
                                     const callHtml = `
                                         <li class="call-record">
                                             <div class="conversation-list">
@@ -301,15 +306,15 @@
                                                     <div class="flex-grow-1">
                                                         <div class="ctext-wrap">
                                                             <div class="ctext-wrap-content">
-                                                                <p class="mb-0">Call from ${message.from} to ${message.to}</p>
-                                                                <p class="mb-0">Duration: ${message.duration}</p>
-                                                                <span class="chat-time text-muted">${message.formatted_created_at}</span>
-                                                                ${message.recording_url ? `
+                                                                <p class="mb-0">Call from ${item.from} to ${item.to}</p>
+                                                                <p class="mb-0">Duration: ${item.duration}</p>
+                                                                <span class="chat-time text-muted">${item.formatted_created_at}</span>
+                                                                ${item.recording_url ? `
                                                                     <audio controls>
-                                                                        <source src="${message.recording_url}.mp3" type="audio/mpeg">
+                                                                        <source src="${item.recording_url}.mp3" type="audio/mpeg">
                                                                         Your browser does not support the audio element.
                                                                     </audio>
-                                                                    <a href="${message.download_url}" class="btn btn-primary btn-sm" download>Download</a>
+                                                                    <a href="${item.download_url}" class="btn btn-primary btn-sm" download>Download</a>
                                                                 ` : '<p>No recording available</p>'}
                                                             </div>
                                                         </div>
@@ -322,20 +327,20 @@
                                 }
                             });
                         })
-                        .catch(error => console.error('Error fetching messages:', error));
+                        .catch(error => console.error('Error fetching messages and calls:', error));
                 });
             });
-
+        
             const sendMessageBtn = document.getElementById('send-message-btn');
             sendMessageBtn.addEventListener('click', function(e) {
                 e.preventDefault();
-
+        
                 const body = document.getElementById('body').value;
-
+        
                 if (!currentUserPhone || !body) {
                     return;
                 }
-
+        
                 fetch('/messages/send', {
                     method: 'POST',
                     headers: {
@@ -371,7 +376,7 @@
                                             </div>
                                         </div>
                                         <div class="chat-avatar">
-                                            <img src="{{ URL::asset('build/images/users/avatar-2.jpg') }}" alt="avatar-2">
+                                            <img src="{{ URL::asset('build/images/users/avatar-2.jpg') }}" alt="avatar">
                                         </div>
                                     </div>
                                 </div>
@@ -401,6 +406,8 @@
             });
         });
         </script>
+        
+        
 
 
 

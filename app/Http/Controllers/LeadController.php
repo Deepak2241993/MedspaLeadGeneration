@@ -54,6 +54,7 @@ class LeadController extends Controller
 
         // Check if the API call was successful based on the API response
         if ($apiResult && $apiResult['status'] === 'success') {
+            
             return redirect()->route('leads.index')->with('success', 'Lead updated successfully');
         } else {
             // Handle the case where the API call did not return success
