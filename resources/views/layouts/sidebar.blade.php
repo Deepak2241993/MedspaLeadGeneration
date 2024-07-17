@@ -14,10 +14,12 @@
 
         <a href="index" class="logo logo-light">
             <span class="logo-sm">
-                <img src="{{ URL::asset('build/images/light-logo.png') }}" alt="logo-sm-light" height="80" width="150">
+                <img src="{{ URL::asset('build/images/light-logo.png') }}" alt="logo-sm-light" height="80"
+                    width="150">
             </span>
             <span class="logo-lg">
-                <img src="{{ URL::asset('build/images/light-logo.png') }}" alt="logo-light" height="80" width="150">
+                <img src="{{ URL::asset('build/images/light-logo.png') }}" alt="logo-light" height="80"
+                    width="150">
             </span>
         </a>
     </div>
@@ -35,6 +37,7 @@
             <ul class="metismenu list-unstyled" id="side-menu">
                 <li class="menu-title">Menu</li>
 
+<<<<<<< HEAD
                 <li>
                     <a href="/" class="waves-effect">
                         <i class="fas fa-tv"></i><span class="badge rounded-pill bg-success float-end">3</span>
@@ -43,6 +46,23 @@
                 </li>
                 @role('super-admin')
 
+=======
+                @if (Auth::check() && Auth::user()->role === 'super_admin')
+                    <li>
+                        <a href="/admin/dashboard" class="waves-effect">
+                            <i class="fas fa-tv"></i><span class="badge rounded-pill bg-success float-end">3</span>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                @else
+                    <li>
+                        <a href="/" class="waves-effect">
+                            <i class="fas fa-tv"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                @endif
+>>>>>>> 85527fdbbbbec6cf0382eb425459fc2e187c98ec
                 <li>
                     <a href="{{ route('leads.index') }}" class="waves-effect">
                         <i class="fas fa-database"></i><span class="badge rounded-pill bg-success float-end"></span>
@@ -58,7 +78,8 @@
                 </li>
                 <li>
                     <a href="#" class="waves-effect">
-                        <i class="fas fa-envelope-open-text"></i><span class="badge rounded-pill bg-success float-end"></span>
+                        <i class="fas fa-envelope-open-text"></i><span
+                            class="badge rounded-pill bg-success float-end"></span>
                         <span>Email Template</span>
                     </a>
                 </li>
@@ -311,8 +332,8 @@
     </div>
 
     <div class="dropdown px-3 sidebar-user sidebar-user-info">
-        <button type="button" class="btn w-100 px-0 border-0" id="page-header-user-dropdown"
-            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button type="button" class="btn w-100 px-0 border-0" id="page-header-user-dropdown" data-bs-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
             <span class="d-flex align-items-center">
                 <div class="flex-shrink-0">
                     <img src="{{ URL::asset('build/images/users/avatar-2.jpg') }}"

@@ -24,8 +24,8 @@ class MessageController extends Controller
 
         if ($result['status'] == "success") {
             $leaddata = collect($result['data']);
-            $messages = Message::orderBy('created_at', 'asc')->get();
-            return view('messages.index', ['messages' => $messages, 'leaddata' => $leaddata]);
+            // $messages = Message::orderBy('created_at', 'asc')->get();
+            return view('messages.index', ['leaddata' => $leaddata]);
         } else {
             // Handle the case where the API request is not successful
             // You can redirect, return an error view, or provide a fallback
@@ -136,12 +136,12 @@ public function getMessages($currentUserPhone)
     // Fetch call records where the user is the recipient or sender
     $receivedCalls = $client->calls->read([
         'to' => $currentUser,
-        'limit' => 2,
+        'limit' => 20,
     ]);
 
     $sentCalls = $client->calls->read([
         'from' => $currentUser,
-        'limit' => 2,
+        'limit' => 20,
     ]);
 
     // Combine both received and sent messages
@@ -198,13 +198,14 @@ public function getMessages($currentUserPhone)
         ];
     }
 
-    // Optionally, you can sort messages by date if needed
+    // Sort messages and calls by date and time
     usort($formattedMessages, function($a, $b) {
         return strtotime($b['formatted_created_at']) - strtotime($a['formatted_created_at']);
     });
 
     return response()->json($formattedMessages);
 }
+
 
     public function receiveMessage(Request $request)
     {
