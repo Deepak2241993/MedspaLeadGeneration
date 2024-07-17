@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Log;
 
 class LoginController extends Controller
 {
@@ -26,7 +29,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    // protected $redirectTo = RouteServiceProvider::HOME;
 
     /**
      * Create a new controller instance.
@@ -36,5 +39,30 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/');
+    }
+    protected function authenticated(Request $request, $user)
+    {
+        Log::info('Authenticated user: ' . $user->email);
+        if ($user->hasRole('super-admin')) {
+            Log::info('Redirecting super-admin to their dashboard');
+            return redirect()->route('super-admin.dashboard');
+        } elseif ($user->hasRole('sales-team')) {
+            Log::info('Redirecting sales-team to their dashboard');
+            return redirect()->route('sales-team.dashboard');
+        } elseif ($user->hasRole('account-team')) {
+            Log::info('Redirecting account-team to their dashboard');
+            return redirect()->route('account-team.dashboard');
+        }
+
+        // return redirect('/home');
     }
 }

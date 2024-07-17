@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\LeadBoardController;
 use App\Http\Controllers\LeadStatusSettingController;
@@ -10,6 +11,12 @@ use App\Http\Controllers\TwilioController;
 use App\Http\Controllers\EmailTemplateController;
 use App\Http\Controllers\CallController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\SuperAdminController;
+use App\Http\Controllers\SalesTeamController;
+use App\Http\Controllers\AccountTeamController;
+
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -25,13 +32,34 @@ use App\Http\Controllers\MessageController;
 
 Auth::routes();
 
-Route::get('/', [HomeController::class, 'root']);
-// Route::get('{any}', [HomeController::class, 'index'])->name('index');
+// Public routes
+Route::get('/', [HomeController::class, 'root'])->name('root');
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-Route::get('/lead', [LeadController::class, 'index'])->name('leads.index');
-Route::get('/lead/{id}/edit', [LeadController::class, 'edit'])->name('leads.edit');
-Route::post('/lead/update/{id}', [LeadController::class, 'update'])->name('leads.update');
-Route::delete('/lead/{id}', [LeadController::class, 'destroy'])->name('leads.destroy');
+// Authenticated routes
+Route::group(['middleware' => 'auth'], function () {
+    // Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+    Route::group(['middleware' => 'role:super-admin'], function () {
+        Route::get('/super-admin/dashboard', [SuperAdminController::class, 'dashboard'])->name('super-admin.dashboard');
+
+
+        Route::get('/lead', [LeadController::class, 'index'])->name('leads.index');
+        Route::get('/lead/{id}/edit', [LeadController::class, 'edit'])->name('leads.edit');
+        Route::post('/lead/update/{id}', [LeadController::class, 'update'])->name('leads.update');
+        Route::delete('/lead/{id}', [LeadController::class, 'destroy'])->name('leads.destroy');
+    });
+
+    Route::group(['middleware' => 'role:sales-team'], function () {
+        Route::get('/sales-team/dashboard', [SalesTeamController::class, 'dashboard'])->name('sales-team.dashboard');
+    });
+
+    Route::group(['middleware' => 'role:account-team'], function () {
+        Route::get('/account-team/dashboard', [AccountTeamController::class, 'dashboard'])->name('account-team.dashboard');
+    });
+});
+
+
 
 
 // archived
