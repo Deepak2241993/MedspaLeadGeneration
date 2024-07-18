@@ -38,7 +38,7 @@ Route::get('/roles', function () {
 Route::middleware(['superadmin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
-    // Role and Permission routes
+    // Role nd Permission routes
     Route::resource('roles', RolePermissionController::class);
     Route::get('roles/{role}/give-permissions', [RolePermissionController::class, 'addPermissionToRole'])->name('roles.give-permissions');
 
