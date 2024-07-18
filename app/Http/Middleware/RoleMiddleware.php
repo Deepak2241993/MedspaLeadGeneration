@@ -3,7 +3,6 @@
 namespace App\Http\Middleware;
 
 use Closure;
-<<<<<<< HEAD
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -30,25 +29,5 @@ class RoleMiddleware
 
         Log::info('User has role: ' . $role . ', proceeding to next middleware');
         return $next($request);
-=======
-use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\Auth;
-
-class RoleMiddleware
-{
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
-    public function handle($request, Closure $next, $role)
-    {
-        if (Auth::check() && Auth::user()->role == $role) {
-            return $next($request);
-        }
-
-        return redirect('/');
->>>>>>> 85527fdbbbbec6cf0382eb425459fc2e187c98ec
     }
 }
