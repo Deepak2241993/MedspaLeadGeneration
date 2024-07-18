@@ -42,7 +42,7 @@
 
                 @if (Auth::check() && Auth::user()->role === 'super_admin')
                     <li>
-                        <a href="/dashboard" class="waves-effect">
+                        <a href="{{ route('super-admin.dashboard') }}" class="waves-effect">
                             <i class="fas fa-tv"></i><span class="badge rounded-pill bg-success float-end">3</span>
                             <span>Dashboard</span>
                         </a>
@@ -57,7 +57,7 @@
                 @endif
                 @if (Auth::check() && Auth::user()->role === 'super_admin')
                     <li>
-                        <a href="/roles" class="waves-effect">
+                        <a href="{{ route('roles') }}" class="waves-effect">
                             <i class="fas fa-wrench"></i><span class="badge rounded-pill bg-success float-end">3</span>
                             <span>Roles & Permissions</span>
                         </a>
