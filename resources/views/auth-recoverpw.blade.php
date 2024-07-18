@@ -18,7 +18,7 @@
                                         <img src="{{ URL::asset('build/images/logo-light.png') }}" alt="" height="22"
                                             class="auth-logo logo-light mx-auto">
                                     </a>
-                                    <p class="text-muted mt-2">User Experience & Interface Design Strategy Saas Solution</p>
+                                    <p class="text-muted mt-2">User Interface Design Strategy Saas Solution</p>
                                 </div>
 
                                 <div class="card my-auto overflow-hidden">
