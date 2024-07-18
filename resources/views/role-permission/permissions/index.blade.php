@@ -30,9 +30,9 @@ Roles And Permissions
     @section('content')
     @include('role-permission.nav-links')
     <div class="container mt-5">
-        <h1>Permissions</h1>
-        <a href="{{ route('permissions.create') }}" class="btn btn-primary mb-3">Create Permission</a>
-        
+        <h1>Permissions <a href="{{ route('permissions.create') }}" class="btn btn-primary float-end">Create Permission</a></h1>
+
+
         @if ($permissions->isEmpty())
             <p>No permissions found.</p>
         @else
@@ -90,5 +90,5 @@ Roles And Permissions
         <script src="{{ URL::asset('build/js/pages/datatables.init.js') }}"></script>
         <!-- App js -->
         <script src="{{ URL::asset('build/js/app.js') }}"></script>
-       
+
     @endsection

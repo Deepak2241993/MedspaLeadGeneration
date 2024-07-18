@@ -13,6 +13,7 @@ use App\Http\Controllers\CallController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\SuperAdminController;
 
 
 /*
@@ -35,8 +36,8 @@ Route::get('/roles', function () {
 
 
 
-Route::middleware(['superadmin'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+Route::middleware(['auth', 'superadmin'])->group(function () {
+    Route::get('/dashboard', [SuperAdminController::class, 'dashboard'])->name('super-admin.dashboard');
 
     // Role and Permission routes
     Route::resource('roles', RolePermissionController::class);
@@ -115,9 +116,11 @@ Route::middleware(['superadmin'])->group(function () {
     Route::get('/messages/receive', [MessageController::class, 'receiveMessage'])->name('messages.receive');
     Route::get('/sendPusher', [MessageController::class, 'sendpusher'])->name('messages.sendPusher');
     Route::get('/get-messages/{currentUserPhone}', [MessageController::class, 'getMessages'])->name('messages.getMessages');
+
+
 });
 
-// Route::get('/', [HomeController::class, 'root']);
+Route::get('/', [HomeController::class, 'root']);
 // Route::get('{any}', [HomeController::class, 'index'])->name('index');
 
 

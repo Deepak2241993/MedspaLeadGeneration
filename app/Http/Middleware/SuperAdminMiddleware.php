@@ -10,11 +10,6 @@ use Illuminate\Support\Facades\Log;
 
 class SuperAdminMiddleware
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
         if (Auth::check()) {
@@ -34,6 +29,6 @@ class SuperAdminMiddleware
             Log::warning('No authenticated user found.');
         }
 
-        return redirect('/');
+        return redirect('/'); // Redirect to home or login page
     }
 }

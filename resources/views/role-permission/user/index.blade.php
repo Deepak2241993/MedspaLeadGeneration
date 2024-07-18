@@ -28,11 +28,12 @@
     @endsection
 
     @section('content')
+    @include('role-permission.nav-links')
     <div class="container mt-5">
        <div class="card mt-3">
         <h1>Users <a href="{{ url('users/create') }}" class="btn btn-danger float-end">Add New User</a></h1>
        </div>
-        
+
     </div>
     <div class="row">
         <div class="col-12">
@@ -80,8 +81,8 @@
                                             <button type="submit" class="btn btn-danger">Delete</button>
                                         </form>
                                     </td>
-                                  
-                                  
+
+
                                 </tr>
                             @empty
                             <tr>
@@ -122,5 +123,5 @@
         <script src="{{ URL::asset('build/js/pages/datatables.init.js') }}"></script>
         <!-- App js -->
         <script src="{{ URL::asset('build/js/app.js') }}"></script>
-       
+
     @endsection

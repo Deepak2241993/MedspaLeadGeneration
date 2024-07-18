@@ -31,8 +31,8 @@
 
     @include('role-permission.nav-links')
     <div class="container mt-5">
-        <h1>Roles <a href="{{ url('roles') }}" class="btn btn-danger float-end">Back</a></h1>
-        <a href="{{ route('roles.create') }}" class="btn btn-primary">Add Role</a>
+        {{-- <h1>Roles <a href="{{ url('roles') }}" class="btn btn-danger float-end">Back</a></h1> --}}
+        <a href="{{ route('roles.create') }}" class="btn btn-primary float-end">Add Role</a>
         <table class="table">
             <thead>
                 <tr>
@@ -85,5 +85,5 @@
         <script src="{{ URL::asset('build/js/pages/datatables.init.js') }}"></script>
         <!-- App js -->
         <script src="{{ URL::asset('build/js/app.js') }}"></script>
-       
+
     @endsection

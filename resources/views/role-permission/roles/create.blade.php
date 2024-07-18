@@ -28,8 +28,9 @@
     @endsection
 
     @section('content')
-    <div class="container">
-        <h1>Add Role</h1>
+
+    <div class="container mt-5">
+        <h1>Add Role <a href="{{ url('roles') }}" class="btn btn-danger float-end">Back</a></h1>
         <form action="{{ route('roles.store') }}" method="POST">
             @csrf
             <div class="mb-3">
@@ -66,5 +67,5 @@
         <script src="{{ URL::asset('build/js/pages/datatables.init.js') }}"></script>
         <!-- App js -->
         <script src="{{ URL::asset('build/js/app.js') }}"></script>
-       
+
     @endsection

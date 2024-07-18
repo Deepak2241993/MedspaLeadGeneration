@@ -29,6 +29,7 @@
         <i class="ri-menu-2-line align-middle"></i>
     </button>
 
+    {{-- <h6>{{ Auth::user()->name }}</h6> --}}
     <div data-simplebar class="vertical-scroll">
 
         <!--- Sidemenu -->
@@ -41,7 +42,7 @@
 
                 @if (Auth::check() && Auth::user()->role === 'super_admin')
                     <li>
-                        <a href="/admin/dashboard" class="waves-effect">
+                        <a href="/dashboard" class="waves-effect">
                             <i class="fas fa-tv"></i><span class="badge rounded-pill bg-success float-end">3</span>
                             <span>Dashboard</span>
                         </a>
@@ -53,6 +54,16 @@
                             <span>Dashboard</span>
                         </a>
                     </li>
+                @endif
+                @if (Auth::check() && Auth::user()->role === 'super_admin')
+                    <li>
+                        <a href="/roles" class="waves-effect">
+                            <i class="fas fa-wrench"></i><span class="badge rounded-pill bg-success float-end">3</span>
+                            <span>Roles & Permissions</span>
+                        </a>
+                    </li>
+                @else
+
                 @endif
 
                 <li>

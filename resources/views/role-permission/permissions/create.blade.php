@@ -19,7 +19,7 @@
 @endsection
 
 @section('page-title')
-    Leads
+Create Permission
 @endsection
 
 @section('body')
@@ -28,11 +28,11 @@
     @endsection
 
     @section('content')
-    <div class="container">
-        <h1>Create Permission</h1>
+    <div class="container mt-5">
+        <h1>Create Permission <a href="{{ url('permissions') }}" class="btn btn-danger float-end">Back</a></h1>
         <form action="{{ route('permissions.store') }}" method="POST">
             @csrf
-            <div class="mb-3">
+            <div class="mb-3 mt-5">
                 <label for="name" class="form-label">Permission Name</label>
                 <input type="text" class="form-control" id="name" name="name">
             </div>
@@ -66,5 +66,5 @@
         <script src="{{ URL::asset('build/js/pages/datatables.init.js') }}"></script>
         <!-- App js -->
         <script src="{{ URL::asset('build/js/app.js') }}"></script>
-       
+
     @endsection
