@@ -14,6 +14,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\SuperAdminController;
+use App\Http\Controllers\UserController;
 
 
 /*
@@ -54,6 +55,7 @@ Route::middleware(['auth', 'superadmin'])->group(function () {
 
 
     Route::resource('users', App\Http\Controllers\UserController::class);
+    Route::get('users/{userId}/delete',[UserController::class, 'destroy']);
 
     // Add other super admin routes here
     Route::get('/lead', [LeadController::class, 'index'])->name('leads.index');

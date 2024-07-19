@@ -14,6 +14,7 @@ class RolePermissionController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('permission:delete role',['only' => ['destroy']]);
         $this->middleware('role:super_admin');
     }
 
@@ -45,7 +46,7 @@ class RolePermissionController extends Controller
     public function update(Request $request, $id)
     {
         $role = Role::find($id);
-        $role->update(['name' => $request->name]);
+        // $role->update(['name' => $request->name]);
         $role->syncPermissions($request->permissions);
         return redirect()->route('roles.index')->with('success', 'Role updated successfully');
     }

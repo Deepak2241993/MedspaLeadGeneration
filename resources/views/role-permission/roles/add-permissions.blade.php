@@ -16,6 +16,22 @@
     <!-- Responsive datatable examples -->
     <link href="{{ URL::asset('build/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}"
         rel="stylesheet" type="text/css" />
+        <style>
+            .permissions-container {
+                display: flex;
+                flex-wrap: wrap; /* Allows items to wrap to the next line if necessary */
+                gap: 10px; /* Adds space between items */
+            }
+            .form-check {
+                display: flex;
+                align-items: center;
+                margin-right: 20px; /* Optional: Adds space between each checkbox */
+            }
+            .form-check-input {
+                margin-right: 5px; /* Space between checkbox and label */
+            }
+        </style>
+        
 @endsection
 
 @section('page-title')
@@ -29,19 +45,16 @@
 
     @section('content')
     <div class="container mt-5">
-        <h1>Edit Role {{ $role->name }} 
+        <h1>Role:- {{ $role->name }} 
             <a href="{{ url('roles') }}" class="btn btn-danger float-end">Back</a>
         </h1>
         <form action="{{ route('roles.update', $role->id) }}" method="POST">
             @csrf
             @method('PUT')
-            <div class="mb-3">
-                <label for="name" class="form-label">Role Name</label>
-                <input type="text" class="form-control" id="name" name="name" value="{{ $role->name }}" required>
-            </div>
+           
             <div class="mb-3">
                 <label for="permissions" class="form-label">Permissions</label>
-                <div>
+                <div class="permissions-container">
                     @foreach ($permissions as $permission)
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="permission-{{ $permission->id }}" name="permissions[]" value="{{ $permission->name }}" {{ $role->permissions->contains($permission) ? 'checked' : '' }}>
@@ -51,7 +64,7 @@
                         </div>
                     @endforeach
                 </div>
-            </div>
+            </div>            
             <button type="submit" class="btn btn-primary">Save</button>
         </form>
         
