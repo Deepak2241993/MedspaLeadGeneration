@@ -19,7 +19,7 @@
 @endsection
 
 @section('page-title')
-   Add New User
+   Edit User
 @endsection
 
 @section('body')
@@ -29,16 +29,17 @@
 
     @section('content')
     <div class="container">
-        <h1>Add Role <a href="{{ url('users') }}" class="btn btn-danger float-end">Back</a> </h1>
-        <form action="{{ route('users.store') }}" method="POST">
+        <h1>Edit User <a href="{{ url('users') }}" class="btn btn-danger float-end">Back</a> </h1>
+        <form action="{{ url('users/'.$user->id) }}" method="POST">
             @csrf
+            @method('PUT')
             <div class="mb-3">
                 <label for="name" class="form-label">Name</label>
-                <input type="text" class="form-control" id="name" name="name" required>
+                <input type="text" class="form-control" value="{{ $user->name }}" id="name" name="name" required>
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" name="email" required>
+                <input type="email" class="form-control" id="email" value="{{ $user->email }}" readonly name="email" required>
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
@@ -49,11 +50,11 @@
                 <select name="roles[]" class="form-control" multiple id="">
                     <option value="">Select Role</option>
                     @foreach ($roles as $role)
-                        <option value="{{ $role }}">{{ $role }}</option>
+                        <option value="{{ $role }}" {{ in_array($role, $userRoles) ? 'selected':'' }}>{{ $role }}</option>
                     @endforeach
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="submit" class="btn btn-primary">Update</button>
         </form>
     </div>
     @endsection

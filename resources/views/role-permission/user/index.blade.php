@@ -57,6 +57,7 @@
                                 <th>Sr No.</th>
                                 <th>Name</th>
                                 <th>Email</th>
+                                <th>Roles</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -71,15 +72,20 @@
                                         </div>
                                     </td>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $lead['name'] }}</td>
-                                    <td>{{ $lead['email'] }}</td>
+                                    <td>{{ $lead->name }}</td>
+                                    <td>{{ $lead->email }}</td>
                                     <td>
-                                        <a href="{{ route('permissions.edit', $lead->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                                        <form action="{{ route('roles.destroy', $lead->id) }}" method="POST" style="display:inline-block;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger">Delete</button>
-                                        </form>
+                                        @if(!empty($lead->getRoleNames()))
+                                            @foreach ($lead->getRoleNames() as $rolename)
+                                                <label class="badge bg-primary mx-1">{{ $rolename }}</label>
+                                            @endforeach
+                                        @endif
+                                    </td>
+
+                                    <td>
+                                        <a href="{{ url('users/'.$lead->id.'/edit') }}" class="btn btn-sm btn-info">Edit</a>
+                                        <a href="{{ url('users/'.$lead->id.'/delete') }}" class="btn btn-sm btn-danger">Delete</a>
+
                                     </td>
 
 
