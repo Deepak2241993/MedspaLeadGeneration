@@ -154,7 +154,7 @@ Route::middleware(['auth'])->group(function () {
 
 });
 
-Route::get('/', [HomeController::class, 'root']);
+Route::get('/dashboad', [HomeController::class, 'root']);
 // Route::get('{any}', [HomeController::class, 'index'])->name('index');
 
 
