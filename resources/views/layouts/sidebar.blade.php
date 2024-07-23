@@ -49,7 +49,7 @@
                     </li>
                 @else
                     <li>
-                        <a href="{{ route('dashboad') }}" class="waves-effect">
+                        <a href="/" class="waves-effect">
                             <i class="fas fa-tv"></i>
                             <span>Dashboard</span>
                         </a>
