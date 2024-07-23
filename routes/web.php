@@ -36,26 +36,58 @@ Route::get('/roles', function () {
 })->middleware('super_admin');
 
 
-
-Route::middleware(['auth', 'superadmin'])->group(function () {
+Route::middleware(['isAdmin'])->group(function () {
     Route::get('/dashboard', [SuperAdminController::class, 'dashboard'])->name('super-admin.dashboard');
 
     // Role and Permission routes
     Route::resource('roles', RolePermissionController::class);
     Route::get('roles/{role}/give-permissions', [RolePermissionController::class, 'addPermissionToRole'])->name('roles.give-permissions');
 
-
     // Additional routes for managing permissions if needed
-    Route::get('permissions', [RolePermissionController::class, 'permissionsIndex'])->name('role-permission.permissions.index');
-    Route::get('permissions/create', [RolePermissionController::class, 'createPermission'])->name('permissions.create');
-    Route::post('permissions', [RolePermissionController::class, 'storePermission'])->name('permissions.store');
-    Route::get('permissions/{id}/edit', [RolePermissionController::class, 'editPermission'])->name('permissions.edit');
-    Route::put('permissions/{id}', [RolePermissionController::class, 'updatePermission'])->name('permissions.update');
-    Route::delete('permissions/{id}', [RolePermissionController::class, 'destroyPermission'])->name('permissions.destroy');
-
+    Route::get('permissions', [PermissionController::class, 'permissionsIndex'])->name('role-permission.permissions.index');
+    Route::get('permissions/create', [PermissionController::class, 'createPermission'])->name('permissions.create');
+    Route::post('permissions', [PermissionController::class, 'storePermission'])->name('permissions.store');
+    Route::get('permissions/{id}/edit', [PermissionController::class, 'editPermission'])->name('permissions.edit');
+    Route::put('permissions/{id}', [PermissionController::class, 'updatePermission'])->name('permissions.update');
+    Route::delete('permissions/{id}', [PermissionController::class, 'destroyPermission'])->name('permissions.destroy');
 
     Route::resource('users', App\Http\Controllers\UserController::class);
-    Route::get('users/{userId}/delete',[UserController::class, 'destroy']);
+    Route::get('users/{userId}/delete', [UserController::class, 'destroy']);
+});
+
+
+Route::middleware(['auth'])->group(function () {
+
+
+    // Route::middleware(['role:Super Admin'])->group(function () {
+        
+    // Route::get('/dashboard', [SuperAdminController::class, 'dashboard'])->name('super-admin.dashboard');
+
+    // // Role and Permission routes
+    // Route::resource('roles', RolePermissionController::class);
+    // Route::get('roles/{role}/give-permissions', [RolePermissionController::class, 'addPermissionToRole'])->name('roles.give-permissions');
+
+
+    // // Additional routes for managing permissions if needed
+    // Route::get('permissions', [PermissionController::class, 'permissionsIndex'])->name('role-permission.permissions.index');
+    // Route::get('permissions/create', [PermissionController::class, 'createPermission'])->name('permissions.create');
+    // Route::post('permissions', [PermissionController::class, 'storePermission'])->name('permissions.store');
+    // Route::get('permissions/{id}/edit', [PermissionController::class, 'editPermission'])->name('permissions.edit');
+    // Route::put('permissions/{id}', [PermissionController::class, 'updatePermission'])->name('permissions.update');
+    // Route::delete('permissions/{id}', [PermissionController::class, 'destroyPermission'])->name('permissions.destroy');
+
+
+    // Route::resource('users', App\Http\Controllers\UserController::class);
+    // Route::get('users/{userId}/delete',[UserController::class, 'destroy']);
+      
+    // });
+
+
+
+
+    // Route::get('/dashboard', [SuperAdminController::class, 'dashboard'])->name('super-admin.dashboard');
+
+    
 
     // Add other super admin routes here
     Route::get('/lead', [LeadController::class, 'index'])->name('leads.index');

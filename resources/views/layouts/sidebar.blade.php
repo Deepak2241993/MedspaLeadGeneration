@@ -55,17 +55,13 @@
                         </a>
                     </li>
                 @endif
-                @if (Auth::check() && Auth::user()->role === 'super_admin')
                     <li>
                         <a href="{{ route('roles.index') }}" class="waves-effect">
                             <i class="fas fa-wrench"></i><span class="badge rounded-pill bg-success float-end">3</span>
                             <span>Roles & Permissions</span>
                         </a>
                     </li>
-                @else
-
-                @endif
-
+             
                 <li>
                     <a href="{{ route('leads.index') }}" class="waves-effect">
                         <i class="fas fa-database"></i><span class="badge rounded-pill bg-success float-end"></span>

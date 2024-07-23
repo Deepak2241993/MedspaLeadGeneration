@@ -46,12 +46,18 @@
                         <td>{{ $role->name }}</td>
                         <td>
                             <a href="{{ route('roles.give-permissions', ['role' => $role->id]) }}" class="btn btn-info">Add / Edit Role Permission</a>
+                            @can('update role')
                             <a href="{{ route('roles.edit', $role->id) }}" class="btn btn-warning">Edit</a>
+                            @endcan
+                            @can('delete role')
                             <form action="{{ route('roles.destroy', $role->id) }}" method="POST" style="display:inline-block;">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger">Delete</button>
                             </form>
+                                
+                            @endcan
+                           
                         </td>
                     </tr>
                 @endforeach

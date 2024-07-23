@@ -66,14 +66,14 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'auth' => \App\Http\Middleware\Authenticate::class,
         // 'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
-        // 'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
+
+        'isAdmin' => \App\Http\Middleware\AdminMiddleware::class,
+        
+        'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
         'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
         'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
         'superadmin' => \App\Http\Middleware\SuperAdminMiddleware::class,
     ];
-    protected $routeMiddleware = [
-        // ...
-        'role' => \App\Http\Middleware\RoleMiddleware::class,
-    ];
+   
 
 }

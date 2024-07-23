@@ -50,12 +50,16 @@ Roles And Permissions
                             <td>{{ $permission->id }}</td>
                             <td>{{ $permission->name }}</td>
                             <td>
+                                @can('update role')
                                 <a href="{{ route('permissions.edit', $permission->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                                @endcan
+                                @can('delete role')
                                 <form action="{{ route('permissions.destroy', $permission->id) }}" method="POST" style="display: inline-block;">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this permission?')">Delete</button>
                                 </form>
+                                @endcan
                             </td>
                         </tr>
                     @endforeach

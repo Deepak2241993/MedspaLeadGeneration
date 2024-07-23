@@ -14,8 +14,8 @@ class RolePermissionController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('permission:delete role',['only' => ['destroy']]);
-        $this->middleware('role:super_admin');
+        // $this->middleware('permission:delete role',['only' => ['destroy']]);
+        // $this->middleware('role:super admin');
     }
 
     public function index()
@@ -65,40 +65,5 @@ class RolePermissionController extends Controller
         ['role'=> $role, 'permissions' => $permissions ]);
     }
 
-     // Methods for managing permissions
-     public function permissionsIndex()
-     {
-         $permissions = Permission::all();
-         return view('role-permission.permissions.index', compact('permissions'));
-     }
- 
-     public function createPermission()
-     {
-         return view('role-permission.permissions.create');
-     }
- 
-     public function storePermission(Request $request)
-     {
-         Permission::create(['name' => $request->name]);
-         return redirect()->route('role-permission.permissions.index')->with('success', 'Permission created successfully');
-     }
- 
-     public function editPermission($id)
-     {
-         $permission = Permission::find($id);
-         return view('role-permission.permissions.edit', compact('permission'));
-     }
- 
-     public function updatePermission(Request $request, $id)
-     {
-         $permission = Permission::find($id);
-         $permission->update(['name' => $request->name]);
-         return redirect()->route('role-permission.permissions.index')->with('success', 'Permission updated successfully');
-     }
- 
-     public function destroyPermission($id)
-     {
-         Permission::find($id)->delete();
-         return redirect()->route('role-permission.permissions.index')->with('success', 'Permission deleted successfully');
-     }
+     
 }
