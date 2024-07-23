@@ -32,7 +32,7 @@ class PermissionController extends Controller
 
         Permission::create(['name' => $request->name]);
 
-        return redirect()->route('permissions.index')->with('success', 'Permission created successfully');
+        return redirect()->route('role-permission.permissions.index')->with('success', 'Permission created successfully');
     }
 
     public function editPermission($id)
