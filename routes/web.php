@@ -154,7 +154,7 @@ Route::middleware(['auth'])->group(function () {
 
 });
 
-Route::get('/dash', [HomeController::class, 'root'])->name('dash');
+Route::get('/', [HomeController::class, 'root'])->name('dash');
 // Route::get('{any}', [HomeController::class, 'index'])->name('index');
 
 
