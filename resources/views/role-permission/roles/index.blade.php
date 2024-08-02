@@ -47,10 +47,9 @@
                     <tr>
                         <td>{{ $role->name }}</td>
                         <td>
-                            @can()
-                                
+                            {{-- @can('Add Edit Role Permission') --}}
                             <a href="{{ route('roles.give-permissions', ['role' => $role->id]) }}" class="btn btn-info">Add / Edit Role Permission</a>
-                            @endcan
+                            {{-- @endcan --}}
                             @can('update role')
                             <a href="{{ route('roles.edit', $role->id) }}" class="btn btn-warning">Edit</a>
                             @endcan

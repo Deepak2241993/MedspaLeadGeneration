@@ -18,6 +18,7 @@ class RolePermissionController extends Controller
         $this->middleware('permission:create role',['only' => ['create','store']]);
         $this->middleware('permission:edit role',['only' => ['edit','update']]);
         $this->middleware('permission:delete role',['only' => ['destroy']]);
+        $this->middleware('permission:Add Edit Role Permission',['only' => ['addPermissionToRole']]);
     }
 
     public function index()
