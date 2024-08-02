@@ -144,7 +144,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/twilio/connect-client', [CallController::class, 'connectClient'])->name('twilio.connect-client');
     Route::post('/twilio/recording-status', [TwilioController::class, 'handleRecordingStatus'])->name('twilio.recording-status');
 
-    // Message
+    // Mess
     Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');
     Route::post('/messages/send', [MessageController::class, 'sendMessage'])->name('messages.send');
     Route::get('/messages/receive', [MessageController::class, 'receiveMessage'])->name('messages.receive');
