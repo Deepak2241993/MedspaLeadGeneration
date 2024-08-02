@@ -8,6 +8,14 @@ use Illuminate\Support\Facades\Log;
 
 class LeadController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:view lead',['only' => ['index']]);
+        $this->middleware('permission:edit lead',['only' => ['edit','update']]);
+        $this->middleware('permission:delete lead',['only' => ['destroy']]);
+        $this->middleware('permission:archived lead',['only' => ['archived']]);
+        $this->middleware('permission:restore lead',['only' => ['restore']]);
+    }
     public function index(Request $request)
     {
         $api = new CommonModel();

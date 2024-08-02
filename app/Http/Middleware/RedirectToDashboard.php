@@ -25,7 +25,7 @@ class RedirectToDashboard
                 return redirect()->route('account-team.dashboard');
             } else {
                 Log::info('User has no specific role, redirecting to home');
-                return redirect('/home');
+                return redirect('/');
             }
         }
 

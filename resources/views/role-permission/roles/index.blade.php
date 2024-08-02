@@ -32,7 +32,8 @@
     @include('role-permission.nav-links')
     <div class="container mt-5">
         {{-- <h1>Roles <a href="{{ url('roles') }}" class="btn btn-danger float-end">Back</a></h1> --}}
-        <a href="{{ route('roles.create') }}" class="btn btn-primary float-end">Add Role</a>
+        <a href="{{ route('roles.create') }}" class="btn btn-primary float-end {{ auth()->user()->can('create role') ? '' : 'd-none' }}">Add Role</a>
+
         <table class="table">
             <thead>
                 <tr>

@@ -13,9 +13,11 @@ class RolePermissionController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth');
-        // $this->middleware('permission:delete role',['only' => ['destroy']]);
-        // $this->middleware('role:super admin');
+        // $this->middleware('auth');
+        $this->middleware('permission:view permission',['only' => ['index']]);
+        $this->middleware('permission:create role',['only' => ['create','store']]);
+        $this->middleware('permission:view permission',['only' => ['index']]);
+        $this->middleware('permission:view permission',['only' => ['index']]);
     }
 
     public function index()

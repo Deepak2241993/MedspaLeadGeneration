@@ -9,11 +9,15 @@ use Twilio\TwiML\VoiceResponse;
 
 class CallController extends Controller
 {
+    
     protected $twilio;
 
     public function __construct()
     {
         $this->twilio = new Client(env('TWILIO_SID'), env('TWILIO_AUTH_TOKEN'));
+        // permision 
+        $this->middleware('permission:view call',['only' => ['outboundCall','userGather','endCall','connectClient']]);
+        
     }
 
     public function outboundCall(Request $request)
@@ -84,33 +88,33 @@ class CallController extends Controller
         }
     }
 
-    public function muteCall(Request $request)
-    {
-        $callSid = session('twilio_call_sid');
+    // public function muteCall(Request $request)
+    // {
+    //     $callSid = session('twilio_call_sid');
 
-        try {
-            $this->twilio->calls($callSid)->update(['muted' => true]);
-            return response()->json(['success' => true, 'message' => 'Call muted successfully.']);
-        } catch (\Exception $e) {
-            Log::error('Error muting call: ' . $e->getMessage());
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
-        }
-    }
+    //     try {
+    //         $this->twilio->calls($callSid)->update(['muted' => true]);
+    //         return response()->json(['success' => true, 'message' => 'Call muted successfully.']);
+    //     } catch (\Exception $e) {
+    //         Log::error('Error muting call: ' . $e->getMessage());
+    //         return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+    //     }
+    // }
 
-    public function holdCall(Request $request)
-    {
-        $callSid = session('twilio_call_sid');
+    // public function holdCall(Request $request)
+    // {
+    //     $callSid = session('twilio_call_sid');
 
-        try {
-            // Update the call to hold status
-            $this->twilio->calls($callSid)->update(['status' => 'in-progress']);
-            $this->twilio->calls($callSid)->update(['hold' => true]);
-            return response()->json(['success' => true, 'message' => 'Call put on hold successfully.']);
-        } catch (\Exception $e) {
-            Log::error('Error putting call on hold: ' . $e->getMessage());
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
-        }
-    }
+    //     try {
+    //         // Update the call to hold status
+    //         $this->twilio->calls($callSid)->update(['status' => 'in-progress']);
+    //         $this->twilio->calls($callSid)->update(['hold' => true]);
+    //         return response()->json(['success' => true, 'message' => 'Call put on hold successfully.']);
+    //     } catch (\Exception $e) {
+    //         Log::error('Error putting call on hold: ' . $e->getMessage());
+    //         return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+    //     }
+    // }
 
     public function connectClient(Request $request)
     {
