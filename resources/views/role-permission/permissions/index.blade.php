@@ -30,8 +30,9 @@ Roles And Permissions
     @section('content')
     @include('role-permission.nav-links')
     <div class="container mt-5">
-        <h1>Permissions <a href="{{ route('permissions.create') }}" class="btn btn-primary float-end">Create Permission</a></h1>
-
+        @can('create permission')
+            <h1>Permissions <a href="{{ route('permissions.create') }}" class="btn btn-primary float-end">Create Permission</a></h1>
+        @endcan
 
         @if ($permissions->isEmpty())
             <p>No permissions found.</p>
@@ -50,10 +51,10 @@ Roles And Permissions
                             <td>{{ $permission->id }}</td>
                             <td>{{ $permission->name }}</td>
                             <td>
-                                @can('update role')
+                                @can('edit permission')
                                 <a href="{{ route('permissions.edit', $permission->id) }}" class="btn btn-sm btn-warning">Edit</a>
                                 @endcan
-                                @can('delete role')
+                                @can('delete permission')
                                 <form action="{{ route('permissions.destroy', $permission->id) }}" method="POST" style="display: inline-block;">
                                     @csrf
                                     @method('DELETE')

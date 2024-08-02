@@ -14,10 +14,10 @@ class RolePermissionController extends Controller
     public function __construct()
     {
         // $this->middleware('auth');
-        $this->middleware('permission:view permission',['only' => ['index']]);
+        $this->middleware('permission:view role',['only' => ['index']]);
         $this->middleware('permission:create role',['only' => ['create','store']]);
-        $this->middleware('permission:view permission',['only' => ['index']]);
-        $this->middleware('permission:view permission',['only' => ['index']]);
+        $this->middleware('permission:edit role',['only' => ['edit','update']]);
+        $this->middleware('permission:delete role',['only' => ['destroy']]);
     }
 
     public function index()

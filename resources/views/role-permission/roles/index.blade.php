@@ -32,8 +32,9 @@
     @include('role-permission.nav-links')
     <div class="container mt-5">
         {{-- <h1>Roles <a href="{{ url('roles') }}" class="btn btn-danger float-end">Back</a></h1> --}}
-        <a href="{{ route('roles.create') }}" class="btn btn-primary float-end {{ auth()->user()->can('create role') ? '' : 'd-none' }}">Add Role</a>
-
+        @can('create role')
+           <a href="{{ route('roles.create') }}" class="btn btn-primary float-end {{ auth()->user()->can('create role') ? '' : 'd-none' }}">Add Role</a>
+        @endcan
         <table class="table">
             <thead>
                 <tr>
@@ -46,7 +47,10 @@
                     <tr>
                         <td>{{ $role->name }}</td>
                         <td>
+                            @can()
+                                
                             <a href="{{ route('roles.give-permissions', ['role' => $role->id]) }}" class="btn btn-info">Add / Edit Role Permission</a>
+                            @endcan
                             @can('update role')
                             <a href="{{ route('roles.edit', $role->id) }}" class="btn btn-warning">Edit</a>
                             @endcan
