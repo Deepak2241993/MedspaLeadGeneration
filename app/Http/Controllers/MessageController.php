@@ -14,6 +14,8 @@ class MessageController extends Controller
 
     public function __construct()
     {
+        // role & permission
+        $this->middleware('permission:view message',['only' => ['index']]);
         $this->client = new Client(env('TWILIO_SID'), env('TWILIO_AUTH_TOKEN'));
     }
 

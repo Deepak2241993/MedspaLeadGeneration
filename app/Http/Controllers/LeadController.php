@@ -13,8 +13,9 @@ class LeadController extends Controller
         $this->middleware('permission:view lead',['only' => ['index']]);
         $this->middleware('permission:edit lead',['only' => ['edit','update']]);
         $this->middleware('permission:delete lead',['only' => ['destroy']]);
-        $this->middleware('permission:archived lead',['only' => ['archived']]);
-        $this->middleware('permission:restore lead',['only' => ['restore']]);
+
+        $this->middleware('permission:view archived',['only' => ['archived']]);
+        $this->middleware('permission:restore archived',['only' => ['restore']]);
     }
     public function index(Request $request)
     {

@@ -17,6 +17,8 @@ class CallController extends Controller
         $this->twilio = new Client(env('TWILIO_SID'), env('TWILIO_AUTH_TOKEN'));
         // permision 
         $this->middleware('permission:view call',['only' => ['outboundCall','userGather','endCall','connectClient']]);
+        // role & permisssion
+        $this->middleware('permission:outboundCall',['only' => ['outboundCall']]);
         
     }
 

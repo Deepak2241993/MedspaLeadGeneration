@@ -55,26 +55,33 @@
                         </a>
                     </li>
                 @endif
-                    <li>
-                        <a href="{{ route('roles.index') }}" class="waves-effect">
-                            <i class="fas fa-wrench"></i><span class="badge rounded-pill bg-success float-end">3</span>
-                            <span>Roles & Permissions</span>
-                        </a>
-                    </li>
+                @can('view role')
+                <li>
+                    <a href="{{ route('roles.index') }}" class="waves-effect">
+                        <i class="fas fa-wrench"></i><span class="badge rounded-pill bg-success float-end">3</span>
+                        <span>Roles & Permissions</span>
+                    </a>
+                   
+                </li>
+                @endcan
              
+                @can('view lead')
                 <li>
                     <a href="{{ route('leads.index') }}" class="waves-effect">
                         <i class="fas fa-database"></i><span class="badge rounded-pill bg-success float-end"></span>
                         <span>Leads</span>
                     </a>
                 </li>
-
+                @endcan
+                @can('view archived')
                 <li>
                     <a href="{{ route('leads.archived') }}" class="waves-effect">
                         <i class="fas fa-trash-alt"></i><span class="badge rounded-pill bg-success float-end"></span>
                         <span>Archived Leads</span>
                     </a>
                 </li>
+                @endcan
+                @can('view email-template')
                 <li>
                     <a href="#" class="waves-effect">
                         <i class="fas fa-envelope-open-text"></i><span
@@ -82,12 +89,19 @@
                         <span>Email Template</span>
                     </a>
                 </li>
+                    
+                @endcan
+               
+                @can('view message')
                 <li>
                     <a href="{{ route('messages.index') }}" class="waves-effect">
                         <i class="fas fa-envelope"></i><span class="badge rounded-pill bg-success float-end"></span>
                         <span>Message</span>
                     </a>
                 </li>
+                    
+                @endcan
+                
 
                 {{-- <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
