@@ -3,7 +3,7 @@
 
     <!-- LOGO -->
     <div class="navbar-brand-box">
-        <a href="index" class="logo logo-dark">
+        <a href="{{ url('/') }}" class="logo logo-dark">
             <span class="logo-sm">
                 <img src="{{ URL::asset('build/images/dark-logo.png') }}" alt="logo-sm-dark" height="24" width="50">
             </span>
@@ -12,7 +12,7 @@
             </span>
         </a>
 
-        <a href="index" class="logo logo-light">
+        <a href="{{ url('/') }}" class="logo logo-light">
             <span class="logo-sm">
                 <img src="{{ URL::asset('build/images/light-logo.png') }}" alt="logo-sm-light" height="80"
                     width="150">
@@ -103,7 +103,7 @@
                 @endcan
                 
 
-                {{-- <li>
+                 {{-- <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="uim uim-comment-message"></i>
                         <span>Apps</span>
@@ -336,7 +336,7 @@
                             </ul>
                         </li>
                     </ul>
-                </li> --}}
+                </li>  --}}
 
             </ul>
 
