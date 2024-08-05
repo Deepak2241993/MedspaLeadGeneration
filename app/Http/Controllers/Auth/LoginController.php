@@ -63,6 +63,6 @@ class LoginController extends Controller
             return redirect()->route('account-team.dashboard');
         }
 
-        return redirect('/home');
+        return redirect('/');
     }
 }
