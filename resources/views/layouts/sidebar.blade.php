@@ -81,7 +81,7 @@
                     </a>
                 </li>
                 @endcan
-                @can('view email-template')
+                @can('view emailtemplate')
                 <li>
                     <a href="{{ route('email.index') }}" class="waves-effect">
                         <i class="fas fa-envelope-open-text"></i><span

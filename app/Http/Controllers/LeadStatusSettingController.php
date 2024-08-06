@@ -15,29 +15,35 @@ class LeadStatusSettingController extends Controller
     }
     public function store(Request $request)
     {
-
         $api = new CommonModel();
-
+    
         // Set the attributes manually
         $api->name = $request->name;
         $api->label_color = $request->label_color;
-
+    
         // Save the model to the database
-
-
+        // (If there is no actual save operation, you might need to add it here)
+    
         // Now that the data is saved, make the API request
         $result = $api->postAPI('lead/status/add', $request);
-
+    
         // Check the result of the API request and handle it accordingly
         if (isset($result['status']) && $result['status'] == 'error') {
-
-            dd('jhvzafjhvasdf');
-            // If the API request fails, you might want to handle this scenario
-            return Reply::error('API request failed', $result['responseMessage']);
+            // If the API request fails, handle the error scenario
+            return response()->json([
+                'status' => 'error',
+                'message' => 'API request failed',
+                'details' => $result['responseMessage'] ?? 'No additional details'
+            ], 500);
         }
-
-        return Reply::success('Record Saved');
+    
+        // If successful, return a success response
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Record Saved'
+        ]);
     }
+    
 
     public function edit(Request $request, $id)
     {

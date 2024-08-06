@@ -8,6 +8,14 @@ use Illuminate\Support\Facades\Log;
 
 class EmailTemplateController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:view emailtemplate',['only' => ['index']]);
+        $this->middleware('permission:create emailtemplate',['only' => ['create', 'store']]);
+        $this->middleware('permission:edit emailtemplate',['only' => ['edit','update']]);
+        $this->middleware('permission:delete emailtemplate',['only' => ['destroy']]);
+
+    }
     public function index(Request $request)
     {
         $api = new CommonModel();
@@ -43,11 +51,12 @@ class EmailTemplateController extends Controller
     }
     public function store(Request $request)
     {
+        // dd($request->all());
         $api = new CommonModel();
 
         // Extract data from the request
         $title = $request->title;
-        $html_code = $request->html_code;
+        $html_code = $request->area;
         $status = $request->status;
 
         // Prepare data array to be sent to the API
@@ -59,47 +68,48 @@ class EmailTemplateController extends Controller
 
         // Convert data to JSON format
         $dataJson = json_encode($data);
-        
+
         // Call the API to store the data
         $result = $api->postAPI('email_template/add', $dataJson);
 
         // Check if API call was successful
+        // Check if API call was successful
         if (isset($result['status']) && $result['status'] == 'error') {
             // Handle API error
-            return back()->with('imperialheaders_success', $result['responseMessage']);
+            return redirect()->route('email.index')->with('imperialheaders_success', $result['responseMessage']);
         } else {
             // API call was successful
-            return back()->with('imperialheaders_success', $result['responseMessage']);
+            return redirect()->route('email.index')->with('imperialheaders_success', $result['responseMessage']);
         }
     }
     public function edit($id)
     {
-        $emailtemp = EmailTemplate::findOrFail($id);
+        $api = new CommonModel();
+        // dd($api);
+        $emailtemp = $api->getAPI('emailtemplate/edit/' . $id);
         return view('email-template.edit')->with('emailtemp', $emailtemp);
     }
+    public function update(Request $request, $id)
+    {
+        // $emailTemplate = EmailTemplate::findOrFail($id);
+        // $emailTemplate->update($request->all());
+
+        return back()->with('success', 'Email Template updated successfully');
+    }
+
 
     public function destroy($id, CommonModel $api)
     {
-        // $emailTemplate = EmailTemplate::find($id);
+
 
         $result = $api->postAPI("email_template/delete/{$id}", []);
 
-        if ($result['status'] === 'success') {
-            // Optionally, you may perform additional actions for success
-            $message = 'Status updated successfully';
-    
-            // JSON response for success
-            $jsonResponse = response()->json(['message' => $message], 200);
-    
-            // View response for success
-            $viewResponse = view('admin.email-template.index', compact('result'));
-    
-            // Return both responses
-            return [$jsonResponse, $viewResponse];
+        if (isset($result['status']) && $result['status'] == 'error') {
+            // Handle API error
+            return redirect()->route('email.index')->with('imperialheaders_success', $result['responseMessage']);
         } else {
-            // Handle different statuses (e.g., error, not found)
-            return response()->json(['error' => 'Error deleting lead'], 500);
+            // API call was successful
+            return redirect()->route('email.index')->with('imperialheaders_success', $result['responseMessage']);
         }
-
     }
 }

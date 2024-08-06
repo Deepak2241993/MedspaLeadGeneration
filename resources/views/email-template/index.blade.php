@@ -39,6 +39,9 @@
                         data-original-title="Table View">Create Template</a>
                     <button class="btn btn-danger btn-delete-all">Delete Selected</button>
                 </div>
+                @if ($message = Session::get('imperialheaders_success'))
+                
+            @endif
             </div>
         </div>
         <div class="row">
@@ -63,7 +66,7 @@
                                         <th><input type="checkbox" id="check-all"></th>
                                         <th>Sr No.</th>
                                         <th>Title</th>
-                                        <th>Subject</th>
+                                        <th>Content</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -83,7 +86,7 @@
                                             </td>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $lead['title'] }}</td>
-                                            <td>{{ $lead['html_code'] }}</td>
+                                            <td>{!! $lead['html_code'] !!}</td>
                                             <td>
                                                 <a href="{{ route('email.edit', $lead['_id']) }}"
                                                     class="btn btn-primary btn-sm">Edit</a>

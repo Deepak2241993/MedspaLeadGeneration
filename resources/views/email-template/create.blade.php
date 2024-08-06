@@ -23,17 +23,18 @@
                             <strong>{{ $message }}</strong>
                         </div>
                     @endif
-
+                    <form action="{{ route('email.store') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="floatingFirstnameInput" placeholder="Enter Your First Name">
-                                <label for="floatingFirstnameInput">First Name</label>
+                                <input type="text" class="form-control" id="floatingFirstnameInput" name="title" placeholder="Enter Your First Name">
+                                <label for="floatingFirstnameInput">Title</label>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3">
-                                <select class="form-select" id="floatingSelectGrid" aria-label="Floating label select example">
+                                <select class="form-select" name="status" id="floatingSelectGrid" aria-label="Floating label select example">
                                     <option value="1">Active</option>
                                     <option value="0">In-Active</option>
                                 </select>
@@ -46,6 +47,7 @@
                     <div>
                         <button type="submit" class="btn btn-primary w-md">Submit</button>
                     </div>
+                </form>
                 </div>
             </div>
         </div> <!-- end col -->

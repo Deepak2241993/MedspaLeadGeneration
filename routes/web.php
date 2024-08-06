@@ -117,7 +117,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/email-templates', [EmailTemplateController::class, 'store'])->name('email.store');
     Route::delete('/email-templates/{id}', [EmailTemplateController::class, 'destroy'])->name('email.destroy');
     Route::post('/email-templates/deleteAll', [EmailTemplateController::class, 'deleteAll'])->name('email.deleteAll');
-    Route::get('/email-templates/{id}/edit', [EmailTemplateController::class, 'edit'])->name('email.edit');
+    Route::get('/emailtemplates/edit/{id}', [EmailTemplateController::class, 'edit'])->name('email.edit');
     Route::put('/email-templates/{id}', [EmailTemplateController::class, 'update'])->name('email.update');
 
     Route::post('/lead/permanentdeleteAll', [LeadController::class, 'permanentdeleteAll'])->name('leads.permanentdeleteAll');
