@@ -138,9 +138,7 @@
                                         <div class="b-p-body">
                                             <div class="b-p-tasks" id="drag-container-{{ $column['_id'] }}"
                                                 data-column-id="{{ $column['_id'] }}" data-column-name="{{ $column['name'] }}">
-                                                @php
-                                                    $hasTasks = false;
-                                                @endphp
+                                               
                                                 @foreach ($leadData as $lead)
                                                     @if ($lead['status_id'] == $column['_id'])
                                                         @php
@@ -180,10 +178,8 @@
                                                         </div>
                                                     @endif
                                                 @endforeach
-                                                @if (!$hasTasks)
                                                     <div class="text-center text-muted no-tasks-message">No tasks available
                                                     </div>
-                                                @endif
                                             </div>
                                         </div>
                                     </div>
@@ -279,87 +275,6 @@
         <script src="{{ URL::asset('build/js/pages/toastr.init.js') }}"></script>
         <!-- Dragula for drag and drop functionality -->
         <script src="https://cdn.jsdelivr.net/npm/dragula@3.7.3/dist/dragula.min.js"></script>
-
-        {{-- <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                var containers = Array.from(document.querySelectorAll('.b-p-tasks'));
-                var drake = dragula(containers);
-        
-                function updateEmptyMessages() {
-                    containers.forEach(function(container) {
-                        var hasTasks = container.querySelector('.task-card');
-                        var noTasksMessage = container.querySelector('.no-tasks-message');
-                        if (hasTasks) {
-                            if (noTasksMessage) noTasksMessage.style.display = 'none';
-                        } else {
-                            if (noTasksMessage) noTasksMessage.style.display = 'block';
-                        }
-                    });
-                }
-        
-                updateEmptyMessages();
-        
-                drake.on('drag', function(el) {
-                    el.style.opacity = '0.5'; // Make the dragged item slightly transparent
-                });
-        
-                drake.on('dragend', function(el) {
-                    el.style.opacity = ''; // Reset the opacity
-                    updateEmptyMessages();
-                });
-        
-                drake.on('drop', function(el, target) {
-                    var task_id = el.getAttribute('data-task-id');
-                    var status = target.getAttribute('data-column-id');
-                    var column_name = target.getAttribute('data-column-name');
-        
-                    $.ajax({
-                        url: "{{ route('leadboards.update_index') }}",
-                        method: 'POST',
-                        data: {
-                            _token: "{{ csrf_token() }}",
-                            task_id: task_id,
-                            status: status,
-                            column_name: column_name
-                        },
-                        success: function(response) {
-                            if (response.success) {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Task Updated',
-                                    text: 'Task status updated successfully',
-                                    timer: 2000, // Display for 2 seconds
-                                    showConfirmButton: false,
-                                    customClass: {
-                                    container: 'swal2-toast-top-right' // Apply custom class
-                                    }
-                                }).then(() => {
-                                    updateEmptyMessages();
-                                });
-                            } else {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Task Updated',
-                                    text: 'Task status updated successfully',
-                                    timer: 2000, // Display for 2 seconds
-                                    showConfirmButton: false,
-                                    customClass: {
-                                    container: 'swal2-toast-top-right' // Apply custom class
-                                    }
-                                });
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: 'An error occurred: ' + error,
-                            });
-                        }
-                    });
-                });
-            });
-        </script> --}}
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 var containers = Array.from(document.querySelectorAll('.b-p-tasks'));
@@ -367,12 +282,10 @@
         
                 function updateEmptyMessages() {
                     containers.forEach(function(container) {
-                        var hasTasks = container.querySelector('.task-card');
+                        var hasTasks = container.querySelector('.task-card') !== null;
                         var noTasksMessage = container.querySelector('.no-tasks-message');
-                        if (hasTasks) {
-                            if (noTasksMessage) noTasksMessage.style.display = 'none';
-                        } else {
-                            if (noTasksMessage) noTasksMessage.style.display = 'block';
+                        if (noTasksMessage) {
+                            noTasksMessage.style.display = hasTasks ? 'none' : 'block';
                         }
                     });
                 }

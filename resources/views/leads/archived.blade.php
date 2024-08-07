@@ -58,12 +58,11 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($data as $lead)
+                                @forelse ($data as $lead)
                                     <tr>
                                         <td style="width: 60px;">
                                             <div class="form-check font-size-16 text-center">
-                                                <input type="checkbox" class="row-checkbox" data-ids="{{ $lead['_id'] }}"
-                                                    class="tasks-activeCheck2" id="tasks-activeCheck2">
+                                                <input type="checkbox" class="row-checkbox" data-ids="{{ $lead['_id'] }}" class="tasks-activeCheck2" id="tasks-activeCheck2">
                                                 <label class="form-check-label" for="tasks-activeCheck2"></label>
                                             </div>
                                         </td>
@@ -75,18 +74,20 @@
                                         <td>{{ $lead['message'] }}</td>
                                         <td>{{ $lead['source'] }}</td>
                                         <td>
-                                            <a href="{{ route('leads.restore', $lead['_id']) }}"
-                                                class="btn btn-primary btn-sm">Restore</a>
-                                            <form action="{{ route('leads.destroy', $lead['_id']) }}" method="POST"
-                                                style="display:inline;">
+                                            <a href="{{ route('leads.restore', $lead['_id']) }}" class="btn btn-primary btn-sm">Restore</a>
+                                            <form action="{{ route('leads.permanentdelete', $lead['_id']) }}" method="POST" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                             </form>
                                         </td>
                                     </tr>
-                                @endforeach
-                            </tbody>
+                                @empty
+                                    <tr>
+                                        <td colspan="9" class="text-center">No data found.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>                            
                         </table>
                     </div>
                 </div>
@@ -120,7 +121,5 @@
         <script src="{{ URL::asset('build/js/pages/datatables.init.js') }}"></script>
         <!-- App js -->
         <script src="{{ URL::asset('build/js/app.js') }}"></script>
-        <script>
-
-        </script>
+        <script></script>
     @endsection

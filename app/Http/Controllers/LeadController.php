@@ -138,16 +138,19 @@ class LeadController extends Controller
     {
         $api = new CommonModel();
         $result = $api->getAPI('lead/list/1');
-
-        if ($result['status'] == "success") {
-            $data = ['data' => $result['data']]; // Pass data as an array
-
-            return view('leads.archived', $data);
+        if (is_array($result) && isset($result['status'])) {
+            if ($result['status'] == "success") {
+                $data = ['data' => $result['data']];
+                return view('leads.archived', $data);
+            } else {
+                $error_message = 'Failed to retrieve archived leads.';
+            }
         } else {
-            // Handle the error case
-            return redirect()->back()->with('error', 'No Data Archived leads.');
+            $error_message = 'Failed to connect to the API.';
         }
+        return redirect()->back()->with('error', $error_message);
     }
+
     public function restore($id)
     {
         try {
@@ -156,6 +159,23 @@ class LeadController extends Controller
 
             if ($result['status'] === 'success') {
                 return redirect()->route('leads.archived')->with('success', 'Lead Archived successfully');
+            } else {
+                Log::error('API request failed: ' . json_encode($result));
+                return response()->json(['error' => 'Error restoring lead'], 500);
+            }
+        } catch (\Exception $e) {
+            Log::error('Exception: ' . $e->getMessage());
+            return response()->json(['error' => 'Internal Server Error'], 500);
+        }
+    }
+    public function permanentdelete($id)
+    {
+        try {
+            $api = new CommonModel();
+            $result = $api->postAPI("lead/delete/{$id}", []);
+
+            if ($result['status'] === 'success') {
+                return redirect()->route('leads.archived')->with('success', 'Lead Permanently Deleted');
             } else {
                 Log::error('API request failed: ' . json_encode($result));
                 return response()->json(['error' => 'Error restoring lead'], 500);

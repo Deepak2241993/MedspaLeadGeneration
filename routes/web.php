@@ -98,7 +98,7 @@ Route::middleware(['auth'])->group(function () {
     // Archived leads
     Route::get('/archived', [LeadController::class, 'archived'])->name('leads.archived');
     Route::get('/restore/{id}', [LeadController::class, 'restore'])->name('leads.restore');
-    Route::delete('/delete/{id}', [LeadController::class, 'delete'])->name('leads.delete');
+    Route::delete('/permanentdelete/{id}', [LeadController::class, 'permanentdelete'])->name('leads.permanentdelete');
 
     // Leadboard
     Route::get('/leadboards', [LeadBoardController::class, 'index'])->name('leadboard');
@@ -155,7 +155,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('/', [HomeController::class, 'root'])->name('dash');
-Route::get('{any}', [HomeController::class, 'index'])->name('index');
+// Route::get('{any}', [HomeController::class, 'index'])->name('index');
 
 
 Route::get('/clear-cache', function () {
