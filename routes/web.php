@@ -159,7 +159,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('/', [HomeController::class, 'root'])->name('dash');
-Route::get('{any}', [HomeController::class, 'index'])->name('index');
+// Route::get('{any}', [HomeController::class, 'index'])->name('index');
 
 
 Route::get('/clear-cache', function () {
