@@ -69,7 +69,7 @@ class LeadController extends Controller
     }
     public function update(Request $request, $id)
     {
-        // Remove the unnecessary dd($request->all());
+        //  dd($request->all());
 
         $api = new CommonModel();
         $data_arr = $request->except('_token');
@@ -79,6 +79,7 @@ class LeadController extends Controller
         // Assuming postAPI returns the API response as an associative array
         $apiResult = $api->postAPI("lead/update", $data);
 
+        // dd($apiResult);
         // Check if the API call was successful based on the API response
         if ($apiResult && $apiResult['status'] === 'success') {
 

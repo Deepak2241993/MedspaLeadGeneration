@@ -13,6 +13,7 @@
     <link href="{{ URL::asset('build/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}"
         rel="stylesheet" type="text/css" />
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('build/libs/toastr/build/toastr.min.css') }}">
     <style>
         .task {
             cursor: move;
@@ -55,6 +56,18 @@
             text-align: center;
             color: #6c757d;
         }
+        /* Custom CSS for SweetAlert2 */
+.swal2-container {
+    z-index: 9999; /* Ensure it's on top of other elements */
+}
+
+.swal2-toast-top-right {
+    position: fixed;
+    top: 10px; /* Distance from the top */
+    right: 10px; /* Distance from the right */
+    margin: 0;
+}
+
     </style>
 @endsection
 
@@ -124,7 +137,7 @@
                                         </div>
                                         <div class="b-p-body">
                                             <div class="b-p-tasks" id="drag-container-{{ $column['_id'] }}"
-                                                data-column-id="{{ $column['_id'] }}">
+                                                data-column-id="{{ $column['_id'] }}" data-column-name="{{ $column['name'] }}">
                                                 @php
                                                     $hasTasks = false;
                                                 @endphp
@@ -209,8 +222,7 @@
             </div>
         </div>
         <!-- Edit Column Modal -->
-        <div class="modal fade" id="editColumnModal" tabindex="-1" aria-labelledby="editColumnModalLabel"
-            aria-hidden="true">
+        <div class="modal fade" id="editColumnModal" tabindex="-1" aria-labelledby="editColumnModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -218,19 +230,17 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form id="editColumnForm" method="POST" action="{{ route('lead-status.update') }}">
+                        <form id="editColumnForm">
                             @csrf
                             <input type="hidden" id="editColumnId" name="columnId">
                             <input type="hidden" id="editColumnPosition" name="columnPosition">
                             <div class="form-group">
                                 <label for="editColumnName">Column Name</label>
-                                <input type="text" class="form-control" id="editColumnName" name="columnName"
-                                    required>
+                                <input type="text" class="form-control" id="editColumnName" name="columnName" required>
                             </div>
                             <div class="form-group">
                                 <label for="editColumnColor">Column Color</label>
-                                <input type="color" class="form-control" id="editColumnColor" name="columnColor"
-                                    required>
+                                <input type="color" class="form-control" id="editColumnColor" name="columnColor" required>
                             </div>
                             <button type="submit" class="btn btn-primary">Save Changes</button>
                         </form>
@@ -238,7 +248,6 @@
                 </div>
             </div>
         </div>
-
     @endsection
 
     @section('scripts')
@@ -263,14 +272,19 @@
         <script src="{{ URL::asset('build/js/pages/datatables.init.js') }}"></script>
         <!-- App js -->
         <script src="{{ URL::asset('build/js/app.js') }}"></script>
+        <!-- toastr plugin -->
+        <script src="{{ URL::asset('build/libs/toastr/build/toastr.min.js') }}"></script>
+
+        <!-- toastr init -->
+        <script src="{{ URL::asset('build/js/pages/toastr.init.js') }}"></script>
         <!-- Dragula for drag and drop functionality -->
         <script src="https://cdn.jsdelivr.net/npm/dragula@3.7.3/dist/dragula.min.js"></script>
 
-        <script>
+        {{-- <script>
             document.addEventListener('DOMContentLoaded', function() {
                 var containers = Array.from(document.querySelectorAll('.b-p-tasks'));
                 var drake = dragula(containers);
-
+        
                 function updateEmptyMessages() {
                     containers.forEach(function(container) {
                         var hasTasks = container.querySelector('.task-card');
@@ -282,45 +296,145 @@
                         }
                     });
                 }
-
+        
                 updateEmptyMessages();
-
+        
                 drake.on('drag', function(el) {
                     el.style.opacity = '0.5'; // Make the dragged item slightly transparent
                 });
-
+        
                 drake.on('dragend', function(el) {
                     el.style.opacity = ''; // Reset the opacity
                     updateEmptyMessages();
                 });
-
+        
                 drake.on('drop', function(el, target) {
                     var task_id = el.getAttribute('data-task-id');
                     var status = target.getAttribute('data-column-id');
-
+                    var column_name = target.getAttribute('data-column-name');
+        
                     $.ajax({
                         url: "{{ route('leadboards.update_index') }}",
                         method: 'POST',
                         data: {
                             _token: "{{ csrf_token() }}",
                             task_id: task_id,
-                            status: status
+                            status: status,
+                            column_name: column_name
                         },
                         success: function(response) {
                             if (response.success) {
-                                console.log('Task updated successfully');
-                                updateEmptyMessages();
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Task Updated',
+                                    text: 'Task status updated successfully',
+                                    timer: 2000, // Display for 2 seconds
+                                    showConfirmButton: false,
+                                    customClass: {
+                                    container: 'swal2-toast-top-right' // Apply custom class
+                                    }
+                                }).then(() => {
+                                    updateEmptyMessages();
+                                });
                             } else {
-                                console.error('Failed to update task status:', response.message);
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Task Updated',
+                                    text: 'Task status updated successfully',
+                                    timer: 2000, // Display for 2 seconds
+                                    showConfirmButton: false,
+                                    customClass: {
+                                    container: 'swal2-toast-top-right' // Apply custom class
+                                    }
+                                });
                             }
                         },
                         error: function(xhr, status, error) {
-                            console.error('Error:', error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'An error occurred: ' + error,
+                            });
                         }
                     });
                 });
             });
+        </script> --}}
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var containers = Array.from(document.querySelectorAll('.b-p-tasks'));
+                var drake = dragula(containers);
+        
+                function updateEmptyMessages() {
+                    containers.forEach(function(container) {
+                        var hasTasks = container.querySelector('.task-card');
+                        var noTasksMessage = container.querySelector('.no-tasks-message');
+                        if (hasTasks) {
+                            if (noTasksMessage) noTasksMessage.style.display = 'none';
+                        } else {
+                            if (noTasksMessage) noTasksMessage.style.display = 'block';
+                        }
+                    });
+                }
+        
+                updateEmptyMessages();
+        
+                drake.on('drag', function(el) {
+                    el.style.opacity = '0.5'; // Make the dragged item slightly transparent
+                });
+        
+                drake.on('dragend', function(el) {
+                    el.style.opacity = ''; // Reset the opacity
+                    updateEmptyMessages();
+                });
+        
+                drake.on('drop', function(el, target) {
+                    var task_id = el.getAttribute('data-task-id');
+                    var status = target.getAttribute('data-column-id');
+                    var column_name = target.getAttribute('data-column-name');
+        
+                    $.ajax({
+                        url: "{{ route('leadboards.update_index') }}",
+                        method: 'POST',
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            task_id: task_id,
+                            status: status,
+                            column_name: column_name
+                        },
+                        success: function(response) {
+                            toastr["success"]("Task status updated successfully");
+        
+                            updateEmptyMessages();
+                        },
+                        error: function(xhr, status, error) {
+                            toastr["error"]("An error occurred: " + error);
+                        }
+                    });
+                });
+            });
+        
+            toastr.options = {
+                "closeButton": false,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": false,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": 300,
+                "hideDuration": 1000,
+                "timeOut": 5000,
+                "extendedTimeOut": 1000,
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };
         </script>
+        
+        
+        
         <script>
             $(document).ready(function() {
                 $('#addColumnForm').submit(function(e) {
@@ -417,5 +531,62 @@
             
 
         </script>
+        <script>
+            $(document).ready(function() {
+                    $('#editColumnForm').on('submit', function(e) {
+                        e.preventDefault();
+
+                        var formData = $(this).serialize();
+                        var url = "{{ route('lead-status.update') }}"; // Your form action URL
+
+                        $.ajax({
+                            type: 'POST',
+                            url: url,
+                            data: formData,
+                            success: function(response) {
+                                if (response.success) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Success',
+                                        text: response.message,
+                                        position: 'top-end',
+                                        showConfirmButton: false,
+                                        timer: 1500
+                                    });
+
+                                    $('#editColumnModal').modal('hide');
+
+                                    // Optionally, refresh or update the part of your page that shows the column data
+                                    // location.reload(); // This will reload the entire page
+                                    // Or use an AJAX call to fetch and update only the relevant part of your page
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        text: response.message,
+                                        position: 'top-end',
+                                        showConfirmButton: false,
+                                        timer: 1500
+                                    });
+
+                                    // Log the full API response for debugging
+                                    console.error(response.api_response);
+                                }
+                            },
+                            error: function(xhr) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'Something went wrong!',
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                            }
+                        });
+                    });
+                });
+
+            </script>
 
     @endsection

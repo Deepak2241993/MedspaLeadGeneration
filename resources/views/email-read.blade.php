@@ -246,6 +246,14 @@
     @section('scripts')
         <!--tinymce js-->
         <script src="{{ URL::asset('build/libs/tinymce/tinymce.min.js') }}"></script>
+        <script>
+            tinymce.init({
+                selector: '#editor',
+                plugins: 'code',
+                toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | code',
+                height: 300
+            });
+        </script>
 
         <!-- init js -->
         <script src="{{ URL::asset('build/js/pages/form-editor.init.js') }}"></script>

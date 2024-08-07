@@ -49,12 +49,6 @@ class LeadStatusSettingController extends Controller
         ], 500);
     }
 
-
-
-
-
-    
-
     public function edit(Request $request, $id)
     {
         $api = new CommonModel();
@@ -73,32 +67,76 @@ class LeadStatusSettingController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        $type = LeadStatus::findOrFail($id);
-        $oldPosition = $type->priority;
-        $newPosition = $request->priority;
+        // dd($request->all());
+        $api = new CommonModel();
+        
+        // Extract and map input data to the API format
+        $data_arr = $request->except('_token');
+        $mapped_data = [
+            '_id' => $data_arr['columnId'],
+            'label_color' => str_replace('#', '', $data_arr['columnColor']),
+            'priority' => $data_arr['columnPosition'],
+            'name' => $data_arr['columnName']
+        ];
+        $data = json_encode($mapped_data);
 
-        if ($oldPosition < $newPosition) {
+        // Assuming postAPI returns the API response as an associative array
+        try {
+            $apiResult = $api->postAPI("leadboard/status/update", $data);
+            
+            // Log the API response for debugging
+            Log::info('API Response:', ['response' => $apiResult]);
 
-            LeadStatus::where('priority', '>', $oldPosition)
-                ->where('priority', '<=', $newPosition)
-                ->orderBy('priority', 'asc')
-                ->decrement('priority');
-        } else if ($oldPosition > $newPosition) {
+            // Check if the API call was successful based on the API response
+            if (isset($apiResult['status']) && $apiResult['status'] === 'success') {
+                return response()->json(['success' => true, 'message' => 'Lead updated successfully']);
+            } else {
+                // Handle the case where the API call did not return success
+                $errorMessage = isset($apiResult['message']) ? $apiResult['message'] : 'Failed to update lead via API';
+                return response()->json([
+                    'success' => false,
+                    'message' => $errorMessage,
+                    'api_response' => $apiResult // Include the full API response for debugging
+                ]);
+            }
+        } catch (\Exception $e) {
+            // Log any exceptions that occur
+            Log::error('API Request Failed:', ['error' => $e->getMessage()]);
 
-            LeadStatus::where('priority', '<', $oldPosition)
-                ->where('priority', '>=', $newPosition)
-                ->orderBy('priority', 'asc')
-                ->increment('priority');
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while updating the lead.',
+                'error' => $e->getMessage()
+            ]);
         }
 
-        $type->type = $request->type;
-        $type->label_color = $request->label_color;
-        $type->priority = $request->priority;
-        $type->save();
 
-        return Reply::success(__('messages.updateSuccess'));
+        // $type = LeadStatus::findOrFail($id);
+        // $oldPosition = $type->priority;
+        // $newPosition = $request->priority;
+
+        // if ($oldPosition < $newPosition) {
+
+        //     LeadStatus::where('priority', '>', $oldPosition)
+        //         ->where('priority', '<=', $newPosition)
+        //         ->orderBy('priority', 'asc')
+        //         ->decrement('priority');
+        // } else if ($oldPosition > $newPosition) {
+
+        //     LeadStatus::where('priority', '<', $oldPosition)
+        //         ->where('priority', '>=', $newPosition)
+        //         ->orderBy('priority', 'asc')
+        //         ->increment('priority');
+        // }
+
+        // $type->type = $request->type;
+        // $type->label_color = $request->label_color;
+        // $type->priority = $request->priority;
+        // $type->save();
+
+        // return Reply::success(__('messages.updateSuccess'));
     }
 
     public function destroy($id)

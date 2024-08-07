@@ -105,10 +105,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('leadboards/updateIndex', [LeadBoardController::class, 'updateIndex'])->name('leadboards.update_index');
 
     // Lead status settings
-    Route::get('/lead-status-settings', [LeadStatusSettingController::class, 'create'])->name('lead-status.create');
+    // Route::get('/lead-status-settings', [LeadStatusSettingController::class, 'create'])->name('lead-status.create');
     Route::post('/lead-status-settings', [LeadStatusSettingController::class, 'store'])->name('lead-status.store');
-    Route::get('/lead-status-settings/{id}/edit', [LeadStatusSettingController::class, 'edit'])->name('leadstatus.edit');
-    Route::put('/lead-status-settings', [LeadStatusSettingController::class, 'update'])->name('lead-status.update');
+    // Route::get('/lead-status-settings/{id}/edit', [LeadStatusSettingController::class, 'edit'])->name('leadstatus.edit');
+    Route::post('/lead-status-settings/update', [LeadStatusSettingController::class, 'update'])->name('lead-status.update');
     Route::post('/lead-status-settings/{id}', [LeadStatusSettingController::class, 'destroy'])->name('lead-status.destroy');
 
     // Email templates

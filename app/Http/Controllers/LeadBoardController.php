@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\CommonModel;
+use Illuminate\Support\Facades\Log;
 
 class LeadBoardController extends Controller
 {
@@ -35,61 +36,27 @@ class LeadBoardController extends Controller
     }
 
     public function updateIndex(Request $request)
-{
-    // dd($request);
-    // Instantiate CommonModel
-    $api = new CommonModel();
+    {
 
-    // Call the first API endpoint to get leadboard status list
-    $result1 = $api->getAPI('leadboard/status/list');
-    $result2 = $api->getAPI('lead/update');
+        $api = new CommonModel();
+        $status_id = $request->input('column_name');
+        $task_id = $request->input('task_id');
 
-    // dd($result2);
+        $data_arr = [
+            'status_id' => $status_id, // Include status_id
+            '_id' => $task_id          // Include _id (task_id)
+        ];
+        $data = json_encode($data_arr);
 
-    // Check if the API call was successful
-    if ($result1['status'] == 'success' && isset($result1['data'])) {
-        // Extract lead statuses from the API response
-        $leadStatuses = $result1['data'];
+        $apiResult = $api->postAPI("lead/update", $data);
 
-        // Find the lead status (board) based on the provided boardColumnId
-        $board = null;
-        foreach ($leadStatuses as $status) {
-            if ($status['_id'] == $request->boardColumnId) {
-                $board = $status;
-                break;
-            }
+        // Check if the API call was successful based on the API response
+        if (isset($apiResult['status'])  && $apiResult['status'] === 'success') {
+            return redirect()->route('leadboard')->with('success', 'Leadboad status updated successfully');
+        } else {
+            // Handle the case where the API call did not return success
+            $errorMessage = isset($apiResult['message']) ? $apiResult['message'] : 'Failed to update lead status via API';
+            return redirect()->route('leadboard')->with('error', $errorMessage);
         }
-
-        $taskIds = $request->task_id;
-        $boardColumnId = $request->status;
-
-        // Check if taskIds array is not empty
-        if (!empty($taskIds)) {
-
-            // Iterate through taskIds
-            foreach ($taskIds as $taskId) {
-                // dd($taskIds);
-                // Check if taskId is not null
-                if (!is_null($taskId)) {
-
-                    // Make the API call to capture the lead
-                    $result = $api->postAPI('lead/capture', ['lead_id' => $taskId, 'status_id' => $boardColumnId]);
-
-                    // Check if the API call was successful
-                    if ($result['status'] != 'success') {
-                        // Handle the case where the API call fails
-                        return response()->json(['status' => 'error', 'message' => 'Failed to capture lead']);
-                    }
-                }
-            }
-        }
-
-        // Return a success response
-        return response()->json(['status' => 'success']);
-    } else {
-        // Handle the case where the first API call fails or data is not available
-        return response()->json(['status' => 'error', 'message' => 'Failed to retrieve leadboard status list']);
     }
-}
-
 }
