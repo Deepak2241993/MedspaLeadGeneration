@@ -108,8 +108,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/lead-status-settings', [LeadStatusSettingController::class, 'create'])->name('lead-status.create');
     Route::post('/lead-status-settings', [LeadStatusSettingController::class, 'store'])->name('lead-status.store');
     Route::get('/lead-status-settings/{id}/edit', [LeadStatusSettingController::class, 'edit'])->name('leadstatus.edit');
-    Route::put('/lead-status-settings/{id}', [LeadStatusSettingController::class, 'update'])->name('lead-status.update');
-    Route::delete('/lead-status-settings/{id}', [LeadStatusSettingController::class, 'destroy'])->name('lead-status.destroy');
+    Route::put('/lead-status-settings', [LeadStatusSettingController::class, 'update'])->name('lead-status.update');
+    Route::post('/lead-status-settings/{id}', [LeadStatusSettingController::class, 'destroy'])->name('lead-status.destroy');
 
     // Email templates
     Route::get('/email-templates', [EmailTemplateController::class, 'index'])->name('email.index');
@@ -155,7 +155,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('/', [HomeController::class, 'root'])->name('dash');
-// Route::get('{any}', [HomeController::class, 'index'])->name('index');
+Route::get('{any}', [HomeController::class, 'index'])->name('index');
 
 
 Route::get('/clear-cache', function () {

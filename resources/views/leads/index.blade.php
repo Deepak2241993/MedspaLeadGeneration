@@ -28,11 +28,15 @@
     @endsection
 
     @section('content')
-        <div class="content-wrapper">
+        <div class="content-wrapper mt-3 mb-2">
             <!-- Add Task Export Buttons Start -->
             <div class="d-grid d-lg-flex d-md-flex action-bar">
                 <div id="table-actions" class="flex-grow-1 align-items-center">
-
+                     <!-- Buttons for bulk actions -->
+                    <div id="bulk-actions" style="display: none;">
+                        <button id="delete-all" class="btn btn-danger">Delete All</button>
+                        <button id="send-email" class="btn btn-info">Send Email</button>
+                    </div>
                 </div>
                 <div class="btn-group mt-2 mt-lg-0 mt-md-0 ml-0 ml-lg-3 ml-md-3" role="group">
                     <a href="{{ route('leads.index') }}" class="btn btn-secondary f-14 btn-active" data-toggle="tooltip"
@@ -86,7 +90,7 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $lead['first_name'] }}</td>
                                             <td>{{ $lead['last_name'] }}</td>
-                                            <td>{{ $lead['email'] }}</td>
+                                            <td class="email-column">{{ $lead['email'] }}</td>
                                             <td>{{ $lead['phone'] }}</td>
                                             <td>{{ $lead['message'] }}</td>
                                             <td>{{ $lead['source'] }}</td>
@@ -324,6 +328,81 @@
                 $('#callModal').on('hidden.bs.modal', function() {
                     // console.log('Modal closed');
                     stopCallTimer();
+                });
+            });
+        </script>
+        <script>
+            $(document).ready(function() {
+                // Toggle checkboxes
+                $('#check-all').click(function() {
+                    $('.row-checkbox').prop('checked', this.checked);
+                    updateBulkActions();
+                });
+    
+                // Monitor checkbox changes
+                $('.row-checkbox').change(function() {
+                    updateBulkActions();
+                });
+    
+                // Update bulk actions visibility
+                function updateBulkActions() {
+                    var checkedCount = $('.row-checkbox:checked').length;
+                    if (checkedCount > 2) {
+                        $('#bulk-actions').show();
+                    } else {
+                        $('#bulk-actions').hide();
+                    }
+                }
+    
+                // Handle Delete All action
+                $('#delete-all').click(function() {
+                    if (confirm('Are you sure you want to delete the selected columns?')) {
+                        var ids = $('.row-checkbox:checked').map(function() {
+                            return $(this).data('ids');
+                        }).get();
+    
+                        $.ajax({
+                            url: '#', // Update with your delete route
+                            type: 'POST',
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                                ids: ids
+                            },
+                            success: function(response) {
+                                alert('Selected columns deleted successfully');
+                                location.reload(); // Reload the page to see the changes
+                            },
+                            error: function(xhr) {
+                                alert('Error deleting columns: ' + xhr.responseJSON.message);
+                            }
+                        });
+                    }
+                });
+    
+                // Handle Send Email action
+                $('#send-email').click(function() {
+                    var emails = $('.row-checkbox:checked').closest('tr').find('.email-column').map(function() {
+                        return $(this).text().trim(); // Extract text and trim any extra spaces
+                    }).get();
+
+                    // Display the collected email addresses in an alert
+                    // alert('Collected Emails: \n' + emails.join('\n'));
+
+    
+                    $.ajax({
+                        url: '#', // Update with your send email route
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            emails: emails
+                        },
+                        success: function(response) {
+                            alert('Emails sent successfully');
+                        },
+                        error: function(xhr) {
+                            alert('Error sending emails: ' + xhr.responseJSON.message);
+                        }
+                    });
                 });
             });
         </script>

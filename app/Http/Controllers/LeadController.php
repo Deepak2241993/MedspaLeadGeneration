@@ -16,6 +16,8 @@ class LeadController extends Controller
 
         $this->middleware('permission:view archived',['only' => ['archived']]);
         $this->middleware('permission:restore archived',['only' => ['restore']]);
+
+        // $this->middleware('permission:restore archived',['only' => ['restore']]);
     }
     public function index(Request $request)
     {

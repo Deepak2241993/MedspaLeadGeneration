@@ -5,44 +5,54 @@ namespace App\Http\Controllers;
 use App\Helper\Reply;
 use Illuminate\Http\Request;
 use App\Models\CommonModel;
+use Illuminate\Support\Facades\Log;
 
 class LeadStatusSettingController extends Controller
 {
 
-    public function create()
-    {
-        return view('lead-settings.create-status-modal');
-    }
+
     public function store(Request $request)
     {
         $api = new CommonModel();
-    
-        // Set the attributes manually
-        $api->name = $request->name;
-        $api->label_color = $request->label_color;
-    
-        // Save the model to the database
-        // (If there is no actual save operation, you might need to add it here)
-    
-        // Now that the data is saved, make the API request
-        $result = $api->postAPI('lead/status/add', $request);
-    
-        // Check the result of the API request and handle it accordingly
-        if (isset($result['status']) && $result['status'] == 'error') {
-            // If the API request fails, handle the error scenario
+        $data = [
+            'name' => $request->input('columnName'),
+            'label_color' => ltrim($request->input('columnColor'), '#')
+        ];
+        
+        if (empty($data['name']) || empty($data['label_color'])) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'API request failed',
-                'details' => $result['responseMessage'] ?? 'No additional details'
-            ], 500);
+                'message' => 'Missing required fieldsssssssss'
+            ], 400);
         }
-    
-        // If successful, return a success response
+        $data = json_encode($data);
+        $result = $api->postAPI('leadboard/status/add', $data);
+        if (isset($result['status'])) {
+            if ($result['status'] == 'success') {
+                // If successful, return a success response
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Record Saved'
+                ]);
+            } elseif ($result['status'] == 'error') {
+                // If the API request fails, handle the error scenario
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'API request failed',
+                    'details' => $result['responseMessage'] ?? 'No additional details'
+                ], 500);
+            }
+        }
         return response()->json([
-            'status' => 'success',
-            'message' => 'Record Saved'
-        ]);
+            'status' => 'error',
+            'message' => 'API response is not valid or missing status'
+        ], 500);
     }
+
+
+
+
+
     
 
     public function edit(Request $request, $id)
@@ -93,33 +103,20 @@ class LeadStatusSettingController extends Controller
 
     public function destroy($id)
     {
+        // dd($id);
 
         $api = new CommonModel();
-        $result = $api->getAPI('lead/list/0');
+        $result = $api->postAPI('leadboard/status/delete/' . $id, []);
 
-        dd($result);
+        // dd($result);
 
-        $defaultLeadStatus = LeadStatus::where('default', 0)->first();
-
-        dd($defaultLeadStatus);
-        die;
-        LeadData::where('status_id', $id)->update(['status_id' => $defaultLeadStatus->id]);
-
-        $board = LeadStatus::findOrFail($id);
-
-        $otherColumns = LeadStatus::where('priority', '>', $board->priority)
-            ->orderBy('priority', 'asc')
-            ->get();
-
-        foreach ($otherColumns as $column) {
-            $pos = LeadStatus::where('priority', $column->priority)->first();
-            $pos->priority = ($pos->priority - 1);
-            $pos->save();
+        // Check if the API call was successful based on the API response
+        if ($result && $result['status'] === 'success') {
+            return redirect()->route('leadboard')->with('success', 'Leadboad Delete successfully');
+        } else {
+            // Handle the case where the API call did not return success
+            $errorMessage = isset($result['message']) ? $result['message'] : 'Failed to delete lead via API';
+            return redirect()->route('leadboard')->with('error', $errorMessage);
         }
-
-        // UserLeadboardSetting::where('board_column_id', $id)->delete();
-        LeadStatus::destroy($id);
-
-        return Reply::success(__('messages.deleteSuccess'));
     }
 }
