@@ -9,21 +9,23 @@
     <body data-sidebar="colored">
 @endsection
 @section('content')
-    <div class="content-wrapper">
-        <!-- Add Task Export Buttons Start -->
-        <div class="d-grid d-lg-flex d-md-flex action-bar">
-            <div id="table-actions" class="flex-grow-1 align-items-center">
-
-            </div>
-            <div class="btn-group mt-2 mt-lg-0 mt-md-0 ml-0 ml-lg-3 ml-md-3" role="group">
-                <a href="{{ route('leads.index') }}" class="btn btn-secondary mb-6">Back to Leads</a>
-            </div>
-        </div>
-    </div>
+    
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
+                    <div class="row mb-2">
+                        <div class="col-md-6">
+                            
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3 float-end">
+                                <a href="{{ route('leads.index') }}" class="btn btn-primary" >
+                                    <i class="fas fa-arrow-left"></i> 
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                     @if(session('success'))
                     <div class="alert alert-success">
                         {{ session('success') }}

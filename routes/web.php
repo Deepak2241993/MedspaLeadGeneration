@@ -85,7 +85,7 @@ Route::middleware(['auth'])->group(function () {
 
 
 
-    // Route::get('/dashboard', [SuperAdminController::class, 'dashboard'])->name('super-admin.dashboard');
+    Route::get('/profile', [HomeController::class, 'profile'])->name('pages-profile');
 
     
 
@@ -94,6 +94,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/lead/{id}/edit', [LeadController::class, 'edit'])->name('leads.edit');
     Route::post('/lead/update/{id}', [LeadController::class, 'update'])->name('leads.update');
     Route::delete('/lead/{id}', [LeadController::class, 'destroy'])->name('leads.destroy');
+
+    //multi delete
+    Route::delete('/leads', [LeadController::class, 'destroyMultiple'])->name('leads.destroyMultiple');
+
 
     // Archived leads
     Route::get('/archived', [LeadController::class, 'archived'])->name('leads.archived');
@@ -155,7 +159,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('/', [HomeController::class, 'root'])->name('dash');
-// Route::get('{any}', [HomeController::class, 'index'])->name('index');
+Route::get('{any}', [HomeController::class, 'index'])->name('index');
 
 
 Route::get('/clear-cache', function () {

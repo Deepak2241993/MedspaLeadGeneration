@@ -134,6 +134,39 @@ class LeadController extends Controller
             return redirect()->route('leads.index')->with('error', $errorMessage);
         }
     }
+    public function destroyMultiple(Request $request)
+    {
+        // dd($request->all());
+        $ids = $request->input('ids', []);
+
+        if (empty($ids)) {
+            return response()->json(['message' => 'No lead IDs provided'], 400);
+        }
+
+        $api = new CommonModel();
+        $errors = [];
+        $successCount = 0;
+
+        foreach ($ids as $id) {
+            $apiResult = $api->postAPI('lead/archive/' . $id, []);
+
+            // Check if the API call was successful based on the API response
+            if ($apiResult && $apiResult['status'] === 'success') {
+                $successCount++;
+            } else {
+                // Handle the case where the API call did not return success
+                $errorMessage = isset($apiResult['message']) ? $apiResult['message'] : 'Failed to delete lead via API';
+                $errors[] = ['id' => $id, 'message' => $errorMessage];
+            }
+        }
+
+        if ($successCount > 0) {
+            return response()->json(['message' => 'Selected columns deleted successfully'], 200);
+        } else {
+            return response()->json(['message' => 'Error deleting columns', 'errors' => $errors], 500);
+        }
+    }
+
     public function archived(Request $request)
     {
         $api = new CommonModel();

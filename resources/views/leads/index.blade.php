@@ -16,7 +16,7 @@
     <!-- Responsive datatable examples -->
     <link href="{{ URL::asset('build/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}"
         rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="{{ URL::asset('build/libs/toastr/build/toastr.min.css') }}">    
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('build/libs/toastr/build/toastr.min.css') }}">
 @endsection
 
 @section('page-title')
@@ -29,28 +29,31 @@
     @endsection
 
     @section('content')
-        <div class="content-wrapper mt-3 mb-2">
-            <!-- Add Task Export Buttons Start -->
-            <div class="d-grid d-lg-flex d-md-flex action-bar">
-                <div id="table-actions" class="flex-grow-1 align-items-center">
-                     <!-- Buttons for bulk actions -->
-                    <div id="bulk-actions" style="display: none;">
-                        <button id="delete-all" class="btn btn-danger">Delete All</button>
-                        <button id="send-email" class="btn btn-info">Send Email</button>
-                    </div>
-                </div>
-                <div class="btn-group mt-2 mt-lg-0 mt-md-0 ml-0 ml-lg-3 ml-md-3" role="group">
-                    <a href="{{ route('leads.index') }}" class="btn btn-secondary f-14 btn-active" data-toggle="tooltip"
-                        data-original-title="Table View"><i class="uim uim-grip-horizontal-line"></i></a>
-                    <a href="{{ route('leadboard') }}" class="btn btn-secondary f-14" data-toggle="tooltip"
-                        data-original-title="Lead Status"><i class=" uim uim-columns"></i></a>
-                </div>
-            </div>
-        </div>
+
         <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col-md-6">
+                                <div id="bulk-actions" style="display: none;">
+                                    <button id="delete-all" class="btn btn-danger">Delete All</button>
+                                    <button id="send-email" class="btn btn-info">Send Email</button>
+                                </div>
+
+
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3 float-end">
+                                    <a href="{{ route('leads.index') }}" class="btn btn-primary">
+                                        <i class="fas fa-bars"></i></i>
+                                    </a>
+                                    <a href="{{ route('leadboard') }}" class="btn btn-primary">
+                                        <i class="uim uim-columns"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                         @if (isset($error_message))
                             <div class="alert alert-danger">
                                 {{ $error_message }}
@@ -79,7 +82,7 @@
                                     </tr>
                                 </thead>
                                 @php
-                                //  dd($leads) ;  
+                                    //  dd($leads) ;
                                 @endphp
                                 <tbody>
                                     @forelse ($leads as $lead)
@@ -101,12 +104,16 @@
                                             <td>{{ $lead['source'] }}</td>
                                             <td>
                                                 <div class="btn-group">
-                                                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        {{ $lead['status_name'] }} 
+                                                    <button class="btn btn-primary dropdown-toggle" type="button"
+                                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                                        {{ $lead['status_name'] }}
                                                     </button>
                                                     <div class="dropdown-menu">
                                                         @foreach ($statuses as $status)
-                                                            <a class="dropdown-item change-status" href="#" data-lead-id="{{ $lead['_id'] }}" data-status-id="{{ $status['_id'] }}" data-column-name="{{ $status['name'] }}">
+                                                            <a class="dropdown-item change-status" href="#"
+                                                                data-lead-id="{{ $lead['_id'] }}"
+                                                                data-status-id="{{ $status['_id'] }}"
+                                                                data-column-name="{{ $status['name'] }}">
                                                                 {{ $status['name'] }}
                                                             </a>
                                                         @endforeach
@@ -361,12 +368,12 @@
                     $('.row-checkbox').prop('checked', this.checked);
                     updateBulkActions();
                 });
-    
+
                 // Monitor checkbox changes
                 $('.row-checkbox').change(function() {
                     updateBulkActions();
                 });
-    
+
                 // Update bulk actions visibility
                 function updateBulkActions() {
                     var checkedCount = $('.row-checkbox:checked').length;
@@ -376,32 +383,70 @@
                         $('#bulk-actions').hide();
                     }
                 }
-    
+
                 // Handle Delete All action
-                $('#delete-all').click(function() {
-                    if (confirm('Are you sure you want to delete the selected columns?')) {
-                        var ids = $('.row-checkbox:checked').map(function() {
-                            return $(this).data('ids');
-                        }).get();
-    
-                        $.ajax({
-                            url: '#', // Update with your delete route
-                            type: 'POST',
-                            data: {
-                                _token: '{{ csrf_token() }}',
-                                ids: ids
-                            },
-                            success: function(response) {
-                                alert('Selected columns deleted successfully');
-                                location.reload(); // Reload the page to see the changes
-                            },
-                            error: function(xhr) {
-                                alert('Error deleting columns: ' + xhr.responseJSON.message);
+                $(document).ready(function() {
+                    // Toastr options
+                    toastr.options = {
+                        "closeButton": false,
+                        "debug": false,
+                        "newestOnTop": false,
+                        "progressBar": false,
+                        "positionClass": "toast-top-right",
+                        "preventDuplicates": false,
+                        "onclick": null,
+                        "showDuration": 300,
+                        "hideDuration": 1000,
+                        "timeOut": 5000,
+                        "extendedTimeOut": 1000,
+                        "showEasing": "swing",
+                        "hideEasing": "linear",
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut"
+                    };
+
+                    // Handle Check All action
+                    $('#check-all').click(function() {
+                        $('.row-checkbox').prop('checked', this.checked);
+                    });
+
+                    // Handle Delete All action
+                    $('#delete-all').click(function() {
+                        if (confirm('Are you sure you want to delete the selected columns?')) {
+                            var ids = $('.row-checkbox:checked').map(function() {
+                                return $(this).data(
+                                'ids'); // Ensure data-ids attribute is used correctly
+                            }).get();
+
+                            if (ids.length > 0) {
+                                var url =
+                                "{{ route('leads.destroyMultiple') }}"; // Updated route name for multiple delete
+                                $.ajax({
+                                    url: url,
+                                    type: 'DELETE',
+                                    data: {
+                                        _token: '{{ csrf_token() }}',
+                                        ids: ids
+                                    },
+                                    success: function(response) {
+                                        toastr.success(
+                                            'Selected columns deleted successfully');
+                                        location
+                                    .reload(); // Reload the page to see the changes
+                                    },
+                                    error: function(xhr) {
+                                        toastr.error('Error deleting columns: ' + xhr
+                                            .responseJSON.message);
+                                    }
+                                });
+                            } else {
+                                toastr.warning('No columns selected for deletion');
                             }
-                        });
-                    }
+                        }
+                    });
                 });
-    
+
+
                 // Handle Send Email action
                 $('#send-email').click(function() {
                     var emails = $('.row-checkbox:checked').closest('tr').find('.email-column').map(function() {
@@ -411,7 +456,7 @@
                     // Display the collected email addresses in an alert
                     // alert('Collected Emails: \n' + emails.join('\n'));
 
-    
+
                     $.ajax({
                         url: '#', // Update with your send email route
                         type: 'POST',
@@ -429,10 +474,10 @@
                 });
             });
         </script>
-         <script>
+        <script>
             document.addEventListener('DOMContentLoaded', function() {
                 var statusLinks = document.querySelectorAll('.change-status');
-    
+
                 statusLinks.forEach(function(link) {
                     link.addEventListener('click', function(event) {
                         event.preventDefault();
@@ -444,7 +489,8 @@
 
                         // Create the spinner element
                         var spinner = document.createElement('div');
-                        spinner.classList.add('spinner-border', 'spinner-border-sm', 'text-warning', 'm-1');
+                        spinner.classList.add('spinner-border', 'spinner-border-sm', 'text-warning',
+                            'm-1');
                         spinner.setAttribute('role', 'status');
                         var spinnerText = document.createElement('span');
                         spinnerText.classList.add('sr-only');
@@ -453,7 +499,7 @@
 
                         // Append the spinner to the button
                         statusButton.appendChild(spinner);
-    
+
                         $.ajax({
                             url: "{{ route('leadboards.update_index') }}",
                             method: 'POST',

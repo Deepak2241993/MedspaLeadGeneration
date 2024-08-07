@@ -25,28 +25,17 @@
                                     <i class="uim uim-briefcase"></i>
                                 </span>
                             </div>
+                            <a href="{{ route('leads.index') }}">
                             <div class="flex-grow-1 overflow-hidden ms-4">
-                                <p class="text-muted text-truncate font-size-15 mb-2"> Total Leads</p>
+                                <p class="text-muted text-truncate font-size-15 mb-2"> Total Leads ({{ $leadCount }})</p>
                                 {{-- <h3 class="fs-4 flex-grow-1 mb-3">34,123.20 <span class="text-muted font-size-16">USD</span>
                                 </h3>
                                 <p class="text-muted mb-0 text-truncate"><span
                                         class="badge bg-subtle-success text-success font-size-12 fw-normal me-1"><i
                                             class="mdi mdi-arrow-top-right"></i> 2.8% Increase</span> vs last month</p> --}}
                             </div>
-                            <div class="flex-shrink-0 align-self-start">
-                                <div class="dropdown">
-                                    <a class="dropdown-toggle btn-icon border rounded-circle" href="#"
-                                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="ri-more-2-fill text-muted font-size-16"></i>
-                                    </a>
-                                    {{-- <div class="dropdown-menu dropdown-menu-end">
-                                        <a class="dropdown-item" href="#">Yearly</a>
-                                        <a class="dropdown-item" href="#">Monthly</a>
-                                        <a class="dropdown-item" href="#">Weekly</a>
-                                        <a class="dropdown-item" href="#">Today</a>
-                                    </div> --}}
-                                </div>
-                            </div>
+                        </a>
+                            
                         </div>
                     </div>
                 </div>
