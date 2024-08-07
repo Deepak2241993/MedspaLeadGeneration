@@ -16,6 +16,7 @@
     <!-- Responsive datatable examples -->
     <link href="{{ URL::asset('build/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}"
         rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('build/libs/toastr/build/toastr.min.css') }}">    
 @endsection
 
 @section('page-title')
@@ -73,11 +74,15 @@
                                         <th>Phone Number</th>
                                         <th>Text</th>
                                         <th>Source</th>
+                                        <th>Status</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
+                                @php
+                                //  dd($leads) ;  
+                                @endphp
                                 <tbody>
-                                    @forelse ($data as $lead)
+                                    @forelse ($leads as $lead)
                                         <tr>
                                             <td style="width: 60px;">
                                                 <div class="form-check font-size-16 text-center">
@@ -94,6 +99,20 @@
                                             <td>{{ $lead['phone'] }}</td>
                                             <td>{{ $lead['message'] }}</td>
                                             <td>{{ $lead['source'] }}</td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        {{ $lead['status_name'] }} 
+                                                    </button>
+                                                    <div class="dropdown-menu">
+                                                        @foreach ($statuses as $status)
+                                                            <a class="dropdown-item change-status" href="#" data-lead-id="{{ $lead['_id'] }}" data-status-id="{{ $status['_id'] }}" data-column-name="{{ $status['name'] }}">
+                                                                {{ $status['name'] }}
+                                                            </a>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+                                            </td>
                                             <td>
                                                 <a href="{{ route('leads.edit', $lead['_id']) }}"
                                                     class="btn btn-primary btn-sm">Edit</a>
@@ -172,6 +191,10 @@
         <script src="{{ URL::asset('build/js/pages/datatables.init.js') }}"></script>
         <!-- App js -->
         <script src="{{ URL::asset('build/js/app.js') }}"></script>
+        <!-- toastr plugin -->
+        <script src="{{ URL::asset('build/libs/toastr/build/toastr.min.js') }}"></script>
+        <!-- toastr init -->
+        <script src="{{ URL::asset('build/js/pages/toastr.init.js') }}"></script>
         <script>
             var callTimerInterval;
             var callStartTime;
@@ -405,5 +428,86 @@
                     });
                 });
             });
+        </script>
+         <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var statusLinks = document.querySelectorAll('.change-status');
+    
+                statusLinks.forEach(function(link) {
+                    link.addEventListener('click', function(event) {
+                        event.preventDefault();
+                        var leadId = this.getAttribute('data-lead-id');
+                        var statusId = this.getAttribute('data-status-id');
+                        var column_name = this.getAttribute('data-column-name');
+                        var leadRow = this.closest('tr');
+                        var statusButton = leadRow.querySelector('.dropdown-toggle');
+
+                        // Create the spinner element
+                        var spinner = document.createElement('div');
+                        spinner.classList.add('spinner-border', 'spinner-border-sm', 'text-warning', 'm-1');
+                        spinner.setAttribute('role', 'status');
+                        var spinnerText = document.createElement('span');
+                        spinnerText.classList.add('sr-only');
+                        spinnerText.textContent = 'Loading...';
+                        spinner.appendChild(spinnerText);
+
+                        // Append the spinner to the button
+                        statusButton.appendChild(spinner);
+    
+                        $.ajax({
+                            url: "{{ route('leadboards.update_index') }}",
+                            method: 'POST',
+                            data: {
+                                _token: "{{ csrf_token() }}",
+                                task_id: leadId,
+                                status: statusId,
+                                column_name: column_name
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    toastr.success('Lead status updated successfully');
+                                    statusButton.textContent = column_name + ' ';
+                                    var icon = document.createElement('i');
+                                    // icon.classList.add('mdi', 'mdi-chevron-down');
+                                    statusButton.appendChild(icon);
+                                } else {
+                                    toastr.success('Lead status updated successfully');
+                                    // Update the status button text without reloading
+                                    statusButton.textContent = column_name + ' ';
+                                    // Add the dropdown icon back
+                                    var icon = document.createElement('i');
+                                    // icon.classList.add('mdi', 'mdi-chevron-down');
+                                    statusButton.appendChild(icon);
+                                    // toastr.error('Failed to update lead status: ' + response.message);
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                toastr.error('An error occurred: ' + error);
+                            },
+                            complete: function() {
+                                // Remove the spinner after the request is complete
+                                spinner.remove();
+                            }
+                        });
+                    });
+                });
+            });
+            toastr.options = {
+                "closeButton": false,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": false,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": 300,
+                "hideDuration": 1000,
+                "timeOut": 5000,
+                "extendedTimeOut": 1000,
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };
         </script>
     @endsection

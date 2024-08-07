@@ -20,34 +20,64 @@ class LeadController extends Controller
         // $this->middleware('permission:restore archived',['only' => ['restore']]);
     }
     public function index(Request $request)
-    {
-        $api = new CommonModel();
-        $result = $api->getAPI('lead/list/0');
+{
+    $api = new CommonModel();
 
-        // Check if $result is null or not an array
-        if (is_array($result) && isset($result['status'])) {
-            if ($result['status'] == "success") {
-                $data = $result['data'];
+    // Fetch leads
+    $leadsResult = $api->getAPI('lead/list/0');
 
-                // Check if data is empty
-                if (empty($data)) {
-                    $message = 'No data found.';
-                } else {
-                    $message = null; // No error message if data is found
-                }
+    // Fetch statuses
+    $statusesResult = $api->getAPI('leadboard/status/list');
 
-                return view('leads.index', compact('data', 'message'));
-            } else {
-                // Handle the case where API call was successful but status is not "success"
-                $error_message = 'Failed to retrieve leads.';
-                return view('leads.index', compact('error_message'));
+    // Initialize variables for leads and statuses
+    $leads = [];
+    $statuses = [];
+    $statusMap = [];
+    $errorMessage = null;
+
+    // Handle leads result
+    if (is_array($leadsResult) && isset($leadsResult['status'])) {
+        if ($leadsResult['status'] == "success") {
+            $leads = $leadsResult['data'];
+        } else {
+            $errorMessage = 'Failed to retrieve leads.';
+        }
+    } else {
+        $errorMessage = 'Failed to retrieve data from API for leads.';
+    }
+
+    // Handle statuses result
+    if (is_array($statusesResult) && isset($statusesResult['status'])) {
+        if ($statusesResult['status'] == "success") {
+            $statuses = $statusesResult['data'];
+            // Create a map of status ID to status name
+            foreach ($statuses as $status) {
+                $statusMap[$status['_id']] = $status['name'];
             }
         } else {
-            // Handle the case where $result is null or not an array (API call failed)
-            $error_message = 'Failed to retrieve data from API.';
-            return view('leads.index', compact('error_message'));
+            $errorMessage = 'Failed to retrieve statuses.';
+        }
+    } else {
+        $errorMessage = 'Failed to retrieve data from API for statuses.';
+    }
+
+    // Map status names to leads
+    foreach ($leads as &$lead) {
+        if (isset($statusMap[$lead['status_id']])) {
+            $lead['status_name'] = $statusMap[$lead['status_id']];
+        } else {
+            $lead['status_name'] = 'Unknown Status';
         }
     }
+
+    // Check for empty data
+    if (empty($leads) && empty($statuses)) {
+        $errorMessage = 'No data found.';
+    }
+
+    return view('leads.index', compact('leads', 'statuses', 'errorMessage'));
+}
+
 
 
     public function edit($id)
