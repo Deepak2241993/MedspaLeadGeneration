@@ -37,6 +37,16 @@
                 <label for="name" class="form-label">Permission Name</label>
                 <input type="text" class="form-control" id="name" name="name" value="{{ $permission->name }}">
             </div>
+            <div class="mb-3">
+                <label>Module</label>
+                <select name="" class="form-control" multiple>
+                    <option value="lead">Lead</option>
+                    <option value="archived">Archived</option>
+                    <option value="email">Email</option>
+                    <option value="email">Message</option>
+                    <option value="email">Call</option>
+                </select>
+            </div>
             <button type="submit" class="btn btn-primary">Update</button>
         </form>
     </div>

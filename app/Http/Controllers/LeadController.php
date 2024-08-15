@@ -10,14 +10,33 @@ class LeadController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:view lead',['only' => ['index']]);
-        $this->middleware('permission:edit lead',['only' => ['edit','update']]);
-        $this->middleware('permission:delete lead',['only' => ['destroy']]);
+        $this->middleware('permission:lead_view',['only' => ['index']]);
+        $this->middleware('permission:lead_edit',['only' => ['edit','update']]);
+        $this->middleware('permission:lead_delete',['only' => ['destroy']]);
 
-        $this->middleware('permission:view archived',['only' => ['archived']]);
-        $this->middleware('permission:restore archived',['only' => ['restore']]);
+        $this->middleware('permission:archived_view',['only' => ['archived']]);
+        $this->middleware('permission:archived_restore',['only' => ['restore']]);
 
-        // $this->middleware('permission:restore archived',['only' => ['restore']]);
+        $this->middleware('permission:archived_delete',['only' => ['permanentdelete']]);
+    }
+    public function submitForm(Request $request)
+    {
+        // dd($request->all());
+        $api = new CommonModel();
+        $data_arr = $request->except('_token','receiveTextMessages','status_id');
+        $data_arr['source'] = 'Facebook';
+        $data = json_encode($data_arr);
+        // dd($data);
+        $result = $api->postAPI('lead/capture', $data);
+
+        // dd($result);
+        if (isset($result['status']) && $result['status'] == 'error') {
+            // dd($result['error']);
+            return back()->with('imperialheaders_success', $result['responseMessage']);
+        } else {
+            // dd($result['error']);
+            return back()->with('imperialheaders_success', $result['responseMessage']);
+        }
     }
     public function index(Request $request)
 {

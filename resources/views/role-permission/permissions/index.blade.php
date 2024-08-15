@@ -30,7 +30,7 @@ Roles And Permissions
     @section('content')
     @include('role-permission.nav-links')
     <div class="container mt-5">
-        @can('create permission')
+        @can('permission_create')
             <h1>Permissions <a href="{{ route('permissions.create') }}" class="btn btn-primary float-end">Create Permission</a></h1>
         @endcan
 
@@ -41,6 +41,7 @@ Roles And Permissions
                 <thead>
                     <tr>
                         <th>ID</th>
+                        <th>Module</th>
                         <th>Name</th>
                         <th>Actions</th>
                     </tr>
@@ -49,12 +50,13 @@ Roles And Permissions
                     @foreach ($permissions as $permission)
                         <tr>
                             <td>{{ $permission->id }}</td>
+                            <td>{{ $permission->module_name }}</td>
                             <td>{{ $permission->name }}</td>
                             <td>
-                                @can('edit permission')
+                                @can('permission_edit')
                                 <a href="{{ route('permissions.edit', $permission->id) }}" class="btn btn-sm btn-warning">Edit</a>
                                 @endcan
-                                @can('delete permission')
+                                @can('permission_delete')
                                 <form action="{{ route('permissions.destroy', $permission->id) }}" method="POST" style="display: inline-block;">
                                     @csrf
                                     @method('DELETE')

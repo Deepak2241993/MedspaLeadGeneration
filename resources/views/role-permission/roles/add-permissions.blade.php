@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    Role And Permission
+    Give Permissions
 @endsection
 
 @section('css')
@@ -35,7 +35,7 @@
 @endsection
 
 @section('page-title')
-    Role
+    Give Permissions
 @endsection
 
 @section('body')
@@ -45,31 +45,39 @@
 
     @section('content')
     <div class="container mt-5">
-        <h1>Role:- {{ $role->name }} 
+        <h1>Give Permissions: {{ $role->name }} 
             <a href="{{ url('roles') }}" class="btn btn-danger float-end">Back</a>
         </h1>
         <form action="{{ route('roles.update', $role->id) }}" method="POST">
             @csrf
             @method('PUT')
-           
+
             <div class="mb-3">
-                <label for="permissions" class="form-label">Permissions</label>
+                {{-- <label for="Give Permissions" class="form-label">Give Permissions</label> --}}
                 <div class="permissions-container">
-                    @foreach ($permissions as $permission)
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="permission-{{ $permission->id }}" name="permissions[]" value="{{ $permission->name }}" {{ $role->permissions->contains($permission) ? 'checked' : '' }}>
-                            <label class="form-check-label" for="permission-{{ $permission->id }}">
-                                {{ $permission->name }}
-                            </label>
+                    @foreach ($permissions->groupBy('module_name') as $moduleName => $modulePermissions)
+                        <div class="mb-3">
+                            <label class="form-label">{{ ucfirst($moduleName) }}</label>
+                            <div>
+                                @foreach ($modulePermissions as $permission)
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="permissions[]" value="{{ $permission->name }}" id="permission-{{ $permission->id }}" {{ $role->permissions->contains($permission) ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="permission-{{ $permission->id }}">
+                                            {{ ucfirst($permission->name) }}
+                                        </label>
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
                     @endforeach
                 </div>
-            </div>            
+            </div>
+                      
             <button type="submit" class="btn btn-primary">Save</button>
         </form>
-        
     </div>
-    @endsection
+@endsection
+
 
     @section('scripts')
         <!-- Required datatable js -->

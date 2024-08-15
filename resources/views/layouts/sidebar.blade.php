@@ -55,7 +55,7 @@
                         </a>
                     </li>
                 @endif
-                @can('view role')
+                @can('role_view')
                 <li>
                     <a href="{{ route('roles.index') }}" class="waves-effect">
                         <i class="fas fa-wrench"></i><span class="badge rounded-pill bg-success float-end">3</span>
@@ -65,7 +65,7 @@
                 </li>
                 @endcan
              
-                @can('view lead')
+                @can('lead_view')
                 <li>
                     <a href="{{ route('leads.index') }}" class="waves-effect">
                         <i class="fas fa-database"></i><span class="badge rounded-pill bg-success float-end"></span>
@@ -73,7 +73,7 @@
                     </a>
                 </li>
                 @endcan
-                @can('view archived')
+                @can('archived_view')
                 <li>
                     <a href="{{ route('leads.archived') }}" class="waves-effect">
                         <i class="fas fa-trash-alt"></i><span class="badge rounded-pill bg-success float-end"></span>
@@ -81,7 +81,7 @@
                     </a>
                 </li>
                 @endcan
-                @can('view emailtemplate')
+                @can('email-template_view')
                 <li>
                     <a href="{{ route('email.index') }}" class="waves-effect">
                         <i class="fas fa-envelope-open-text"></i><span
@@ -92,7 +92,7 @@
                     
                 @endcan
                
-                @can('view message')
+                @can('message_view')
                 <li>
                     <a href="{{ route('messages.index') }}" class="waves-effect">
                         <i class="fas fa-envelope"></i><span class="badge rounded-pill bg-success float-end"></span>
@@ -336,9 +336,9 @@
                             </ul>
                         </li>
                     </ul>
-                </li> 
+                </li>  --}}
 
-            </ul> --}}
+            </ul>
 
         </div>
         <!-- Sidebar -->

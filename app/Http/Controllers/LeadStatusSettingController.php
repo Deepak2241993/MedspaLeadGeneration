@@ -81,6 +81,7 @@ class LeadStatusSettingController extends Controller
             'name' => $data_arr['columnName']
         ];
         $data = json_encode($mapped_data);
+        // dd($data);
 
         // Assuming postAPI returns the API response as an associative array
         try {

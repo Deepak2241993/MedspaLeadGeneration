@@ -10,10 +10,10 @@ class EmailTemplateController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:view emailtemplate',['only' => ['index']]);
-        $this->middleware('permission:create emailtemplate',['only' => ['create', 'store']]);
-        $this->middleware('permission:edit emailtemplate',['only' => ['edit','update']]);
-        $this->middleware('permission:delete emailtemplate',['only' => ['destroy']]);
+        $this->middleware('permission:email-template_view',['only' => ['index']]);
+        $this->middleware('permission:email-template_create',['only' => ['create', 'store']]);
+        $this->middleware('permission:email-template_edit',['only' => ['edit','update']]);
+        $this->middleware('permission:email-template_delete',['only' => ['destroy']]);
 
     }
     public function index(Request $request)

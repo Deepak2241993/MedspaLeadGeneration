@@ -9,6 +9,7 @@ use App\Http\Controllers\LeadStatusSettingController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TwilioController;
 use App\Http\Controllers\EmailTemplateController;
+use App\Http\Controllers\EmailSendController;
 use App\Http\Controllers\CallController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\RolePermissionController;
@@ -30,6 +31,19 @@ use App\Http\Controllers\UserController;
 
 
 Auth::routes();
+
+Route::get('/', function () {
+    $dynamicStatusId = "To Do";
+    return view('mainform', compact('dynamicStatusId'));
+    // return view('landingpage.welcome');
+});
+Route::get('/puser', function () {
+    return view('puser');
+});
+
+
+
+Route::post('/submit-form', [LeadController::class, 'submitForm'])->name('submit-form');
 
 Route::get('/roles', function () {
     // Your route logic here
@@ -126,6 +140,11 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/lead/permanentdeleteAll', [LeadController::class, 'permanentdeleteAll'])->name('leads.permanentdeleteAll');
 
+    //Email Send 
+    // Route::post('/email-send', [EmailSendController::class, 'index'])->name('emails.index');
+    Route::match(['post', 'get'], '/email-send', [EmailSendController::class, 'index'])->name('emails.index');
+    Route::post('/email-send/sendEmails', [EmailSendController::class, 'sendEmails'])->name('emails.sendEmails');
+
     // Twilio integration
     Route::post('/make-call', [TwilioController::class, 'makeCall'])->name('make-call');
     Route::post('/hold-call', [TwilioController::class, 'holdCall'])->name('hold-call');
@@ -150,6 +169,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Mess
     Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');
+    Route::get('/load-more-leads', [MessageController::class, 'loadMoreLeads']);
     Route::post('/messages/send', [MessageController::class, 'sendMessage'])->name('messages.send');
     Route::get('/messages/receive', [MessageController::class, 'receiveMessage'])->name('messages.receive');
     Route::get('/sendPusher', [MessageController::class, 'sendpusher'])->name('messages.sendPusher');
@@ -158,7 +178,7 @@ Route::middleware(['auth'])->group(function () {
 
 });
 
-Route::get('/', [HomeController::class, 'root'])->name('dash');
+Route::get('/dashboad', [HomeController::class, 'root'])->name('dash');
 // Route::get('{any}', [HomeController::class, 'index'])->name('index');
 
 

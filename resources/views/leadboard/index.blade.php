@@ -56,6 +56,9 @@
             text-align: center;
             color: #6c757d;
         }
+        .border-grey {
+            background: #000000;
+        }
         /* Custom CSS for SweetAlert2 */
 .swal2-container {
     z-index: 9999; /* Ensure it's on top of other elements */
@@ -78,27 +81,27 @@
 
     @section('content')
         <div class="content-wrapper">
-            <div class="d-grid d-lg-flex d-md-flex align-items-center action-bar mt-5">
+            <div class="d-grid d-lg-flex d-md-flex align-items-center action-bar">
                 <div id="table-actions" class="flex-grow-1">
-                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                         data-bs-target="#addColumnModal">
                         <i class="mdi mdi-plus-box"></i>
                         Add Status Column
                     </button>
                 </div>
-                <div class="btn-group mt-2 mt-lg-0 mt-md-0 ml-0 ml-lg-3 ml-md-3" role="group">
-                    <a href="{{ route('leads.index') }}" class="btn btn-secondary btn-active" data-bs-toggle="tooltip"
-                        data-bs-original-title="Table View">
-                        <i class="uim uim-grip-horizontal-line"></i>
-                    </a>
-                    <a href="{{ route('leadboard') }}" class="btn btn-secondary" data-bs-toggle="tooltip"
-                        data-bs-original-title="Lead Status">
-                        <i class="uim uim-columns"></i>
-                    </a>
+                <div class="col-md-6">
+                    <div class="mb-3 float-end">
+                        <a href="{{ route('leads.index') }}" class="btn btn-primary">
+                            <i class="fas fa-bars"></i></i>
+                        </a>
+                        <a href="{{ route('leadboard') }}" class="btn btn-primary">
+                            <i class="uim uim-columns"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
 
-            <div class="w-task-board-box px-4 py-2 bg-white mt-2">
+            <div class="w-task-board-box px-4 py-2 bg-white ">
                 <div class="w-task-board-panel d-flex" id="taskboard-columns">
                     <div class="container mt-5">
                         <div class="row">

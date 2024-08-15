@@ -32,8 +32,8 @@
     @include('role-permission.nav-links')
     <div class="container mt-5">
         {{-- <h1>Roles <a href="{{ url('roles') }}" class="btn btn-danger float-end">Back</a></h1> --}}
-        @can('create role')
-           <a href="{{ route('roles.create') }}" class="btn btn-primary float-end {{ auth()->user()->can('create role') ? '' : 'd-none' }}">Add Role</a>
+        @can('role_create')
+           <a href="{{ route('roles.create') }}" class="btn btn-primary float-end {{ auth()->user()->can('role_create') ? '' : 'd-none' }}">Add Role</a>
         @endcan
         <table class="table">
             <thead>
@@ -45,24 +45,31 @@
             <tbody>
                 @foreach ($roles as $role)
                     <tr>
-                        <td>{{ $role->name }}</td>
                         <td>
-                            @can('Add Edit Role Permission')
-                            <a href="{{ route('roles.give-permissions', ['role' => $role->id]) }}" class="btn btn-info">Add / Edit Role Permission</a>
-                            @endcan
-                            @can('edit role')
-                            <a href="{{ route('roles.edit', $role->id) }}" class="btn btn-warning">Edit</a>
-                            @endcan
-                            @can('delete role')
-                            <form action="{{ route('roles.destroy', $role->id) }}" method="POST" style="display:inline-block;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger">Delete</button>
-                            </form>
-                                
-                            @endcan
-                           
+                            @if($role->name === 'Super Admin' && auth()->user()->hasRole('Super Admin'))
+                                {{ $role->name }}
+                            @elseif($role->name !== 'Super Admin')
+                                {{ $role->name }}
+                            @endif
                         </td>
+                        <td>
+                            @if($role->name !== 'Super Admin' || auth()->user()->hasRole('Super Admin'))
+                                @can('role_permissiontorole')
+                                <a href="{{ route('roles.give-permissions', ['role' => $role->id]) }}" class="btn btn-info">Add / Edit Role Permission</a>
+                                @endcan
+                                @can('role_edit')
+                                <a href="{{ route('roles.edit', $role->id) }}" class="btn btn-warning">Edit</a>
+                                @endcan
+                                @can('role_delete')
+                                <form action="{{ route('roles.destroy', $role->id) }}" method="POST" style="display:inline-block;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                                @endcan
+                            @endif
+                        </td>
+                        
                     </tr>
                 @endforeach
             </tbody>

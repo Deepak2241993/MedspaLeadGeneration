@@ -36,7 +36,7 @@
                     <div class="card-body">
                         <div class="row mb-2">
                             <div class="col-md-6">
-                                <div id="bulk-actions" style="display: none;">
+                                <div id="bulk-actions" >
                                     <button id="delete-all" class="btn btn-danger">Delete All</button>
                                     <button id="send-email" class="btn btn-info">Send Email</button>
                                 </div>
@@ -121,19 +121,31 @@
                                                 </div>
                                             </td>
                                             <td>
+                                                @can('lead_edit')
+                                                    
                                                 <a href="{{ route('leads.edit', $lead['_id']) }}"
                                                     class="btn btn-primary btn-sm">Edit</a>
+                                                @endcan
+                                                @can('lead_delete')
+                                                    
                                                 <form action="{{ route('leads.destroy', $lead['_id']) }}" method="POST"
                                                     style="display:inline;">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                                 </form>
+                                                @endcan
+                                                @can('lead_call')
+                                                    
                                                 <a class="btn btn-success btn-sm btn-call"
                                                     data-phone="{{ $lead['phone'] }}"
                                                     onclick="makeCall(event, '{{ $lead['phone'] }}')">Call</a>
+                                                @endcan
+                                                @can('lead_message')
+                                                    
                                                 <a class="btn btn-info btn-sm btn-sms" data-phone="{{ $lead['phone'] }}"
                                                     onclick="sendMessage(event, '{{ $lead['phone'] }}')">Message</a>
+                                                @endcan
                                             </td>
                                         </tr>
                                     @empty
@@ -377,11 +389,11 @@
                 // Update bulk actions visibility
                 function updateBulkActions() {
                     var checkedCount = $('.row-checkbox:checked').length;
-                    if (checkedCount > 2) {
-                        $('#bulk-actions').show();
-                    } else {
-                        $('#bulk-actions').hide();
-                    }
+                    // if (checkedCount > 0) {
+                    //     $('#bulk-actions').show();
+                    // } else {
+                    //     $('#bulk-actions').hide();
+                    // }
                 }
 
                 // Handle Delete All action
@@ -458,15 +470,16 @@
 
 
                     $.ajax({
-                        url: '#', // Update with your send email route
+                        url: '{{ route("emails.index") }}', // Update with your send email route
                         type: 'POST',
                         data: {
                             _token: '{{ csrf_token() }}',
                             emails: emails
                         },
-                        success: function(response) {
-                            alert('Emails sent successfully');
-                        },
+                       success: function(response) {
+        // Redirect to the emails.index page with email data as query parameters
+        window.location.href = '{{ route("emails.index") }}' + '?emails=' + encodeURIComponent(emailList);
+      },
                         error: function(xhr) {
                             alert('Error sending emails: ' + xhr.responseJSON.message);
                         }

@@ -7,6 +7,9 @@ use Twilio\Rest\Client;
 use App\Models\Message;
 use App\Events\MessageSent;
 use App\Models\CommonModel;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Log;
+
 
 class MessageController extends Controller
 {
@@ -15,197 +18,331 @@ class MessageController extends Controller
     public function __construct()
     {
         // role & permission
-        $this->middleware('permission:view message',['only' => ['index']]);
+        $this->middleware('permission:message_view', ['only' => ['index']]);
         $this->client = new Client(env('TWILIO_SID'), env('TWILIO_AUTH_TOKEN'));
     }
 
     public function index()
     {
         $api = new CommonModel();
-        $result = $api->getAPI('lead/list/0');
+        $result = $api->getAPI('lead/list/0'); // Ensure the API endpoint supports offset/limit if needed
 
         if ($result['status'] == "success") {
             $leaddata = collect($result['data']);
-            // $messages = Message::orderBy('created_at', 'asc')->get();
             return view('messages.index', ['leaddata' => $leaddata]);
         } else {
-            // Handle the case where the API request is not successful
-            // You can redirect, return an error view, or provide a fallback
-            return view('messages.index', ['messages' => [], 'leaddata' => collect([])]);
+            return view('messages.index', ['leaddata' => collect([])]);
         }
-        // $messages = Message::orderBy('created_at', 'asc')->get();
-        // return view('messages.index', compact('messages'));
     }
-//     public function getMessages($currentUserPhone)
-// {
-//     // Initialize Twilio client with your credentials
-//     $client = new Client(env('TWILIO_SID'), env('TWILIO_AUTH_TOKEN'));
+    public function loadMoreLeads(Request $request)
+    {
+        $page = $request->get('page', 1);
+        $api = new CommonModel();
+        $result = $api->getAPI("lead/list/{$page}"); // Adjust the API call if needed to support paging
 
-//     // Format the phone number
-//     $currentUser = '+91' . $currentUserPhone;
-
-//     // Fetch messages where the user is the recipient
-//     $receivedMessages = $client->messages->read([
-//         'to' => $currentUser,
-//         'limit' => 20,
-//     ]);
-
-//     // Fetch messages where the user is the sender
-//     $sentMessages = $client->messages->read([
-//         'from' => $currentUser,
-//         'limit' => 20,
-//     ]);
-
-//     // Fetch call records where the user is the recipient or sender
-//     $receivedCalls = $client->calls->read([
-//         'to' => $currentUser,
-//         'limit' => 2,
-//     ]);
-
-//     $sentCalls = $client->calls->read([
-//         'from' => $currentUser,
-//         'limit' => 2,
-//     ]);
+        if ($result['status'] == "success") {
+            return response()->json(['leads' => $result['data']]);
+        } else {
+            return response()->json(['leads' => []]);
+        }
+    }
 
 
-//     // Combine both received and sent messages
-//     $messages = array_merge($receivedMessages, $sentMessages);
-//     $calls = array_merge($receivedCalls, $sentCalls);
+    //     public function getMessages($currentUserPhone)
+    // {
+    //     // Initialize Twilio client with your credentials
+    //     $client = new Client(env('TWILIO_SID'), env('TWILIO_AUTH_TOKEN'));
 
-//     // print_r($calls); die;
+    //     // Format the phone number
+    //     $currentUser = '+91' . $currentUserPhone;
 
-//     // Prepare an array to hold formatted messages
-//     $formattedMessages = [];
+    //     // Fetch messages where the user is the recipient
+    //     $receivedMessages = $client->messages->read([
+    //         'to' => $currentUser,
+    //         'limit' => 20,
+    //     ]);
 
-//     foreach ($messages as $message) {
-//         // Determine if the user is the sender or recipient
-//         $direction = $message->from == $currentUser ? 'outgoing' : 'incoming';
+    //     // Fetch messages where the user is the sender
+    //     $sentMessages = $client->messages->read([
+    //         'from' => $currentUser,
+    //         'limit' => 20,
+    //     ]);
 
-//         $formattedMessages[] = [
-//             'sid' => $message->sid,
-//             'from' => $message->from,
-//             'to' => $message->to,
-//             'body' => $message->body,
-//             'direction' => $direction,
-//             'formatted_created_at' => $message->dateSent ? $message->dateSent->format('Y-m-d H:i:s') : null,
-//         ];
-//     }
-//      // Format calls
-//      foreach ($calls as $call) {
-//         $direction = $call->from == $currentUser ? 'outgoing' : 'incoming';
-//         $duration = gmdate("H:i:s", $call->duration);
+    //     // Fetch call records where the user is the recipient or sender
+    //     $receivedCalls = $client->calls->read([
+    //         'to' => $currentUser,
+    //         'limit' => 2,
+    //     ]);
 
-//         $formattedMessages[] = [
-//             'type' => 'call',
-//             'sid' => $call->sid,
-//             'from' => $call->from,
-//             'to' => $call->to,
-//             'duration' => $duration,
-//             'recording_url' => $call->recordings ? $call->recordings->fetch()->uri : null,
-//             'direction' => $direction,
-//             'formatted_created_at' => $call->startTime ? $call->startTime->format('Y-m-d H:i:s') : null,
-//         ];
-//     }
+    //     $sentCalls = $client->calls->read([
+    //         'from' => $currentUser,
+    //         'limit' => 2,
+    //     ]);
 
-//     // Optionally, you can sort messages by date if needed
-//     usort($formattedMessages, function($a, $b) {
-//         return strtotime($b['formatted_created_at']) - strtotime($a['formatted_created_at']);
-//     });
 
-//     return response()->json($formattedMessages);
-// }
+    //     // Combine both received and sent messages
+    //     $messages = array_merge($receivedMessages, $sentMessages);
+    //     $calls = array_merge($receivedCalls, $sentCalls);
 
-public function getMessages($currentUserPhone)
+    //     // print_r($calls); die;
+
+    //     // Prepare an array to hold formatted messages
+    //     $formattedMessages = [];
+
+    //     foreach ($messages as $message) {
+    //         // Determine if the user is the sender or recipient
+    //         $direction = $message->from == $currentUser ? 'outgoing' : 'incoming';
+
+    //         $formattedMessages[] = [
+    //             'sid' => $message->sid,
+    //             'from' => $message->from,
+    //             'to' => $message->to,
+    //             'body' => $message->body,
+    //             'direction' => $direction,
+    //             'formatted_created_at' => $message->dateSent ? $message->dateSent->format('Y-m-d H:i:s') : null,
+    //         ];
+    //     }
+    //      // Format calls
+    //      foreach ($calls as $call) {
+    //         $direction = $call->from == $currentUser ? 'outgoing' : 'incoming';
+    //         $duration = gmdate("H:i:s", $call->duration);
+
+    //         $formattedMessages[] = [
+    //             'type' => 'call',
+    //             'sid' => $call->sid,
+    //             'from' => $call->from,
+    //             'to' => $call->to,
+    //             'duration' => $duration,
+    //             'recording_url' => $call->recordings ? $call->recordings->fetch()->uri : null,
+    //             'direction' => $direction,
+    //             'formatted_created_at' => $call->startTime ? $call->startTime->format('Y-m-d H:i:s') : null,
+    //         ];
+    //     }
+
+    //     // Optionally, you can sort messages by date if needed
+    //     usort($formattedMessages, function($a, $b) {
+    //         return strtotime($b['formatted_created_at']) - strtotime($a['formatted_created_at']);
+    //     });
+
+    //     return response()->json($formattedMessages);
+    // }
+
+    // public function getMessages($currentUserPhone)
+    // {
+    //     ini_set('max_execution_time', 300);
+    //     // Initialize Twilio client with your credentials
+    //     $client = new Client(env('TWILIO_SID'), env('TWILIO_AUTH_TOKEN'));
+
+    //     // Format the phone number
+    //     $currentUser = '+91' . $currentUserPhone;
+
+    //     // Fetch a limited number of received and sent messages
+    //     $receivedMessages = $client->messages->read([
+    //         'to' => $currentUser,
+    //         'limit' => 5,  // Limit to 5 messages
+    //     ]);
+
+    //     $sentMessages = $client->messages->read([
+    //         'from' => $currentUser,
+    //         'limit' => 5,  // Limit to 5 messages
+    //     ]);
+
+    //     // Fetch a limited number of received and sent calls
+    //     $receivedCalls = $client->calls->read([
+    //         'to' => $currentUser,
+    //         'limit' => 2,  // Limit to 5 calls
+    //     ]);
+
+    //     $sentCalls = $client->calls->read([
+    //         'from' => $currentUser,
+    //         'limit' => 2,  // Limit to 5 calls
+    //     ]);
+
+    //     // Combine both received and sent messages
+    //     $messages = array_merge($receivedMessages, $sentMessages);
+    //     $calls = array_merge($receivedCalls, $sentCalls);
+
+    //     // Prepare an array to hold formatted messages
+    //     $formattedMessages = [];
+
+    //     // Format messages with only the necessary data
+    //     foreach ($messages as $message) {
+    //         $direction = $message->from == $currentUser ? 'outgoing' : 'incoming';
+
+    //         $formattedMessages[] = [
+    //             'type' => 'message',
+    //             'from' => $message->from,
+    //             'to' => $message->to,
+    //             'body' => $message->body,
+    //             'direction' => $direction,
+    //             'created_at' => $message->dateSent ? $message->dateSent->format('Y-m-d H:i:s') : null,
+    //         ];
+    //     }
+
+    //     $formattedCalls = [];
+    //     $page = 0;
+    //     $limit = 2; // Number of records per page
+
+    //     try {
+    //         do {
+    //             $calls = $client->calls->read([
+    //                 'to' => $currentUser,
+    //                 'limit' => $limit,
+    //                 'page' => $page,
+    //             ]);
+
+    //             foreach ($calls as $call) {
+    //                 $direction = $call->from == $currentUser ? 'outgoing' : 'incoming';
+    //                 $duration = isset($call->duration) ? gmdate("H:i:s", (int)$call->duration) : '00:00:00';
+
+    //                 $recordings = $client->recordings->read([
+    //                     'callSid' => $call->sid,
+    //                     'limit' => 1,
+    //                 ]);
+
+    //                 $recordingUrl = null;
+    //                 if (!empty($recordings)) {
+    //                     $recording = $recordings[0];
+    //                     $recordingUrl = 'https://api.twilio.com' . $recording->uri . '.mp3?Download=true';
+    //                 }
+
+    //                 $formattedCalls[] = [
+    //                     'type' => 'call',
+    //                     'from' => $call->from,
+    //                     'to' => $call->to,
+    //                     'duration' => $duration,
+    //                     'recording_url' => $recordingUrl,
+    //                     'direction' => $direction,
+    //                     'created_at' => $call->dateCreated ? $call->dateCreated->format('Y-m-d H:i:s') : null,
+    //                 ];
+    //             }
+
+    //             $page++;
+    //             // Exit the loop if no more calls are returned
+    //             if (count($calls) < $limit) {
+    //                 break;
+    //             }
+
+    //         } while (true);
+
+    //     } catch (\Exception $e) {
+    //         // Handle exception and log errors
+    //         Log::error('Error fetching calls: ' . $e->getMessage());
+    //         dd('An error occurred: ' . $e->getMessage());
+    //     }
+
+    //     // Output the formatted calls
+    //     dd($formattedCalls);
+
+
+    //     // Sort messages and calls by date and time
+    //     usort($formattedMessages, function ($a, $b) {
+    //         return strtotime($b['created_at']) - strtotime($a['created_at']);
+    //     });
+
+    //     // Return the limited formatted data as JSON
+    //     return response()->json($formattedMessages);
+    // }
+
+    public function getMessages($currentUserPhone, Request $request)
 {
+    ini_set('max_execution_time', 300);
+
     // Initialize Twilio client with your credentials
     $client = new Client(env('TWILIO_SID'), env('TWILIO_AUTH_TOKEN'));
 
     // Format the phone number
     $currentUser = '+91' . $currentUserPhone;
 
-    // Fetch messages where the user is the recipient
+    // Get the current page and limit from the request
+    $page = $request->input('page', 1);
+    $limit = 10;
+
+    // Fetch messages (received and sent)
     $receivedMessages = $client->messages->read([
         'to' => $currentUser,
-        'limit' => 20,
-    ]);
+    ], $limit, ($page - 1) * $limit);
 
-    // Fetch messages where the user is the sender
     $sentMessages = $client->messages->read([
         'from' => $currentUser,
-        'limit' => 20,
-    ]);
+    ], $limit, ($page - 1) * $limit);
 
-    // Fetch call records where the user is the recipient or sender
+    // Combine received and sent messages
+    $messages = array_merge($receivedMessages, $sentMessages);
+
+    // Fetch calls (received and sent)
     $receivedCalls = $client->calls->read([
         'to' => $currentUser,
-        'limit' => 20,
-    ]);
+    ], $limit, ($page - 1) * $limit);
 
     $sentCalls = $client->calls->read([
         'from' => $currentUser,
-        'limit' => 20,
-    ]);
+    ], $limit, ($page - 1) * $limit);
 
-    // Combine both received and sent messages
-    $messages = array_merge($receivedMessages, $sentMessages);
+    // Combine received and sent calls
     $calls = array_merge($receivedCalls, $sentCalls);
 
-    // Prepare an array to hold formatted messages
-    $formattedMessages = [];
+    // Prepare an array to hold formatted messages and calls
+    $formattedData = [];
 
     // Format messages
     foreach ($messages as $message) {
-        // Determine if the user is the sender or recipient
         $direction = $message->from == $currentUser ? 'outgoing' : 'incoming';
 
-        $formattedMessages[] = [
+        $formattedData[] = [
             'type' => 'message',
-            'sid' => $message->sid,
             'from' => $message->from,
             'to' => $message->to,
             'body' => $message->body,
             'direction' => $direction,
-            'formatted_created_at' => $message->dateSent ? $message->dateSent->format('Y-m-d H:i:s') : null,
+            'created_at' => $message->dateSent ? $message->dateSent->format('Y-m-d H:i:s') : null,
         ];
     }
 
     // Format calls
     foreach ($calls as $call) {
         $direction = $call->from == $currentUser ? 'outgoing' : 'incoming';
-        $duration = gmdate("H:i:s", $call->duration);
+        $duration = isset($call->duration) ? gmdate("H:i:s", (int)$call->duration) : '00:00:00';
 
-        // Fetch call recordings
         $recordings = $client->recordings->read([
-            'callSid' => $call->sid
+            'callSid' => $call->sid,
+            'limit' => 1,
         ]);
 
         $recordingUrl = null;
-        $downloadUrl = null;
         if (!empty($recordings)) {
             $recording = $recordings[0];
-            $recordingUrl = 'https://api.twilio.com' . $recording->uri;
-            $downloadUrl = $recordingUrl . '.mp3?Download=true';
+            $recordingUrl = 'https://api.twilio.com' . $recording->uri . '.mp3?Download=true';
         }
 
-        $formattedMessages[] = [
+        $formattedData[] = [
             'type' => 'call',
-            'sid' => $call->sid,
             'from' => $call->from,
             'to' => $call->to,
             'duration' => $duration,
             'recording_url' => $recordingUrl,
-            'download_url' => $downloadUrl,
             'direction' => $direction,
-            'formatted_created_at' => $call->startTime ? $call->startTime->format('Y-m-d H:i:s') : null,
+            'created_at' => $call->dateCreated ? $call->dateCreated->format('Y-m-d H:i:s') : null,
         ];
     }
 
-    // Sort messages and calls by date and time
-    usort($formattedMessages, function($a, $b) {
-        return strtotime($b['formatted_created_at']) - strtotime($a['formatted_created_at']);
+    // Sort combined data by date and time
+    usort($formattedData, function ($a, $b) {
+        return strtotime($b['created_at']) - strtotime($a['created_at']);
     });
 
-    return response()->json($formattedMessages);
+    // Paginate the sorted data manually
+    $offset = ($page - 1) * $limit;
+    $paginatedData = array_slice($formattedData, $offset, $limit);
+
+    // Check if there is more data to load
+    $hasMore = count($formattedData) > ($offset + $limit);
+
+    return response()->json([
+        'data' => $paginatedData,
+        'current_page' => $page,
+        'has_more' => $hasMore,
+    ]);
 }
 
 
