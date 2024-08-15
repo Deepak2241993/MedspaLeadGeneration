@@ -37,6 +37,11 @@
             z-index: 9999;
             /* Ensures the loader is on top of other elements */
         }
+        .active-user {
+            background-color: #0C768A; 
+            border: 0.2px solid #0C768A;
+        }
+
     </style>
 @endsection
 
@@ -70,7 +75,7 @@
                             <h5 class="font-size-14 mb-3">Recent</h5>
                             <ul class="list-unstyled chat-list" data-simplebar id="chat-list" style="max-height: 500px;">
                                 @forelse ($leaddata as $lead)
-                                    <li>
+                                    <li id="chat-user-{{ $lead['_id'] }}">
                                         <a href="#" class="mt-0 chat-user" data-id="{{ $lead['_id'] }}"
                                             data-name="{{ $lead['first_name'] }} {{ $lead['last_name'] }}"
                                             data-phone="{{ $lead['phone'] }}">
@@ -85,7 +90,12 @@
                                                         {{ $lead['last_name'] }}</h5>
                                                     <p class="text-truncate mb-0">{{ $lead['phone'] }}</p>
                                                 </div>
-                                                <div class="font-size-11">04 min</div>
+                                                <div class="font-size-11">
+                                                    {{-- <a href="tel:{{ $lead['phone'] }}" class="">
+                                                        <i class="fas fa-phone"></i> <!-- Font Awesome phone icon -->
+                                                    </a> --}}
+                                                </div>
+                                                
                                             </div>
                                         </a>
                                     </li>
@@ -201,6 +211,20 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/pusher/7.0.3/pusher.min.js"></script>
 
         <script>
+            $(document).ready(function() {
+            $('.chat-user').on('click', function(e) {
+                e.preventDefault();
+
+                // Remove active class from all users
+                $('.chat-user').closest('li').removeClass('active-user');
+
+                // Add active class to the selected user
+                $(this).closest('li').addClass('active-user');
+
+                // Optionally, you can perform other actions here, like loading the chat for the selected user
+            });
+        });
+
         //     document.addEventListener('DOMContentLoaded', function() {
         //     const chatUsers = document.querySelectorAll('.chat-user');
         //     const chatUserName = document.getElementById('chat-user-name');
@@ -798,6 +822,9 @@
 //         });
 //     });
 // });
+
+
+// important code 
 
 document.addEventListener('DOMContentLoaded', function() {
     let currentUserPhone = null;
