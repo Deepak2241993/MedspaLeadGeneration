@@ -41,6 +41,7 @@ Route::get('/puser', function () {
     return view('puser');
 });
 
+Route::post('/messages/receive', [MessageController::class, 'receiveMessage']);
 
 
 Route::post('/submit-form', [LeadController::class, 'submitForm'])->name('submit-form');
@@ -171,11 +172,21 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');
     Route::get('/load-more-leads', [MessageController::class, 'loadMoreLeads']);
     Route::post('/messages/send', [MessageController::class, 'sendMessage'])->name('messages.send');
-    Route::get('/messages/receive', [MessageController::class, 'receiveMessage'])->name('messages.receive');
+    // Route::post('/messages/receive', [MessageController::class, 'receiveMessage'])->name('messages.receive');
+    // Route::post('/messages/receive', [MessageController::class, 'receiveMessage'])->name('messages.receive');
+    // Route::post('/messages/receive', [MessageController::class, 'receiveMessage'])->middleware('auth');
+
     Route::get('/sendPusher', [MessageController::class, 'sendpusher'])->name('messages.sendPusher');
     Route::get('/get-messages/{currentUserPhone}', [MessageController::class, 'getMessages'])->name('messages.getMessages');
 
 
+
+    // test tinker 
+    Route::get('/test-event', function () {
+        event(new \App\Events\MessageReceived('+918077477522', 'vishal'));
+        return 'Event dispatched!';
+    });
+    
 });
 
 Route::get('/dashboad', [HomeController::class, 'root'])->name('dash');

@@ -7,7 +7,7 @@
     <link href="{{ URL::asset('build/libs/jsvectormap/css/jsvectormap.min.css') }}" rel="stylesheet" type="text/css" />
 @endsection
 @section('page-title')
-Super Admin Dashboard
+Super Admin Dashboar
 @endsection
 @section('body')
 

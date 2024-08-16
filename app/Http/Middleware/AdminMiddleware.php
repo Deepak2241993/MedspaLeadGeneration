@@ -19,7 +19,7 @@ class AdminMiddleware
         if (!Auth::check() ) {
             /** @var App\Model\User */
             $user = Auth::user();
-            if($user->hasRole(['super-admin'])) {
+            if($user->hasRole(['Super Admin'])) {
 
                 return redirect()->route('home')->with('error', 'You do not have access to this page.');
             }

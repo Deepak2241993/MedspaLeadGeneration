@@ -51,8 +51,9 @@ class LoginController extends Controller
     }
     protected function authenticated(Request $request, $user)
     {
+        // dd($request->all());
         Log::info('Authenticated user: ' . $user->email);
-        if ($user->hasRole('super-admin')) {
+        if ($user->hasRole('Super Admin')) {
             Log::info('Redirecting super-admin to their dashboard');
             return redirect()->route('super-admin.dashboard');
         } elseif ($user->hasRole('sales-team')) {
@@ -63,6 +64,6 @@ class LoginController extends Controller
             return redirect()->route('account-team.dashboard');
         }
 
-        return redirect('/dashboad');
+        return redirect('/');
     }
 }

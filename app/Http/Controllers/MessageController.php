@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Twilio\Rest\Client;
 use App\Models\Message;
 use App\Events\MessageSent;
+use App\Events\MessageReceived;
 use App\Models\CommonModel;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
@@ -271,7 +272,7 @@ class MessageController extends Controller
         $client = new Client(env('TWILIO_SID'), env('TWILIO_AUTH_TOKEN'));
 
         // Format the phone number
-        $currentUser = '+91' . $currentUserPhone;
+        $currentUser = '+1' . $currentUserPhone;
 
         // Get the current page and limit from the request
         $page = $request->input('page', 1);
@@ -365,26 +366,54 @@ class MessageController extends Controller
     }
 
 
+    // public function receiveMessage(Request $request)
+    // {
+
+    //     // dd($request->all());
+    //     $message = new Message();
+    //     $message->body = $request->input('Body');
+    //     $message->from = $request->input('From');
+    //     $message->to = $request->input('To');
+    //     $message->direction = 'incoming';
+    //     $message->save();
+    //     Log::info('Broadcasting message:', $message);
+
+    //     broadcast(new MessageReceived($message))->toOthers();
+
+    //     return response()->json(['status' => 'Message received']);
+    // }
     public function receiveMessage(Request $request)
     {
+        // dd($request->all());
+        // Debugging the request
+        Log::info('Received message:', $request->all());
 
-        dd($request->all());
+        // Check if required parameters are present
+        $messageBody = $request->input('Body');
+        $from = $request->input('From');
+        $to = $request->input('To');
+        $user_id = $request->input('user_id');
+
+        if (!$messageBody || !$from || !$to) {
+            Log::error('Missing required parameters');
+            return response()->json(['status' => 'Error', 'message' => 'Missing required parameters'], 400);
+        }
+
+        // Save message to the database
         $message = new Message();
-        $message->body = $request->input('Body');
-        $message->from = $request->input('From');
-        $message->to = $request->input('To');
+        $message->body = $messageBody;
+        $message->from = $from;
+        $message->to = $to;
         $message->direction = 'incoming';
+        $message->user_id = $user_id;
         $message->save();
 
-        broadcast(new MessageSent($message))->toOthers();
+        // Broadcast event
+        broadcast(new MessageReceived($message, $to))->toOthers();
 
-        return response()->json(['status' => 'success']);
+        return response()->json(['status' => 'Message received']);
     }
-    // public function sendPusher()
-    // {
-    //     event(new MyEvent('hello world'));
-    // }
-
+    
     // public function sendMessage(Request $request)
     // {
     //     dd($request->all());
@@ -434,7 +463,7 @@ class MessageController extends Controller
     public function sendMessage(Request $request)
     {
         // Merge country code with the phone number
-        $request->merge(['to' => '+91' . $request->input('to')]);
+        $request->merge(['to' => '+1' . $request->input('to')]);
 
         // Validate the request inputs
         $validated = $request->validate([

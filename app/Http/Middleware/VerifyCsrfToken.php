@@ -19,6 +19,8 @@ class VerifyCsrfToken extends Middleware
         'twilio/user-gather',
         '/twilio/*',
         '/handle-gather',
+        'messages/receive',
+        
         
 
     ];
