@@ -117,6 +117,7 @@ Route::middleware(['auth'])->group(function () {
     // Archived leads
     Route::get('/archived', [LeadController::class, 'archived'])->name('leads.archived');
     Route::get('/restore/{id}', [LeadController::class, 'restore'])->name('leads.restore');
+    Route::post('/restore-multiple', [LeadController::class, 'restoreMultiple'])->name('leads.restoreMultiple');
     Route::delete('/permanentdelete/{id}', [LeadController::class, 'permanentdelete'])->name('leads.permanentdelete');
 
     // Leadboard
@@ -142,9 +143,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/lead/permanentdeleteAll', [LeadController::class, 'permanentdeleteAll'])->name('leads.permanentdeleteAll');
 
     //Email Send 
-    // Route::post('/email-send', [EmailSendController::class, 'index'])->name('emails.index');
-    Route::match(['post', 'get'], '/email-send', [EmailSendController::class, 'index'])->name('emails.index');
-    Route::post('/email-send/sendEmails', [EmailSendController::class, 'sendEmails'])->name('emails.sendEmails');
+    Route::post('/emails', [EmailSendController::class, 'index'])->name('emails.index');
+    Route::post('/emails/send', [EmailSendController::class, 'sendEmails'])->name('emails.send');
 
     // Twilio integration
     Route::post('/make-call', [TwilioController::class, 'makeCall'])->name('make-call');

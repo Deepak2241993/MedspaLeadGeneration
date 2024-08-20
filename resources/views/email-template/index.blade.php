@@ -37,7 +37,7 @@
                 <div class="btn-group mt-2 mt-lg-0 mt-md-0 ml-0 ml-lg-3 ml-md-3" role="group">
                     <a href="{{ route('email.create') }}" class="btn btn-secondary f-14 btn-active" data-toggle="tooltip"
                         data-original-title="Table View">Create Template</a>
-                    <button class="btn btn-danger btn-delete-all">Delete Selected</button>
+                    {{-- <button class="btn btn-danger btn-delete-all">Delete Selected</button> --}}
                 </div>
                 @if ($message = Session::get('imperialheaders_success'))
                 

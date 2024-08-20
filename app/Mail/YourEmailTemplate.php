@@ -34,7 +34,7 @@ class YourEmailTemplate extends Mailable
     {
         return $this->to($this->toAddress)
         ->subject($this->subject)
-        ->view('admin.emails.your_template') // Update with your actual email template
+        ->view('emails.your_template') // Update with your actual email template
         ->with([
             'selectedTemplate' => $this->selectedTemplate,
             'htmlCode' => $this->htmlCode,

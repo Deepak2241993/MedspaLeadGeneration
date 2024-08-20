@@ -8,190 +8,72 @@ use Illuminate\Http\Request;
 use App\Models\CommonModel;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use App\Mail\YourEmailTemplate;
+
 
 class EmailSendController extends Controller
 {
     public function index(Request $request)
     {
-        
-        $emails = $request->input('emails', []);
+        // Retrieve the comma-separated emails from the request
+        $emailsString = $request->input('emails', '');
+
+        // Convert the string into an array
+        $emails = array_map('trim', explode(',', $emailsString));
 
         // Remove duplicate email addresses
         $uniqueEmails = array_unique($emails);
-
-        // Iterate over the unique emails and output each one
-        // foreach ($uniqueEmails as $email) {
-        //     echo $email . ",";
-        // }
 
         // Fetch email templates from the API
         $api = new CommonModel();
         $emailTemplates = $api->getAPI('email_template/list');
         $emailTemplates = $emailTemplates['data'];
-        // $emails = $emails['emails'];
-    
-        
-        // Pass the emails and templates to the view
+
+        // Pass the unique emails and email templates to the view
         return view('emails.index', compact('uniqueEmails', 'emailTemplates'));
     }
-    
+
+
+
 
 
     public function sendEmails(Request $request)
-{
-
-  
-
-
-dd($request->all());
-    $data = $request->validate([
-
-        'to' => 'required|string', // Assuming 'to' is a comma-separated string of email addresses
-        'subject' => 'nullable|string',
-        'selectedTemplate' => 'required|numeric',
-        'html_code' => 'nullable|string',
-
-    ]);
-
-    $toAddresses = explode(',', rtrim($data['to'], ','));
-
-    if ($data['selectedTemplate'] > 0){
-
-        $emailTemplate = EmailTemplate::find($data['selectedTemplate']);
-        if ($emailTemplate) {
-            // Use the data from the selected template
-            $data['subject'] = $emailTemplate->subject;
-            $data['html_code'] = $emailTemplate->html_code;
-        }
-        dd($data['subject']);
-    }
-
-    dd($toAddresses);
-
-
-
-
-
-
-
-
-
-
-
-    try {
-        $data = $request->validate([
-            'to' => 'required|string', // Assuming 'to' is a comma-separated string of email addresses
-            'subject' => 'nullable|string',
-            'selectedTemplate' => 'required|numeric',
-            'html_code' => 'nullable|string',
+    {
+        // dd($request->all());
+        // Validate the request to ensure required data is provided
+        $request->validate([
+            'to' => 'required|string',
+            'subject' => 'required|string|max:255',
+            'selectedTemplate' => 'required|string',
+            'html_code' => 'required|string',
         ]);
-
-        $toAddresses = explode(',', rtrim($data['to'], ','));
-
-        $htmlCode = $data['html_code'];
-
-        // dd($data); die;
-
-        // Check if a template is selected
-        if ($data['selectedTemplate'] > 0) {
-            // Fetch the selected email template from the database
-            $emailTemplate = EmailTemplate::find($data['selectedTemplate']);
-
-            if ($emailTemplate) {
-                // Use the data from the selected template
-                $data['subject'] = $emailTemplate->subject;
-                $data['html_code'] = $emailTemplate->html_code;
+    
+        // Split email addresses by comma and trim whitespace
+        $toAddresses = array_filter(array_map('trim', explode(',', $request->input('to'))));
+    
+        // Initialize an array to collect invalid emails
+        $invalidEmails = [];
+    
+        // Iterate over each email address
+        foreach ($toAddresses as $toAddress) {
+            // Validate each email address format
+            if (filter_var($toAddress, FILTER_VALIDATE_EMAIL)) {
+                // Send the email using Laravel's Mail facade
+                Mail::to($toAddress)->send(new YourEmailTemplate($toAddress, $request->input('subject'), $request->input('selectedTemplate'), $request->input('html_code')));
+            } else {
+                // Add invalid email to the array
+                $invalidEmails[] = $toAddress;
             }
         }
-
-        // Send email to each address
-        foreach ($toAddresses as $toAddress) {
-
-            // Ensure separate variables for each email address
-            $subject = $data['subject'];
-            $selectedTemplate = $data['selectedTemplate'];
-            $htmlCode = $data['html_code'];
-            // dd($htmlCode); die;
-
-            Mail::to(trim($toAddress))->send(new \App\Mail\YourEmailTemplate($toAddress,$subject, $selectedTemplate, $htmlCode));
+    
+        // Check if there were any invalid emails
+        if (!empty($invalidEmails)) {
+            // Return back with an error message
+            return redirect()->back()->withErrors(['Invalid email addresses: ' . implode(', ', $invalidEmails)]);
         }
-
-        return redirect()->route('admin.leads.index')->with('success', 'Emails sent successfully');
-    } catch (\Illuminate\Validation\ValidationException $e) {
-        return response()->json(['error' => $e->validator->errors()->first()], 422);
-    } catch (\Exception $e) {
-        // Handle other exceptions
-        return response()->json(['error' => $e->getMessage()], 500);
+    
+        // Redirect with a success message if all emails were valid
+        return redirect()->route('leads.index')->with('success', 'Emails sent successfully');
     }
-}
-
-
-
-
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+    
 }

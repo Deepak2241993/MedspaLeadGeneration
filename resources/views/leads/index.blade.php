@@ -36,10 +36,15 @@
                     <div class="card-body">
                         <div class="row mb-2">
                             <div class="col-md-6">
-                                <div id="bulk-actions" >
-                                    <button id="delete-all" class="btn btn-danger">Delete All</button>
-                                    <button id="send-email" class="btn btn-info">Send Email</button>
+                                <div id="bulk-actions" class="d-flex justify-content-start align-items-center">
+                                    <button id="delete-all" class="btn btn-danger mr-6">Delete All</button>
+                                    <form id="email-form" action="{{ route('emails.index') }}" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="emails" id="emails-input">
+                                        <button type="submit" id="send-email" class="btn btn-info">Send Email</button>
+                                    </form>
                                 </div>
+                                
 
 
                             </div>
@@ -54,6 +59,11 @@
                                 </div>
                             </div>
                         </div>
+                        @if (session('success'))
+                            <div class="alert alert-success">
+                                {{ session('success') }}
+                            </div>
+                        @endif
                         @if (isset($error_message))
                             <div class="alert alert-danger">
                                 {{ $error_message }}
@@ -460,31 +470,46 @@
 
 
                 // Handle Send Email action
-                $('#send-email').click(function() {
+                // $('#send-email').click(function(e) {
+                //     e.preventDefault();
+                //     var emails = $('.row-checkbox:checked').closest('tr').find('.email-column').map(function() {
+                //         return $(this).text().trim(); // Extract text and trim any extra spaces
+                //     }).get();
+
+                //     // Display the collected email addresses in an alert
+                //     // alert('Collected Emails: \n' + emails.join('\n'));
+
+
+                //     $.ajax({
+                //         url: '/email-send', // Update with your send email route
+                //         type: 'POST',
+                //         data: {
+                //             _token: '{{ csrf_token() }}',
+                //             emails: emails
+                //         },
+                //        success: function(response) {
+                //        // Redirect to the view returned by the server
+                //        window.location.href = response.redirect_url;
+                //        },
+                //         error: function(xhr) {
+                //             alert('Error sending emails: ' + xhr.responseJSON.message);
+                //         }
+                //     });
+                // });
+                $('#send-email').click(function(e) {
+                    e.preventDefault();
+                    
                     var emails = $('.row-checkbox:checked').closest('tr').find('.email-column').map(function() {
                         return $(this).text().trim(); // Extract text and trim any extra spaces
                     }).get();
 
-                    // Display the collected email addresses in an alert
-                    // alert('Collected Emails: \n' + emails.join('\n'));
+                    // Convert emails array to a comma-separated string and set it as the value of the hidden input
+                    $('#emails-input').val(emails.join(','));
 
-
-                    $.ajax({
-                        url: '{{ route("emails.index") }}', // Update with your send email route
-                        type: 'POST',
-                        data: {
-                            _token: '{{ csrf_token() }}',
-                            emails: emails
-                        },
-                       success: function(response) {
-        // Redirect to the emails.index page with email data as query parameters
-        window.location.href = '{{ route("emails.index") }}' + '?emails=' + encodeURIComponent(emailList);
-      },
-                        error: function(xhr) {
-                            alert('Error sending emails: ' + xhr.responseJSON.message);
-                        }
-                    });
+                    // Submit the form
+                    $('#email-form').submit();
                 });
+
             });
         </script>
         <script>

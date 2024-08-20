@@ -237,4 +237,43 @@ class LeadController extends Controller
             return response()->json(['error' => 'Internal Server Error'], 500);
         }
     }
+    public function restoreMultiple(Request $request)
+{
+    // Ensure that the 'ids' input is treated as an array
+    $ids = $request->input('ids');
+
+    // If the input is not already an array, convert it to an array
+    if (!is_array($ids)) {
+        $ids = explode(',', $ids); // Assuming the IDs might be comma-separated
+    }
+
+    if (!empty($ids)) {
+        $api = new CommonModel();
+        $failedRestores = [];
+
+        foreach ($ids as $id) {
+            try {
+                $result = $api->postAPI("lead/restore/{$id}", []);
+
+                if ($result['status'] !== 'success') {
+                    $failedRestores[] = $id;
+                    Log::error("Failed to restore lead with ID: {$id}. Response: " . json_encode($result));
+                }
+            } catch (\Exception $e) {
+                $failedRestores[] = $id;
+                Log::error("Exception occurred while restoring lead with ID: {$id}. Exception: " . $e->getMessage());
+            }
+        }
+
+        if (empty($failedRestores)) {
+            return redirect()->route('leads.index')->with('success', 'Selected leads restored successfully.');
+        } else {
+            return redirect()->route('leads.index')->with('warning', 'Some leads could not be restored. Check logs for details.');
+        }
+    }
+
+    return redirect()->route('leads.index')->withErrors(['No leads selected for restoration.']);
+}
+
+
 }
