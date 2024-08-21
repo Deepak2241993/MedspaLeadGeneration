@@ -20,6 +20,7 @@ class EmailTemplateController extends Controller
     {
         $api = new CommonModel();
         $result = $api->getAPI('email_template/list');
+        // dd($result);
 
         // Check if $result is null or not an array
         if (is_array($result) && isset($result['status'])) {
@@ -84,8 +85,8 @@ class EmailTemplateController extends Controller
     }
     public function edit($id)
     {
+        // dd($id);
         $api = new CommonModel();
-        // dd($api);
         $emailtemp = $api->getAPI('emailtemplate/edit/' . $id);
         return view('email-template.edit')->with('emailtemp', $emailtemp);
     }
