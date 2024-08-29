@@ -97,7 +97,7 @@
                                                 <div class="user-img online align-self-center me-3">
                                                     <img src="{{ URL::asset('build/images/users/avatar-4.jpg') }}"
                                                         class="rounded-circle avatar-xs" alt="avatar-2">
-                                                    <span class="user-status"></span>
+                                                    <!--<span class="user-status"></span>-->
                                                 </div>
                                                 <div class="flex-1 overflow-hidden">
                                                     <h5 class="text-truncate font-size-14 mb-1">{{ $lead['first_name'] }}
@@ -205,7 +205,7 @@
                             <div class="d-flex">
                                 <div class="user-img online align-self-center me-3">
                                     <img src="{{ URL::asset('build/images/users/avatar-4.jpg') }}" class="rounded-circle avatar-xs" alt="avatar-2">
-                                    <span class="user-status"></span>
+                                    // <span class="user-status"></span>
                                 </div>
                                 <div class="flex-1 overflow-hidden">
                                     <h5 class="text-truncate font-size-14 mb-1">${lead.first_name} ${lead.last_name}</h5>
@@ -561,6 +561,22 @@
                             });
                         });
                 });
+            });
+        </script>
+        <script>
+            // After the page loads, automatically select the user and load the chat messages
+            document.addEventListener('DOMContentLoaded', function() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const selectedPhone = urlParams.get('phone');
+
+                if (selectedPhone) {
+                    // Simulate a click on the chat user with the corresponding phone number
+                    const chatUser = document.querySelector(`.chat-user[data-phone="${selectedPhone}"]`);
+
+                    if (chatUser) {
+                        chatUser.click();
+                    }
+                }
             });
         </script>
     @endsection

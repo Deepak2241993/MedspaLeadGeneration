@@ -146,7 +146,7 @@
     <main class="main" id="top">
         <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3 d-block"
             data-navbar-on-scroll="data-navbar-on-scroll">
-            <div class="container"><a class="navbar-brand" href="index.html"> <img id="logo"
+            <div class="container"><a class="navbar-brand" href="/"> <img id="logo"
                         src="{{ asset('/landing_page/assets/img/gallery/forever-white-1.png') }}" alt="Logo"
                         width="118" class="logo-space"></a>
                 <div class="collapse navbar-collapse border-top border-lg-0 mt-4 mt-lg-0" id="navbarSupportedContent">

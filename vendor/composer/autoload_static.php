@@ -551,6 +551,7 @@ class ComposerStaticInite0ce5353653ac4aa921859375d213f73
 
     public static $classMap = array (
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
+        'App\\Events\\MessageReceived' => __DIR__ . '/../..' . '/app/Events/MessageReceived.php',
         'App\\Events\\MessageSent' => __DIR__ . '/../..' . '/app/Events/MessageSent.php',
         'App\\Events\\RecivedMessage' => __DIR__ . '/../..' . '/app/Events/RecivedMessage.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
@@ -595,6 +596,7 @@ class ComposerStaticInite0ce5353653ac4aa921859375d213f73
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
         'App\\Jobs\\FetchTwilioData' => __DIR__ . '/../..' . '/app/Jobs/FetchTwilioData.php',
         'App\\Mail\\YourEmailTemplate' => __DIR__ . '/../..' . '/app/Mail/YourEmailTemplate.php',
+        'App\\Models\\ClientAssignment' => __DIR__ . '/../..' . '/app/Models/ClientAssignment.php',
         'App\\Models\\CommonModel' => __DIR__ . '/../..' . '/app/Models/CommonModel.php',
         'App\\Models\\Message' => __DIR__ . '/../..' . '/app/Models/Message.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',

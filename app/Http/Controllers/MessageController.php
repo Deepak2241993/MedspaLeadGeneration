@@ -35,15 +35,28 @@ class MessageController extends Controller
             // Get the current authenticated user
             $authUser = auth()->user();
     
+            // if ($authUser->hasRole('Super Admin')) {
+            //     // If the user is a super admin, show all leads
+            //     $filteredLeads = $leaddata;
+            // } else {
+            //     // Otherwise, filter the leads based on the client assignment
+            //     $filteredLeads = $leaddata->filter(function ($lead) use ($authUser) {
+            //         // Assuming the lead data contains a phone number field
+            //         $assignedUserId = ClientAssignment::where('phone_number', $lead['phone'])->value('user_id');
+            //         return $assignedUserId == $authUser->id;
+            //     });
+            // }
             if ($authUser->hasRole('Super Admin')) {
-                // If the user is a super admin, show all leads
+                // If the user is a Super Admin, show all leads
                 $filteredLeads = $leaddata;
             } else {
                 // Otherwise, filter the leads based on the client assignment
                 $filteredLeads = $leaddata->filter(function ($lead) use ($authUser) {
                     // Assuming the lead data contains a phone number field
                     $assignedUserId = ClientAssignment::where('phone_number', $lead['phone'])->value('user_id');
-                    return $assignedUserId == $authUser->id;
+            
+                    // Show the lead if it is assigned to the current user or if it is not assigned to anyone
+                    return $assignedUserId == $authUser->id || is_null($assignedUserId);
                 });
             }
     

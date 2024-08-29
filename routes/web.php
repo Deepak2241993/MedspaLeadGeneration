@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\Auth\CustomPasswordResetController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\LeadBoardController;
@@ -32,6 +34,10 @@ use App\Http\Controllers\UserController;
 
 Auth::routes();
 
+
+// Handle the password reset form submission
+Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
+
 Route::get('/', function () {
     $dynamicStatusId = "To Do";
     return view('mainform', compact('dynamicStatusId'));
@@ -42,6 +48,20 @@ Route::get('/puser', function () {
 });
 
 Route::post('/messages/receive', [MessageController::class, 'receiveMessage']);
+
+// Outbound call
+    Route::post('/outbound-call', [CallController::class, 'outboundCall'])->name('outbound-call');
+    Route::match(['get', 'post'], '/twilio/user-gather', [CallController::class, 'userGather'])->name('twilio.user-gather');
+
+    // Inbound call
+    Route::post('/twilio/inbound-call', [TwilioController::class, 'handleIncomingCall']);
+    Route::post('/handle-gather', [TwilioController::class, 'handleGather'])->name('handle-gather');
+
+    // Record the call
+    Route::post('/twilio/connect-client', [CallController::class, 'connectClient'])->name('twilio.connect-client');
+    Route::post('/twilio/recording-status', [TwilioController::class, 'handleRecordingStatus'])->name('twilio.recording-status');
+    
+     Route::post('/emails/send', [EmailSendController::class, 'sendEmails'])->name('emails.send');
 
 
 Route::post('/submit-form', [LeadController::class, 'submitForm'])->name('submit-form');
@@ -73,6 +93,8 @@ Route::middleware(['isAdmin'])->group(function () {
 
 Route::middleware(['auth'])->group(function () {
 
+
+    Route::get('/dashboard', [HomeController::class, 'root'])->name('dashboard');
 
     // Route::middleware(['role:Super Admin'])->group(function () {
         
@@ -156,17 +178,17 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/get-call-duration', [TwilioController::class, 'getCallDuration'])->name('get-call-duration');
     Route::post('/end-call', [TwilioController::class, 'endCall'])->name('end-call');
 
-    // Outbound call
-    Route::post('/outbound-call', [CallController::class, 'outboundCall'])->name('outbound-call');
-    Route::match(['get', 'post'], '/twilio/user-gather', [CallController::class, 'userGather'])->name('twilio.user-gather');
+    // // Outbound call
+    // Route::post('/outbound-call', [CallController::class, 'outboundCall'])->name('outbound-call');
+    // Route::match(['get', 'post'], '/twilio/user-gather', [CallController::class, 'userGather'])->name('twilio.user-gather');
 
-    // Inbound call
-    Route::post('/twilio/inbound-call', [TwilioController::class, 'handleIncomingCall']);
-    Route::post('/handle-gather', [TwilioController::class, 'handleGather'])->name('handle-gather');
+    // // Inbound call
+    // Route::post('/twilio/inbound-call', [TwilioController::class, 'handleIncomingCall']);
+    // Route::post('/handle-gather', [TwilioController::class, 'handleGather'])->name('handle-gather');
 
-    // Record the call
-    Route::post('/twilio/connect-client', [CallController::class, 'connectClient'])->name('twilio.connect-client');
-    Route::post('/twilio/recording-status', [TwilioController::class, 'handleRecordingStatus'])->name('twilio.recording-status');
+    // // Record the call
+    // Route::post('/twilio/connect-client', [CallController::class, 'connectClient'])->name('twilio.connect-client');
+    // Route::post('/twilio/recording-status', [TwilioController::class, 'handleRecordingStatus'])->name('twilio.recording-status');
 
     // Mess
     Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');
@@ -189,8 +211,8 @@ Route::middleware(['auth'])->group(function () {
     
 });
 
-Route::get('/dashboad', [HomeController::class, 'root'])->name('dash');
-// Route::get('{any}', [HomeController::class, 'index'])->name('index');
+
+Route::get('{any}', [HomeController::class, 'index'])->name('index');
 
 
 Route::get('/clear-cache', function () {

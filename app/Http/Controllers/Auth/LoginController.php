@@ -56,12 +56,12 @@ class LoginController extends Controller
         if ($user->hasRole('Super Admin')) {
             Log::info('Redirecting super-admin to their dashboard');
             return redirect()->route('super-admin.dashboard');
-        } elseif ($user->hasRole('sales-team')) {
+        } elseif ($user) {
             Log::info('Redirecting sales-team to their dashboard');
-            return redirect()->route('sales-team.dashboard');
-        } elseif ($user->hasRole('account-team')) {
+            return redirect()->route('dashboard');
+        } elseif ($user->hasRole('Sales')) {
             Log::info('Redirecting account-team to their dashboard');
-            return redirect()->route('account-team.dashboard');
+            return redirect()->route('dashboard');
         }
 
         return redirect('/');

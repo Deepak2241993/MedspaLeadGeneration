@@ -41,7 +41,9 @@ trait ResetsPasswords
      */
     public function reset(Request $request)
     {
+        
         $request->validate($this->rules(), $this->validationErrorMessages());
+        // dd($request->all());
 
         // Here we will attempt to reset the user's password. If it is successful we
         // will update the password on an actual user model and persist it to the
@@ -106,6 +108,7 @@ trait ResetsPasswords
      */
     protected function resetPassword($user, $password)
     {
+        dd($user);
         $this->setUserPassword($user, $password);
 
         $user->setRememberToken(Str::random(60));
@@ -138,6 +141,7 @@ trait ResetsPasswords
      */
     protected function sendResetResponse(Request $request, $response)
     {
+        dd($request->all());
         if ($request->wantsJson()) {
             return new JsonResponse(['message' => trans($response)], 200);
         }
@@ -155,6 +159,7 @@ trait ResetsPasswords
      */
     protected function sendResetFailedResponse(Request $request, $response)
     {
+        dd($request->all());
         if ($request->wantsJson()) {
             throw ValidationException::withMessages([
                 'email' => [trans($response)],

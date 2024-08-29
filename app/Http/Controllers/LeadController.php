@@ -79,6 +79,11 @@ class LeadController extends Controller
     } else {
         $errorMessage = 'Failed to retrieve data from API for statuses.';
     }
+    // // Sort leads by updated_on in increasing order
+    //  usort($leads, function ($a, $b) {
+    //     return strtotime($b['updated_on']) <=> strtotime($a['updated_on']);
+    // });
+
 
     // Map status names to leads
     foreach ($leads as &$lead) {

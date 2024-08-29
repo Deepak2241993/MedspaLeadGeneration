@@ -15,8 +15,8 @@
                                 <div class="text-center mb-4">
                                     <a href="index" class="">
                                         <img src="{{ URL::asset('build/images/dark-logo.png') }}" alt=""
-                                            height="50%" width="50%" class="auth-logo logo-dark mx-auto">
-                                        <img src="{{ URL::asset('build/images/logo-light.png') }}" alt=""
+                                            height="100%" width="25%" class="auth-logo logo-dark mx-auto">
+                                        <img src="{{ URL::asset('build/images/light-logo.png') }}" alt=""
                                             height="22" class="auth-logo logo-light mx-auto">
                                     </a>
                                     {{-- <p class="text-muted mt-2">User Experience & Interface Design Strategy Saas Solution</p> --}}
@@ -35,7 +35,7 @@
                                                 <div>
                                                     <div class="text-center mt-1">
                                                         <h4 class="font-size-18">Register account</h4>
-                                                        <p class="text-muted">Get your free Tocly account now.</p>
+                                                        <p class="text-muted">Get Your Medspa New Account Now.</p>
                                                     </div>
 
                                                     <form method="POST" action="{{ route('register') }}"
@@ -61,6 +61,20 @@
                                                                 name="email" value="{{ old('email') }}" required
                                                                 autocomplete="email" placeholder="Enter email">
                                                             @error('email')
+                                                                <span class="invalid-feedback" role="alert">
+                                                                    <strong>{{ $message }}</strong>
+                                                                </span>
+                                                            @enderror
+                                                        </div>
+
+                                                        <!-- Phone Number Field -->
+                                                        <div class="mb-2">
+                                                            <label for="phone" class="form-label">Phone Number</label>
+                                                            <input id="phone" type="text"
+                                                                class="form-control @error('phone') is-invalid @enderror"
+                                                                name="phone" value="{{ old('phone') }}" required
+                                                                placeholder="Enter phone number">
+                                                            @error('phone')
                                                                 <span class="invalid-feedback" role="alert">
                                                                     <strong>{{ $message }}</strong>
                                                                 </span>

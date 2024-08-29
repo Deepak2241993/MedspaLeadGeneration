@@ -16,19 +16,58 @@ class CallController extends Controller
     {
         $this->twilio = new Client(env('TWILIO_SID'), env('TWILIO_AUTH_TOKEN'));
         // permision 
-        $this->middleware('permission:view call',['only' => ['outboundCall','userGather','endCall','connectClient']]);
+        // $this->middleware('permission:call_create',['only' => ['outboundCall','userGather','endCall','connectClient']]);
         // role & permisssion
-        $this->middleware('permission:outboundCall',['only' => ['outboundCall']]);
+        // $this->middleware('permission:call_create',['only' => ['outboundCall']]);
         
     }
 
+    // public function outboundCall(Request $request)
+    // {
+    //     $twilio_number = env('TWILIO_PHONE_NUMBER');
+    //     $userPhoneNumber = "+919015601004"; // The phone number of the user to connect first
+    //     $clientPhoneNumber = '+91' . $request->input('phone'); // The phone number of the client to connect after the user
+
+    //     try {
+    //         // Call the user first
+    //         $call = $this->twilio->calls->create(
+    //             $userPhoneNumber, // To
+    //             $twilio_number, // From
+    //             [
+    //                 'url' => route('twilio.user-gather', ['client_phone' => $clientPhoneNumber]),
+    //                 'method' => 'POST',
+    //                 'record' => 'true', // Enable call recording
+    //                 'recordingStatusCallback' => route('twilio.recording-status'), // URL to receive recording status updates
+    //                 'recordingStatusCallbackMethod' => 'POST' // Method to send recording status updates
+    //             ]
+    //         );
+
+    //         // Log the Call SID for debugging
+    //         Log::info('Call initiated with SID: ' . $call->sid);
+
+    //         // Store the Call SID in the session for later use (optional)
+    //         session(['twilio_call_sid' => $call->sid]);
+
+    //         return response()->json(['status' => 'Call initiated', 'call_sid' => $call->sid]);
+    //     } catch (\Exception $e) {
+    //         Log::error('Error initiating call: ' . $e->getMessage());
+    //         return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
+    //     }
+    // }
     public function outboundCall(Request $request)
     {
         $twilio_number = env('TWILIO_PHONE_NUMBER');
-        $userPhoneNumber = "+919599328948"; // The phone number of the user to connect first
-        $clientPhoneNumber = '+91' . $request->input('phone'); // The phone number of the client to connect after the user
-
+        $userPhoneNumber = "+918920005414"; // The phone number of the user to connect first
+        $clientPhoneNumber = '+1' . $request->input('phone'); // The phone number of the client to connect after the user
+    
         try {
+            // Log the numbers being called
+            Log::info('Initiating call:', [
+                'twilio_number' => $twilio_number,
+                'userPhoneNumber' => $userPhoneNumber,
+                'clientPhoneNumber' => $clientPhoneNumber,
+            ]);
+    
             // Call the user first
             $call = $this->twilio->calls->create(
                 $userPhoneNumber, // To
@@ -41,16 +80,17 @@ class CallController extends Controller
                     'recordingStatusCallbackMethod' => 'POST' // Method to send recording status updates
                 ]
             );
-
+    
             // Log the Call SID for debugging
             Log::info('Call initiated with SID: ' . $call->sid);
-
+    
             // Store the Call SID in the session for later use (optional)
             session(['twilio_call_sid' => $call->sid]);
-
+    
             return response()->json(['status' => 'Call initiated', 'call_sid' => $call->sid]);
         } catch (\Exception $e) {
             Log::error('Error initiating call: ' . $e->getMessage());
+    
             return response()->json(['status' => 'Error', 'message' => $e->getMessage()], 500);
         }
     }

@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
+    'App\\Events\\MessageReceived' => $baseDir . '/app/Events/MessageReceived.php',
     'App\\Events\\MessageSent' => $baseDir . '/app/Events/MessageSent.php',
     'App\\Events\\RecivedMessage' => $baseDir . '/app/Events/RecivedMessage.php',
     'App\\Exceptions\\Handler' => $baseDir . '/app/Exceptions/Handler.php',
@@ -51,6 +52,7 @@ return array(
     'App\\Http\\Middleware\\VerifyCsrfToken' => $baseDir . '/app/Http/Middleware/VerifyCsrfToken.php',
     'App\\Jobs\\FetchTwilioData' => $baseDir . '/app/Jobs/FetchTwilioData.php',
     'App\\Mail\\YourEmailTemplate' => $baseDir . '/app/Mail/YourEmailTemplate.php',
+    'App\\Models\\ClientAssignment' => $baseDir . '/app/Models/ClientAssignment.php',
     'App\\Models\\CommonModel' => $baseDir . '/app/Models/CommonModel.php',
     'App\\Models\\Message' => $baseDir . '/app/Models/Message.php',
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',

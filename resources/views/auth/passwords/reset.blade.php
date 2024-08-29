@@ -14,12 +14,12 @@
                             <div class="d-flex flex-column h-100 py-0 py-xl-3">
                                 <div class="text-center mb-4">
                                     <a href="index" class="">
-                                        <img src="{{ URL::asset('build/images/logo-dark.png') }}" alt=""
-                                            height="22" class="auth-logo logo-dark mx-auto">
-                                        <img src="{{ URL::asset('build/images/logo-light.png') }}" alt=""
+                                        <img src="{{ URL::asset('build/images/dark-logo.png') }}" alt=""
+                                            height="100%" width="25%" class="auth-logo logo-dark mx-auto">
+                                        <img src="{{ URL::asset('build/images/light-logo.png') }}" alt=""
                                             height="22" class="auth-logo logo-light mx-auto">
                                     </a>
-                                    <p class="text-muted mt-2">User Experience & Interface Design Strategy Saas Solution</p>
+                                    {{-- <p class="text-muted mt-2">User Experience & Interface Design Strategy Saas Solution</p> --}}
                                 </div>
 
                                 <div class="card my-auto overflow-hidden">
@@ -102,8 +102,7 @@
                                     <p class="mb-0">©
                                         <script>
                                             document.write(new Date().getFullYear())
-                                        </script> Tocly. Crafted with <i
-                                            class="mdi mdi-heart text-danger"></i> by Themesdesign
+                                        </script>Medspa. Crafted with <i class="fas fa-heart"></i> by Temz
                                     </p>
                                 </div>
                             </div>

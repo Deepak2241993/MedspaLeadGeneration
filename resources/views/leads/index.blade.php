@@ -145,7 +145,7 @@
                                                     <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                                 </form>
                                                 @endcan
-                                                @can('lead_call')
+                                                @can('call_create')
                                                     
                                                 <a class="btn btn-success btn-sm btn-call"
                                                     data-phone="{{ $lead['phone'] }}"
@@ -593,5 +593,17 @@
                 "showMethod": "fadeIn",
                 "hideMethod": "fadeOut"
             };
+        </script>
+        <script>
+            function sendMessage(event, phone) {
+                event.preventDefault();
+                
+                // Define the URL for the message dashboard
+                let dashboardUrl = '/messages'; // Replace with the actual route
+
+                // Append the phone number as a query parameter or as part of the URL
+                window.location.href = `${dashboardUrl}?phone=${phone}`;
+            }
+
         </script>
     @endsection
