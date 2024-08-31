@@ -43,7 +43,15 @@
                         </div>
                     </div>
 
-                    <textarea id="elm1" name="area"></textarea>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label for="htmlcode" class="f-14 text-dark-grey">
+                                Create Template<sub class="f-14 mr-1">*</sub>
+                            </label>
+                            <textarea name="html_code" id="summernote" cols="30" rows="10" class="summernote" placeholder="html_code"></textarea>
+
+                        </div>
+                    </div>
                     <div>
                         <button type="submit" class="btn btn-primary w-md">Submit</button>
                     </div>
@@ -55,12 +63,29 @@
 @endsection
 
 @section('scripts')
-    <!--tinymce js-->
-    <script src="{{ URL::asset('build/libs/tinymce/tinymce.min.js') }}"></script>
+    
 
     <!-- init js -->
     <script src="{{ URL::asset('build/js/pages/form-editor.init.js') }}"></script>
     
     <!-- App js -->
     <script src="{{ URL::asset('build/js/app.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+    // Initialize Summernote
+    $('#summernote').summernote({
+        height: 300,   // Set editor height
+        minHeight: null, // Set minimum height of editor
+        maxHeight: null, // Set maximum height of editor
+        focus: true    // Set focus to editable area after initializing summernote
+    });
+
+    // Ensure the content is synced with the textarea on form submission
+    $('form').on('submit', function() {
+        // Synchronize the content of Summernote with the textarea
+        $('#summernote').val($('#summernote').summernote('code'));
+    });
+});
+
+    </script>
 @endsection

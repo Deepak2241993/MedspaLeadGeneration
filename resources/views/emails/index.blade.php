@@ -48,13 +48,13 @@
                                                 placeholder="Subject">
                                         </div>
                                     </div>
-                                    <div class="col-md-4 dropdown">
+                                    <div class="col-md-4">
                                         <div class="form-group my-3">
                                             <label for="selectedTemplate" class="f-14 text-dark-grey">Email Template<sub class="f-14 mr-1">*</sub></label>
                                             <select id="selectedTemplate" name="selectedTemplate" class="form-control mb-0">
                                                 <option value="">Select Email Template</option>
                                                 @foreach($emailTemplates as $template)
-                                                    <option value="{{ $template['_id'] }}">{{ $template['title'] }}</option>
+                                                    <option value="{{ $template['_id'] }}" data-html_code="{{ $template['html_code'] }}">{{ $template['title'] }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -63,15 +63,14 @@
                                 
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <label for="elm1" class="f-14 text-dark-grey">
+                                        <label for="htmlcode" class="f-14 text-dark-grey">
                                             Create Template<sub class="f-14 mr-1">*</sub>
                                         </label>
-                                        <textarea id="elm1" name="html_code"></textarea>
+                                        <textarea name="html_code" id="summernote" cols="30" rows="10" class="summernote"
+                                            placeholder="html_code"></textarea>
                                     </div>
                                 </div>
                                 
-                    
-                               
                             </div>
                     
                             <div class="col-xs-12 col-sm-12 col-md-12 text-right">
@@ -79,54 +78,74 @@
                             </div>
                         </div>
                     </form>
-                    
                 </div>
             </div>
         </div>
     </div>
-    @section('scripts')
-    <!--tinymce js-->
-    <script src="{{ URL::asset('build/libs/tinymce/tinymce.min.js') }}"></script>
-
-    <!-- init js -->
-    <script src="{{ URL::asset('build/js/pages/form-editor.init.js') }}"></script>
-    
-    <!-- App js -->
-    <script src="{{ URL::asset('build/js/app.js') }}"></script>
 @endsection
-    <script>
-        $(document).ready(function () {
-            
 
-            $('#emailForm').on('submit', function (e) {
-                e.preventDefault();
-                $('#emailForm button[type="submit"]').prop('disabled', true);
-                
-                var formData = new FormData(this);
+@section('scripts')
 
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('emails.send') }}",
-                    data: formData,
-                    contentType: false,
-                    processData: false,
-                    success: function (response) {
-                        if (response.success) {
-                            alert('Email sent successfully!');
-                            $('#emailForm')[0].reset();
-                            $('#summernote').summernote('code', '');
-                        } else {
-                            alert('Failed to send email. Please try again.');
-                        }
-                        $('#emailForm button[type="submit"]').prop('disabled', false);
-                    },
-                    error: function (xhr) {
-                        console.log(xhr.responseText);
-                        alert('An error occurred. Please check the console for more details.');
-                        $('#emailForm button[type="submit"]').prop('disabled', false);
+
+<!-- init js -->
+<script src="{{ URL::asset('build/js/pages/form-editor.init.js') }}"></script>
+
+<!-- App js -->
+<script src="{{ URL::asset('build/js/app.js') }}"></script>
+<script>
+    $(document).ready(function () {
+        $('#emailForm').on('submit', function (e) {
+            e.preventDefault();
+            var $submitButton = $('#emailForm button[type="submit"]');
+            $submitButton.prop('disabled', true);
+
+            var formData = new FormData(this);
+
+            $.ajax({
+                type: "POST",
+                url: $(this).attr('action'), // Use the form action attribute for the URL
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    if (response.status === 'success') {
+                        // alert('Email sent successfully!');
+                        $('#emailForm')[0].reset();
+                        $('#summernote').summernote('reset'); // Clear Summernote content
+                        
+                        // Redirect to leads index page after successful email sending
+                        window.location.href = response.redirect_url;
+                    } else {
+                        // If there are invalid emails or other issues, show the relevant message
+                        alert('Failed to send some emails. Invalid emails: ' + (response.invalid_emails ? response.invalid_emails.join(', ') : 'None') + '.');
                     }
-                });
+                },
+                error: function (xhr) {
+                    console.log(xhr.responseText);
+                    alert('An error occurred. Please check the console for more details.');
+                },
+                complete: function() {
+                    // Always enable the submit button after request completes, regardless of success or failure
+                    $submitButton.prop('disabled', false);
+                }
             });
         });
-    </script>
+
+
+        // Update Summernote editor content when a template is selected
+        $('#selectedTemplate').on('change', function () {
+            // Get the selected option
+            var selectedOption = $(this).find('option:selected');
+            
+            // Get the HTML code associated with the selected template
+            var templateContent = selectedOption.data('html_code') || ''; // Default to empty string if no content
+            
+            // Set the content in the Summernote editor
+            $('#summernote').summernote('code', templateContent);
+        });
+
+
+       
+    });
+</script>
 @endsection

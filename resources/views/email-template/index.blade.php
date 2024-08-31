@@ -66,7 +66,7 @@
                                         <th><input type="checkbox" id="check-all"></th>
                                         <th>Sr No.</th>
                                         <th>Title</th>
-                                        <th>Content</th>
+                                        <!-- <th>Content</th> -->
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -86,7 +86,7 @@
                                             </td>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $lead['title'] }}</td>
-                                            <td>{!! $lead['html_code'] !!}</td>
+                                            <!-- <td>{!! $lead['html_code'] !!}</td> -->
                                             <td>
                                                 <a href="{{ route('email.edit', $lead['_id']) }}"
                                                     class="btn btn-primary btn-sm">Edit</a>
