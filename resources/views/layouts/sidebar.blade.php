@@ -41,19 +41,19 @@
 
 
                 @if (Auth::check() && Auth::user()->role === 'super_admin')
-                    <li>
-                        <a href="{{ route('super-admin.dashboard') }}" class="waves-effect">
-                            <i class="fas fa-tv"></i><span class="badge rounded-pill bg-success float-end">3</span>
-                            <span>Dashboard</span>
-                        </a>
-                    </li>
+                <li>
+                    <a href="{{ route('super-admin.dashboard') }}" class="waves-effect">
+                        <i class="fas fa-tv"></i><span class="badge rounded-pill bg-success float-end">3</span>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
                 @else
-                    <li>
-                        <a href="{{ route('dashboard') }}" class="waves-effect">
-                            <i class="fas fa-tv"></i>
-                            <span>Dashboard</span>
-                        </a>
-                    </li>
+                <li>
+                    <a href="{{ route('dashboard') }}" class="waves-effect">
+                        <i class="fas fa-tv"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
                 @endif
                 @can('role_view')
                 <li>
@@ -61,10 +61,10 @@
                         <i class="fas fa-wrench"></i><span class="badge rounded-pill bg-success float-end">3</span>
                         <span>Roles & Permissions</span>
                     </a>
-                   
+
                 </li>
                 @endcan
-             
+
                 @can('lead_view')
                 <li>
                     <a href="{{ route('leads.index') }}" class="waves-effect">
@@ -89,9 +89,9 @@
                         <span>Email Template</span>
                     </a>
                 </li>
-                    
+
                 @endcan
-               
+
                 @can('message_view')
                 <li>
                     <a href="{{ route('messages.index') }}" class="waves-effect">
@@ -99,11 +99,11 @@
                         <span>Message</span>
                     </a>
                 </li>
-                    
-                @endcan
-                
 
-                 {{-- <li>
+                @endcan
+
+
+                {{-- <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="uim uim-comment-message"></i>
                         <span>Apps</span>
@@ -358,8 +358,17 @@
 
 
                 <div class="flex-grow-1 ms-2 text-start">
-                    <span class="ms-1 fw-medium user-name-text">{{ Auth::user()->name }}</span>
-                </div>                
+                    <span class="ms-1 fw-medium user-name-text">
+                        {{ Auth::user()->name }}
+                        (
+                        @if(Auth::user()->getRoleNames()->isEmpty())
+                        No role assigned
+                        @else
+                        {{ Auth::user()->getRoleNames()->implode(', ') }}
+                        @endif
+                        )
+                    </span>
+                </div>
 
                 <div class="flex-shrink-0 text-end">
                     <i class="mdi mdi-dots-vertical font-size-16"></i>
