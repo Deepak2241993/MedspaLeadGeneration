@@ -77,10 +77,15 @@
                                     <td>
                                         @if(!empty($lead->getRoleNames()))
                                             @foreach ($lead->getRoleNames() as $rolename)
-                                                <label class="badge bg-primary mx-1">{{ $rolename }}</label>
+                                                @if($rolename === 'Role Not Define')
+                                                    <label class="badge bg-danger mx-1">{{ $rolename }}</label>
+                                                @else
+                                                    <label class="badge bg-primary mx-1">{{ $rolename }}</label> 
+                                                @endif
                                             @endforeach
                                         @endif
                                     </td>
+
 
                                     <td>
                                         <a href="{{ url('users/'.$lead->id.'/edit') }}" class="btn btn-sm btn-info">Edit</a>

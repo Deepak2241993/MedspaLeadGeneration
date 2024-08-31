@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
+use App\Models\User;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+
 
 trait ResetsPasswords
 {
@@ -27,6 +31,7 @@ trait ResetsPasswords
     public function showResetForm(Request $request)
     {
         $token = $request->route()->parameter('token');
+        // dd($token);
 
         return view('auth.passwords.reset')->with(
             ['token' => $token, 'email' => $request->email]
@@ -39,27 +44,82 @@ trait ResetsPasswords
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
+    // public function reset(Request $request)
+    // {
+
+    //     try {
+    //         $request->validate($this->rules(), $this->validationErrorMessages());
+    //     } catch (\Illuminate\Validation\ValidationException $e) {
+    //         // Inspect the errors
+    //         dd($e->errors());
+    //     }
+
+    //     // Here we will attempt to reset the user's password. If it is successful we
+    //     // will update the password on an actual user model and persist it to the
+    //     // database. Otherwise we will parse the error and return the response.
+    //     $response = $this->broker()->reset(
+    //         $this->credentials($request), function ($user, $password) {
+    //             $this->resetPassword($user, $password);
+    //         }
+    //     );
+
+    //     // If the password was successfully reset, we will redirect the user back to
+    //     // the application's home authenticated view. If there is an error we can
+    //     // redirect them back to where they came from with their error message.
+    //     return $response == Password::PASSWORD_RESET
+    //                 ? $this->sendResetResponse($request, $response)
+    //                 : $this->sendResetFailedResponse($request, $response);
+    // }
     public function reset(Request $request)
     {
+        // Validate the request data
+        $this->validateResetRequest($request);
         
-        $request->validate($this->rules(), $this->validationErrorMessages());
-        // dd($request->all());
+        // Get the token and email from the request
+        $token = $request->input('_token');
+        $email = $request->input('email');
+        $password = $request->input('password');
+        
+        // Check if the token is valid
+        $passwordReset = DB::table('password_resets')->where('email', $email)->first();
+        
+        // if (!$passwordReset || $passwordReset->token !== $token) {
+        //     throw ValidationException::withMessages([
+        //         'email' => ['The provided token is invalid.'],
+        //     ]);
+        // }
+        
+        // Update the user's password
+        $user = User::where('email', $email)->first();
+        
+        if (!$user) {
+            throw ValidationException::withMessages([
+                'email' => ['We can\'t find a user with that email address.'],
+            ]);
+        }
+        // dd($token);
 
-        // Here we will attempt to reset the user's password. If it is successful we
-        // will update the password on an actual user model and persist it to the
-        // database. Otherwise we will parse the error and return the response.
-        $response = $this->broker()->reset(
-            $this->credentials($request), function ($user, $password) {
-                $this->resetPassword($user, $password);
-            }
-        );
+        $user->password = Hash::make($password);
+        $user->setRememberToken(Str::random(60));
+        $user->save();
 
-        // If the password was successfully reset, we will redirect the user back to
-        // the application's home authenticated view. If there is an error we can
-        // redirect them back to where they came from with their error message.
-        return $response == Password::PASSWORD_RESET
-                    ? $this->sendResetResponse($request, $response)
-                    : $this->sendResetFailedResponse($request, $response);
+        // Delete the password reset token
+        DB::table('password_resets')->where('email', $email)->delete();
+
+        // Log in the user
+        Auth::login($user);
+
+        // Send a response
+        return redirect()->route('login')->with('status', 'Password has been reset!');
+    }
+
+    protected function validateResetRequest(Request $request)
+    {
+        $request->validate([
+            '_token' => 'required',
+            'email' => 'required|email',
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
     }
 
     /**
@@ -108,8 +168,8 @@ trait ResetsPasswords
      */
     protected function resetPassword($user, $password)
     {
-        dd($user);
         $this->setUserPassword($user, $password);
+        dd($user);
 
         $user->setRememberToken(Str::random(60));
 

@@ -41,13 +41,10 @@
                 <label for="email" class="form-label">Email</label>
                 <input type="email" class="form-control" id="email" value="{{ $user->email }}" readonly name="email" required>
             </div>
+            
             <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password" name="password" required>
-            </div>
-            <div class="mb-3">
-                <label for="name" class="form-label">Role</label>
-                <select name="roles[]" class="form-control" multiple id="">
+                <label for="roles" class="form-label">Role</label>
+                <select name="roles" class="form-control" multiple id="">
                     <option value="">Select Role</option>
                     @foreach ($roles as $role)
                         <option value="{{ $role }}" {{ in_array($role, $userRoles) ? 'selected':'' }}>{{ $role }}</option>

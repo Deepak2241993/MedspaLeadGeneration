@@ -1,20 +1,32 @@
 @extends('layouts.master')
+
 @section('title')
     Dashboard
 @endsection
+
 @section('css')
     <!-- jsvectormap css -->
     <link href="{{ URL::asset('build/libs/jsvectormap/css/jsvectormap.min.css') }}" rel="stylesheet" type="text/css" />
 @endsection
+
 @section('page-title')
     Dashboard
 @endsection
-@section('body')
 
+@section('body')
     <body data-sidebar="colored">
     @endsection
-    @section('content')
+
+@section('content')
     <h1>Welcome, {{ Auth::user()->name }}!</h1>
+
+    @if(Auth::user()->getRoleNames()->isEmpty())
+        <!-- If the user has no roles assigned, display this message -->
+        <div class="alert alert-warning">
+            Your role will be assigned soon. Please contact the administrator for more details.
+        </div>
+    @else
+        <!-- If the user has roles assigned, display the dashboard -->
         <div class="row">
             <div class="col-xl-3 col-md-6">
                 <div class="card">
@@ -26,16 +38,10 @@
                                 </span>
                             </div>
                             <a href="{{ route('leads.index') }}">
-                            <div class="flex-grow-1 overflow-hidden ms-4">
-                                <p class="text-muted text-truncate font-size-15 mb-2"> Total Leads ({{ $leadCount }})</p>
-                                {{-- <h3 class="fs-4 flex-grow-1 mb-3">34,123.20 <span class="text-muted font-size-16">USD</span>
-                                </h3>
-                                <p class="text-muted mb-0 text-truncate"><span
-                                        class="badge bg-subtle-success text-success font-size-12 fw-normal me-1"><i
-                                            class="mdi mdi-arrow-top-right"></i> 2.8% Increase</span> vs last month</p> --}}
-                            </div>
-                        </a>
-                            
+                                <div class="flex-grow-1 overflow-hidden ms-4">
+                                    <p class="text-muted text-truncate font-size-15 mb-2"> Total Leads ({{ $leadCount }})</p>
+                                </div>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -51,11 +57,6 @@
                             </div>
                             <div class="flex-grow-1 overflow-hidden ms-4">
                                 <p class="text-muted text-truncate font-size-15 mb-2"> Total Email Template</p>
-                                {{-- <h3 class="fs-4 flex-grow-1 mb-3">34,123.20 <span class="text-muted font-size-16">USD</span>
-                                </h3>
-                                <p class="text-muted mb-0 text-truncate"><span
-                                        class="badge bg-subtle-success text-success font-size-12 fw-normal me-1"><i
-                                            class="mdi mdi-arrow-top-right"></i> 2.8% Increase</span> vs last month</p> --}}
                             </div>
                             <div class="flex-shrink-0 align-self-start">
                                 <div class="dropdown">
@@ -63,34 +64,24 @@
                                         data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="ri-more-2-fill text-muted font-size-16"></i>
                                     </a>
-                                    {{-- <div class="dropdown-menu dropdown-menu-end">
-                                        <a class="dropdown-item" href="#">Yearly</a>
-                                        <a class="dropdown-item" href="#">Monthly</a>
-                                        <a class="dropdown-item" href="#">Weekly</a>
-                                        <a class="dropdown-item" href="#">Today</a>
-                                    </div> --}}
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
-
-
         </div>
-        <!-- END ROW -->
+    @endif
 
-    @endsection
-    @section('scripts')
-        <!-- apexcharts -->
-        <script src="{{ URL::asset('build/libs/apexcharts/apexcharts.min.js') }}"></script>
+@endsection
 
-        <!-- Vector map-->
-        <script src="{{ URL::asset('build/libs/jsvectormap/js/jsvectormap.min.js') }}"></script>
-        <script src="{{ URL::asset('build/libs/jsvectormap/maps/world-merc.js') }}"></script>
-
-        <script src="{{ URL::asset('build/js/pages/dashboard.init.js') }}"></script>
-        <!-- App js -->
-        <script src="{{ URL::asset('build/js/app.js') }}"></script>
-    @endsection
+@section('scripts')
+    <!-- apexcharts -->
+    <script src="{{ URL::asset('build/libs/apexcharts/apexcharts.min.js') }}"></script>
+    <!-- Vector map-->
+    <script src="{{ URL::asset('build/libs/jsvectormap/js/jsvectormap.min.js') }}"></script>
+    <script src="{{ URL::asset('build/libs/jsvectormap/maps/world-merc.js') }}"></script>
+    <script src="{{ URL::asset('build/js/pages/dashboard.init.js') }}"></script>
+    <!-- App js -->
+    <script src="{{ URL::asset('build/js/app.js') }}"></script>
+@endsection

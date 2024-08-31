@@ -47,7 +47,7 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('/login');
     }
     protected function authenticated(Request $request, $user)
     {
@@ -55,14 +55,11 @@ class LoginController extends Controller
         Log::info('Authenticated user: ' . $user->email);
         if ($user->hasRole('Super Admin')) {
             Log::info('Redirecting super-admin to their dashboard');
-            return redirect()->route('super-admin.dashboard');
+            return redirect()->route('dashboard');
         } elseif ($user) {
             Log::info('Redirecting sales-team to their dashboard');
             return redirect()->route('dashboard');
-        } elseif ($user->hasRole('Sales')) {
-            Log::info('Redirecting account-team to their dashboard');
-            return redirect()->route('dashboard');
-        }
+        } 
 
         return redirect('/');
     }
