@@ -43,8 +43,8 @@
             </div>
             
             <div class="mb-3">
-                <label for="roles" class="form-label">Role</label>
-                <select name="roles" class="form-control" multiple id="">
+                <label for="name" class="form-label">Role</label>
+                <select name="roles[]" class="form-control"  id="">
                     <option value="">Select Role</option>
                     @foreach ($roles as $role)
                         <option value="{{ $role }}" {{ in_array($role, $userRoles) ? 'selected':'' }}>{{ $role }}</option>

@@ -70,6 +70,7 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:25',
             'email' => 'required|email|unique:users,email,' . $user->id, // Ensure email uniqueness, excluding the current user
+            'password' => 'nullable|string|min:5|max:20', // Password is optional for update
             'roles' => 'required|array', // Ensure roles is an array
             'roles.*' => 'exists:roles,name' // Ensure each role exists in the roles table
         ]);
