@@ -39,7 +39,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    @if (session('success'))
+                  @if (session('success'))
                         <div class="alert alert-success">
                             {{ session('success') }}
                         </div>
@@ -49,6 +49,7 @@
                             {{ session('error') }}
                         </div>
                     @endif
+
                     <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap"
                         style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead>

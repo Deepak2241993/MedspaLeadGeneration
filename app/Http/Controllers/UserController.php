@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use App\Models\User;
+use App\Mail\UserRoleUpdated;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -67,28 +69,39 @@ class UserController extends Controller
     
     public function update(Request $request, User $user)
     {
+        // Validate the incoming request
         $request->validate([
             'name' => 'required|string|max:25',
             'email' => 'required|email|unique:users,email,' . $user->id, // Ensure email uniqueness, excluding the current user
-            'password' => 'nullable|string|min:5|max:20', // Password is optional for update
             'roles' => 'required|array', // Ensure roles is an array
             'roles.*' => 'exists:roles,name' // Ensure each role exists in the roles table
         ]);
     
+        // Prepare the data for updating the user
         $data = [
             'name' => $request->name,
             'email' => $request->email,
         ];
     
+        // If a password is provided, hash it and add it to the update data
         if (!empty($request->password)) {
             $data['password'] = Hash::make($request->password);
         }
     
+        // Update the user with the provided data
         $user->update($data);
+    
+        // Sync the roles for the user
         $user->syncRoles($request->roles);
     
-        return redirect('/users')->with('status', 'User updated successfully');
+        // Send an email notification to the user about the role update
+        Mail::to($user->email)->send(new UserRoleUpdated($user));
+    
+        // Redirect back to the users page with a success message
+        return redirect('/users')->with('success', 'User updated successfully and the email has been sent to them.');
+
     }
+    
 
     public function destroy($userId)
     {
