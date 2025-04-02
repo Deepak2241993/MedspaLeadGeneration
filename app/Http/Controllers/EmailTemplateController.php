@@ -20,28 +20,32 @@ class EmailTemplateController extends Controller
     {
         $api = new CommonModel();
         $result = $api->getAPI('email_template/list');
-        // dd($result);
 
-        // Check if $result is null or not an array
+
         if (is_array($result) && isset($result['status'])) {
             if ($result['status'] == "success") {
                 $data = $result['data'];
 
-                // Check if data is empty
+
                 if (empty($data)) {
                     $message = 'No data found.';
                 } else {
-                    $message = null; // No error message if data is found
+
+                    usort($data, function ($a, $b) {
+
+                        return strtotime($b['updated_on']) - strtotime($a['updated_on']);
+                    });
+                    $message = null;
                 }
 
                 return view('email-template.index', compact('data', 'message'));
             } else {
-                // Handle the case where API call was successful but status is not "success"
-                $error_message = 'Failed to retrieve leads.';
+
+                $error_message = 'No Email Template Available';
                 return view('email-template.index', compact('error_message'));
             }
         } else {
-            // Handle the case where $result is null or not an array (API call failed)
+
             $error_message = 'Failed to retrieve data from API.';
             return view('email-template.index', compact('error_message'));
         }
@@ -57,7 +61,7 @@ class EmailTemplateController extends Controller
 
         // Extract data from the request
         $title = $request->title;
-        $html_code = $request->area;
+        $html_code = $request->html_code;
         $status = $request->status;
 
         // Prepare data array to be sent to the API
@@ -80,22 +84,29 @@ class EmailTemplateController extends Controller
             return redirect()->route('email.index')->with('imperialheaders_success', $result['responseMessage']);
         } else {
             // API call was successful
-            return redirect()->route('email.index')->with('imperialheaders_success', $result['responseMessage']);
+            return redirect()->route('email.index')->with('imperialheaders_success', "Email Template Created Successfully ");
         }
     }
     public function edit($id)
-    {
-        // dd($id);
-        $api = new CommonModel();
-        $emailtemp = $api->getAPI('emailtemplate/edit/' . $id);
-        return view('email-template.edit')->with('emailtemp', $emailtemp);
-    }
+        {
+            $api = new CommonModel();
+            $emailtemp = $api->getAPI('email_template/edit/' . $id);
+            return view('email-template.edit')->with('emailtemp', $emailtemp);
+        }
+        
     public function update(Request $request, $id)
-    {
-        // $emailTemplate = EmailTemplate::findOrFail($id);
-        // $emailTemplate->update($request->all());
-
-        return back()->with('success', 'Email Template updated successfully');
+        {
+            $api = new CommonModel();
+            $data_arr = $request->except('_token', '_method');
+            $data_arr['_id'] = $id;
+            $data = json_encode($data_arr);
+            $apiResult = $api->postAPI("email_template/update", $data);
+            if ($apiResult && $apiResult['status'] === 'success') {
+                return redirect()->route('email.index')->with('imperialheaders_success', 'Email Template Updated Successfully');
+            } else {
+                $errorMessage = $apiResult['message'] ?? 'Failed to update email template via API';
+                return redirect()->route('email.edit', $id)->with('error', $errorMessage);
+            }
     }
 
 
@@ -110,7 +121,7 @@ class EmailTemplateController extends Controller
             return redirect()->route('email.index')->with('imperialheaders_success', $result['responseMessage']);
         } else {
             // API call was successful
-            return redirect()->route('email.index')->with('imperialheaders_success', $result['responseMessage']);
+            return redirect()->route('email.index')->with('imperialheaders_success', 'Email Template Deleted Successfully');
         }
     }
 }

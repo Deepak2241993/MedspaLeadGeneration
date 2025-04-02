@@ -12,7 +12,7 @@
                         <div class="w-100">
                             <div class="d-flex flex-column h-100 py-0 py-xl-3">
                                 <div class="text-center mb-4">
-                                    <a href="index" class="">
+                                    <a href="/" class="">
                                         <img src="{{ URL::asset('build/images/dark-logo.png') }}" alt=""
                                             height="100%" width="25%" class="auth-logo logo-dark mx-auto">
                                         <img src="{{ URL::asset('build/images/light-logo.png') }}" alt=""
@@ -86,11 +86,18 @@
                                                             <div class="signin-other-title">
                                                                 <h5 class="font-size-14 mb-4 title">Sign In with</h5>
                                                             </div>
-                                                            <div class="pt-2 hstack gap-2 justify-content-center">
-                                                                <button type="button" class="btn btn-primary btn-sm"><i class="fab fa-facebook-f"></i></button>
-                                                                <button type="button" class="btn btn-info btn-sm"><i class="fab fa-instagram"></i></button>
-                                                                <button type="button" class="btn btn-info btn-sm"><i class="fab fa-twitter"></i></button>
+                                                           <div class="pt-2 hstack gap-2 justify-content-center">
+                                                                <a href="https://www.facebook.com/ForeverMedSpaNJ" target="_blank" class="btn btn-primary btn-sm">
+                                                                    <i class="fab fa-facebook-f"></i>
+                                                                </a>
+                                                                <a href="https://www.instagram.com/forevermedspa/" target="_blank" class="btn btn-info btn-sm">
+                                                                    <i class="fab fa-instagram"></i>
+                                                                </a>
+                                                                <a href="https://x.com/ForeverMedSpaNJ" target="_blank" class="btn btn-info btn-sm">
+                                                                    <i class="fab fa-twitter"></i>
+                                                                </a>
                                                             </div>
+
                                                         </div>
                                                     </form>
                                                 </div>
@@ -110,7 +117,7 @@
                                     <p class="mb-0">©
                                         <script>
                                             document.write(new Date().getFullYear())
-                                        </script>Medspa. Crafted with <i class="fas fa-heart"></i> by Temz
+                                        </script>Medspa. Crafted with <i class="fas fa-heart"></i> by <a target="_blank" href="https://www.thetemz.com/">Temz</a>
                                     </p>
                                 </div>
                             </div>

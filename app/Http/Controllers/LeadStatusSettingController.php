@@ -77,7 +77,7 @@ class LeadStatusSettingController extends Controller
         $mapped_data = [
             '_id' => $data_arr['columnId'],
             'label_color' => str_replace('#', '', $data_arr['columnColor']),
-            'priority' => $data_arr['columnPosition'],
+            // 'priority' => $data_arr['columnPosition'],
             'name' => $data_arr['columnName']
         ];
         $data = json_encode($mapped_data);

@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Mail\UserRoleUpdated;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use App\Mail\WelcomeMail;
 
 class UserController extends Controller
 {
@@ -42,6 +43,7 @@ class UserController extends Controller
             'roles' => 'required|array', // Ensure roles is an array
             'roles.*' => 'exists:roles,name' // Ensure each role exists in the roles table
         ]);
+        // dd($request->all());
     
         // Create the user
         $user = User::create([
@@ -52,8 +54,11 @@ class UserController extends Controller
     
         // Sync roles
         $user->syncRoles($request->roles);
+
+        // Send a welcome email with the password
+        Mail::to($user->email)->send(new WelcomeMail($user, $request->password));
     
-        return redirect('/users')->with('status', 'User created successfully');
+        return redirect('/users')->with('success', 'User created successfully');
     }
     
     public function edit(User $user)
@@ -69,18 +74,22 @@ class UserController extends Controller
     
     public function update(Request $request, User $user)
     {
+        // dd($request->all());
         // Validate the incoming request
         $request->validate([
             'name' => 'required|string|max:25',
             'email' => 'required|email|unique:users,email,' . $user->id, // Ensure email uniqueness, excluding the current user
+            
+             
             'roles' => 'required|array', // Ensure roles is an array
             'roles.*' => 'exists:roles,name' // Ensure each role exists in the roles table
         ]);
-    
         // Prepare the data for updating the user
         $data = [
             'name' => $request->name,
             'email' => $request->email,
+            'country_code' => $request->country_code,
+            'phone' => $request->phone,
         ];
     
         // If a password is provided, hash it and add it to the update data
@@ -108,7 +117,7 @@ class UserController extends Controller
         $user = User::findorfail($userId);
         $user->delete();
 
-        return redirect('/users')->with('status', 'Users Delete Successfully');
+        return redirect('/users')->with('success', 'Users Delete Successfully');
     }
     
 }

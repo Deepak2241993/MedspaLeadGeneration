@@ -20,13 +20,17 @@ use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceContext;
 use Twilio\Rest\Marketplace\V1\AvailableAddOnList;
 use Twilio\Rest\Marketplace\V1\InstalledAddOnList;
+use Twilio\Rest\Marketplace\V1\ModuleDataList;
 use Twilio\Rest\Marketplace\V1\ModuleDataManagementList;
+use Twilio\Rest\Marketplace\V1\ReferralConversionList;
 use Twilio\Version;
 
 /**
  * @property AvailableAddOnList $availableAddOns
  * @property InstalledAddOnList $installedAddOns
+ * @property ModuleDataList $moduleData
  * @property ModuleDataManagementList $moduleDataManagement
+ * @property ReferralConversionList $referralConversion
  * @method \Twilio\Rest\Marketplace\V1\AvailableAddOnContext availableAddOns(string $sid)
  * @method \Twilio\Rest\Marketplace\V1\InstalledAddOnContext installedAddOns(string $sid)
  * @method \Twilio\Rest\Marketplace\V1\ModuleDataManagementContext moduleDataManagement(string $sid)
@@ -35,7 +39,9 @@ class V1 extends Version
 {
     protected $_availableAddOns;
     protected $_installedAddOns;
+    protected $_moduleData;
     protected $_moduleDataManagement;
+    protected $_referralConversion;
 
     /**
      * Construct the V1 version of Marketplace
@@ -64,12 +70,28 @@ class V1 extends Version
         return $this->_installedAddOns;
     }
 
+    protected function getModuleData(): ModuleDataList
+    {
+        if (!$this->_moduleData) {
+            $this->_moduleData = new ModuleDataList($this);
+        }
+        return $this->_moduleData;
+    }
+
     protected function getModuleDataManagement(): ModuleDataManagementList
     {
         if (!$this->_moduleDataManagement) {
             $this->_moduleDataManagement = new ModuleDataManagementList($this);
         }
         return $this->_moduleDataManagement;
+    }
+
+    protected function getReferralConversion(): ReferralConversionList
+    {
+        if (!$this->_referralConversion) {
+            $this->_referralConversion = new ReferralConversionList($this);
+        }
+        return $this->_referralConversion;
     }
 
     /**

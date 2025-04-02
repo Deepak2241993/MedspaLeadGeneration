@@ -41,13 +41,14 @@
                                                                         <tr>
                                                                             <td class="m_-1377519352946152473content" style="font-family: Open Sans, -apple-system, BlinkMacSystemFont, Roboto, Helvetica Neue, Helvetica, Arial, sans-serif; padding: 40px 48px;">
                                                                                 <h1>Hello, {{ $user->name }}</h1>
-                                                                                <p>We wanted to inform you that your role at <strong>Forever Medspa</strong> has been updated. Your new role is:</p>
-
-                                                                                <ul>
-                                                                                    @foreach($user->roles as $role)
-                                                                                    <li>{{ $role->name }}</li>
-                                                                                    @endforeach
-                                                                                </ul>
+                                                                                <p>Your Details are Updated and mentioned below:- </p>
+                                                                                <p>Name: {{ $name }}</p>
+                                                                                <p>Email: {{ $email }}</p>
+                                                                                <p>Phone: {{ $fullPhoneNumber }}</p>
+                                                                                @foreach($user->roles as $role)
+                                                                                   <p> Role: {{ $role->name }} </p>
+                                                                                @endforeach
+                                                                               
 
                                                                                 <p>If you have any questions, please email us at <a href="mailto:info@forevermedspanj.com">info@forevermedspanj.com</a> or visit the nearest MedSpa Wellness Center.</p>
 

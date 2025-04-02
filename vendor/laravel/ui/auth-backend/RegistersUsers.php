@@ -6,8 +6,6 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\WelcomeMail;
 
 trait RegistersUsers
 {
@@ -31,26 +29,20 @@ trait RegistersUsers
      */
     public function register(Request $request)
     {
-        // Validate the request data
         $this->validator($request->all())->validate();
 
-        // Create a new user and trigger the Registered event
         event(new Registered($user = $this->create($request->all())));
 
-        // Log the user in
         $this->guard()->login($user);
 
-        // Check if there's a registered response, return if exists
         if ($response = $this->registered($request, $user)) {
             return $response;
         }
 
-        // Send a welcome email with the password
-        Mail::to($user->email)->send(new WelcomeMail($user, $request->password));
-
-        return redirect()->route('dashboard');
+        return $request->wantsJson()
+                    ? new JsonResponse([], 201)
+                    : redirect($this->redirectPath());
     }
-
 
     /**
      * Get the guard to be used during registration.

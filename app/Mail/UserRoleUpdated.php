@@ -3,10 +3,7 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Content;
-use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
 class UserRoleUpdated extends Mailable
@@ -15,13 +12,30 @@ class UserRoleUpdated extends Mailable
 
     public $user;
 
+    /**
+     * Create a new message instance.
+     *
+     * @param $user
+     * @param $fullPhoneNumber
+     */
     public function __construct($user)
     {
         $this->user = $user;
     }
 
+    /**
+     * Build the message.
+     *
+     * @return $this
+     */
     public function build()
     {
-        return $this->subject('Your Role Has Been Updated at Forever Medspa')->view('emails.user-role-updated');
+        return $this->subject('Forever Medspa - Details Updated')
+                    ->view('emails.user-role-updated')
+                    ->with([
+                        'name' => $this->user->name,
+                        'email' => $this->user->email,
+                        'fullPhoneNumber' => $this->user->phone,
+                    ]);
     }
 }

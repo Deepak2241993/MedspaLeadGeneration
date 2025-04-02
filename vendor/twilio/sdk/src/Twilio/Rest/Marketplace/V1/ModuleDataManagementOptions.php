@@ -22,11 +22,13 @@ abstract class ModuleDataManagementOptions
 {
 
     /**
-     * @param string $moduleInfo 
-     * @param string $description 
-     * @param string $documentation 
-     * @param string $policies 
-     * @param string $support 
+     * @param string $moduleInfo A JSON object containing essential attributes that define a Listing.
+     * @param string $description A JSON object describing the Listing. You can define the main body of the description, highlight key features or aspects of the Listing, and provide code samples for developers if applicable.
+     * @param string $documentation A JSON object for providing comprehensive information, instructions, and resources related to the Listing.
+     * @param string $policies A JSON object describing the Listing's privacy and legal policies. The maximum file size for Policies is 5MB.
+     * @param string $support A JSON object containing information on how Marketplace users can obtain support for the Listing. Use this parameter to provide details such as contact information and support description.
+     * @param string $configuration A JSON object for providing Listing-specific configuration. Contains button setup, notification URL, and more.
+     * @param string $pricing A JSON object for providing Listing's purchase options.
      * @return UpdateModuleDataManagementOptions Options builder
      */
     public static function update(
@@ -35,7 +37,9 @@ abstract class ModuleDataManagementOptions
         string $description = Values::NONE,
         string $documentation = Values::NONE,
         string $policies = Values::NONE,
-        string $support = Values::NONE
+        string $support = Values::NONE,
+        string $configuration = Values::NONE,
+        string $pricing = Values::NONE
 
     ): UpdateModuleDataManagementOptions
     {
@@ -44,7 +48,9 @@ abstract class ModuleDataManagementOptions
             $description,
             $documentation,
             $policies,
-            $support
+            $support,
+            $configuration,
+            $pricing
         );
     }
 
@@ -54,11 +60,13 @@ abstract class ModuleDataManagementOptions
 class UpdateModuleDataManagementOptions extends Options
     {
     /**
-     * @param string $moduleInfo 
-     * @param string $description 
-     * @param string $documentation 
-     * @param string $policies 
-     * @param string $support 
+     * @param string $moduleInfo A JSON object containing essential attributes that define a Listing.
+     * @param string $description A JSON object describing the Listing. You can define the main body of the description, highlight key features or aspects of the Listing, and provide code samples for developers if applicable.
+     * @param string $documentation A JSON object for providing comprehensive information, instructions, and resources related to the Listing.
+     * @param string $policies A JSON object describing the Listing's privacy and legal policies. The maximum file size for Policies is 5MB.
+     * @param string $support A JSON object containing information on how Marketplace users can obtain support for the Listing. Use this parameter to provide details such as contact information and support description.
+     * @param string $configuration A JSON object for providing Listing-specific configuration. Contains button setup, notification URL, and more.
+     * @param string $pricing A JSON object for providing Listing's purchase options.
      */
     public function __construct(
         
@@ -66,7 +74,9 @@ class UpdateModuleDataManagementOptions extends Options
         string $description = Values::NONE,
         string $documentation = Values::NONE,
         string $policies = Values::NONE,
-        string $support = Values::NONE
+        string $support = Values::NONE,
+        string $configuration = Values::NONE,
+        string $pricing = Values::NONE
 
     ) {
         $this->options['moduleInfo'] = $moduleInfo;
@@ -74,12 +84,14 @@ class UpdateModuleDataManagementOptions extends Options
         $this->options['documentation'] = $documentation;
         $this->options['policies'] = $policies;
         $this->options['support'] = $support;
+        $this->options['configuration'] = $configuration;
+        $this->options['pricing'] = $pricing;
     }
 
     /**
-     * 
+     * A JSON object containing essential attributes that define a Listing.
      *
-     * @param string $moduleInfo 
+     * @param string $moduleInfo A JSON object containing essential attributes that define a Listing.
      * @return $this Fluent Builder
      */
     public function setModuleInfo(string $moduleInfo): self
@@ -89,9 +101,9 @@ class UpdateModuleDataManagementOptions extends Options
     }
 
     /**
-     * 
+     * A JSON object describing the Listing. You can define the main body of the description, highlight key features or aspects of the Listing, and provide code samples for developers if applicable.
      *
-     * @param string $description 
+     * @param string $description A JSON object describing the Listing. You can define the main body of the description, highlight key features or aspects of the Listing, and provide code samples for developers if applicable.
      * @return $this Fluent Builder
      */
     public function setDescription(string $description): self
@@ -101,9 +113,9 @@ class UpdateModuleDataManagementOptions extends Options
     }
 
     /**
-     * 
+     * A JSON object for providing comprehensive information, instructions, and resources related to the Listing.
      *
-     * @param string $documentation 
+     * @param string $documentation A JSON object for providing comprehensive information, instructions, and resources related to the Listing.
      * @return $this Fluent Builder
      */
     public function setDocumentation(string $documentation): self
@@ -113,9 +125,9 @@ class UpdateModuleDataManagementOptions extends Options
     }
 
     /**
-     * 
+     * A JSON object describing the Listing's privacy and legal policies. The maximum file size for Policies is 5MB.
      *
-     * @param string $policies 
+     * @param string $policies A JSON object describing the Listing's privacy and legal policies. The maximum file size for Policies is 5MB.
      * @return $this Fluent Builder
      */
     public function setPolicies(string $policies): self
@@ -125,14 +137,38 @@ class UpdateModuleDataManagementOptions extends Options
     }
 
     /**
-     * 
+     * A JSON object containing information on how Marketplace users can obtain support for the Listing. Use this parameter to provide details such as contact information and support description.
      *
-     * @param string $support 
+     * @param string $support A JSON object containing information on how Marketplace users can obtain support for the Listing. Use this parameter to provide details such as contact information and support description.
      * @return $this Fluent Builder
      */
     public function setSupport(string $support): self
     {
         $this->options['support'] = $support;
+        return $this;
+    }
+
+    /**
+     * A JSON object for providing Listing-specific configuration. Contains button setup, notification URL, and more.
+     *
+     * @param string $configuration A JSON object for providing Listing-specific configuration. Contains button setup, notification URL, and more.
+     * @return $this Fluent Builder
+     */
+    public function setConfiguration(string $configuration): self
+    {
+        $this->options['configuration'] = $configuration;
+        return $this;
+    }
+
+    /**
+     * A JSON object for providing Listing's purchase options.
+     *
+     * @param string $pricing A JSON object for providing Listing's purchase options.
+     * @return $this Fluent Builder
+     */
+    public function setPricing(string $pricing): self
+    {
+        $this->options['pricing'] = $pricing;
         return $this;
     }
 

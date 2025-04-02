@@ -56,6 +56,14 @@
         .chat-message img {
             border-radius: 50%;
         }
+        .custom-audio-container {
+            background-color: #4E9DEF; /* Change this to any color you want */
+            padding: 10px;
+            border-radius: 5px;
+            width: fit-content;
+            display: inline-block;
+        }
+        
     </style>
 @endsection
 
@@ -80,6 +88,18 @@
                                     <span class="mt-2 d-none d-sm-block">Chat</span>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a href="#group" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+                                    <i class="fab fa-facebook-f font-size-20"></i>
+                                    <span class="mt-2 d-none d-sm-block">Facebook</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#instagram" data-bs-toggle="tab" aria-expanded="true" class="nav-link">
+                                    <i class="ri-message-2-line font-size-20"></i>
+                                    <span class="mt-2 d-none d-sm-block">Instagram</span>
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -92,7 +112,7 @@
                                     <li id="chat-user-{{ $lead['_id'] }}">
                                         <a href="#" class="mt-0 chat-user" data-id="{{ $lead['_id'] }}"
                                             data-name="{{ $lead['first_name'] }} {{ $lead['last_name'] }}"
-                                            data-phone="{{ $lead['phone'] }}">
+                                            data-phone="{{ $lead['country_code'] }}{{ $lead['phone'] }}">
                                             <div class="d-flex">
                                                 <div class="user-img online align-self-center me-3">
                                                     <img src="{{ URL::asset('build/images/users/avatar-4.jpg') }}"
@@ -102,10 +122,10 @@
                                                 <div class="flex-1 overflow-hidden">
                                                     <h5 class="text-truncate font-size-14 mb-1">{{ $lead['first_name'] }}
                                                         {{ $lead['last_name'] }}</h5>
-                                                    <p class="text-truncate mb-0">{{ $lead['phone'] }}</p>
+                                                    <p class="text-truncate mb-0">{{ $lead['country_code'] }}{{ $lead['phone'] }}</p>
                                                 </div>
                                                 <div class="font-size-11">
-                                                    {{-- <a href="tel:{{ $lead['phone'] }}" class="">
+                                                    {{-- <a href="tel:+{{ $lead['phone'] }}" class="">
                                                         <i class="fas fa-phone"></i> <!-- Font Awesome phone icon -->
                                                     </a> --}}
                                                 </div>
@@ -120,8 +140,11 @@
                         </div>
                     </div>
                 </div>
+                
+                
             </div>
-            <div class="w-100 user-chat mt-4 mt-sm-0 card mb-0">
+            
+             <div class="w-100 user-chat mt-4 mt-sm-0 card mb-0">
                 <div class="card-body d-flex flex-column">
                     <div class="pb-3 user-chat-border">
                         <div class="row">
@@ -177,7 +200,7 @@
                     </div>
 
                 </div>
-            </div>
+            </div> 
 
         </div>
     @endsection
@@ -201,7 +224,7 @@
                         data.leads.forEach(lead => {
                             const li = document.createElement('li');
                             li.innerHTML = `
-                        <a href="#" class="mt-0 chat-user" data-id="${lead._id}" data-name="${lead.first_name} ${lead.last_name}" data-phone="${lead.phone}">
+                        <a href="#" class="mt-0 chat-user" data-id="${lead._id}" data-name="${lead.first_name} ${lead.last_name}" data-phone="${lead.country_code}${lead.phone}">
                             <div class="d-flex">
                                 <div class="user-img online align-self-center me-3">
                                     <img src="{{ URL::asset('build/images/users/avatar-4.jpg') }}" class="rounded-circle avatar-xs" alt="avatar-2">
@@ -209,7 +232,7 @@
                                 </div>
                                 <div class="flex-1 overflow-hidden">
                                     <h5 class="text-truncate font-size-14 mb-1">${lead.first_name} ${lead.last_name}</h5>
-                                    <p class="text-truncate mb-0">${lead.phone}</p>
+                                    <p class="text-truncate mb-0">${lead.country_code}${lead.phone}</p>
                                 </div>
                                 <div class="font-size-11">04 min</div>
                             </div>
@@ -232,8 +255,12 @@
                 // When a user clicks on a chat-user, set the currentUserPhone
                 $('.chat-user').on('click', function(e) {
                     e.preventDefault();
-                    currentUserPhone = $(this).data('phone');
-                    console.log('User selected:', currentUserPhone);
+                    let countryCode = $(this).data('country-code');  // Assuming the country code is available in data attributes
+                        currentUserPhone = $(this).data('phone');
+                        currentUserPhone = currentUserPhone.replace(/\s+/g, '');    
+
+                        console.log('User selected:', currentUserPhone);
+                    
 
                     // Convert to string if necessary
                     if (typeof currentUserPhone !== 'string') {
@@ -251,14 +278,21 @@
                     // Optionally, load the existing conversation messages here
                 });
 
-                // Function to normalize phone numbers
-                function normalizePhoneNumber(phone) {
-                    if (typeof phone === 'string') {
-                        return phone.replace(/[^\d]/g, '');
-                    } else {
-                        console.error('Phone number is not a string:', phone);
-                        return '';
+                const urlParams = new URLSearchParams(window.location.search);
+                const selectedPhone = urlParams.get('phone');  
+                
+                // Function to normalize phone numbers i have dought here 
+               function normalizePhoneNumber(phone) {
+                    // Check if phone is null or undefined
+                    if (!phone) {
+                        console.error('Phone number is null or undefined:', phone);
+                        return ''; // Return an empty string or handle the error appropriately
                     }
+                
+                    // Ensure the phone is treated as a string, and remove all non-numeric characters
+                    const numericPhone = phone.toString().replace(/\D/g, ''); 
+                    console.log(numericPhone);
+                    return `${numericPhone}`; // Return the numeric string
                 }
 
                 // Initialize Pusher
@@ -277,8 +311,8 @@
 
                     if (data && data.from && data.message) {
                         // Normalize both the current user phone and the sender's phone
-                        const normalizedCurrentUserPhone = normalizePhoneNumber(currentUserPhone);
-                        const normalizedFromPhone = normalizePhoneNumber(data.from);
+                        const normalizedCurrentUserPhone = normalizePhoneNumber(selectedPhone);
+                        const normalizedFromPhone = normalizePhoneNumber(data.message.from);
 
                         console.log('Normalized Current User Phone:', normalizedCurrentUserPhone);
                         console.log('Normalized From Phone:', normalizedFromPhone);
@@ -388,8 +422,8 @@
                                 let messageHtml = '';
 
                                 if (item.type === 'message') {
-                                    const messageClass = item.direction === 'incoming' ? 'right' : '';
-                                    const avatarSrc = item.direction === 'incoming' ?
+                                    const messageClass = item.direction === 'outgoing' ? 'right' : '';
+                                    const avatarSrc = item.direction === 'outgoing' ?
                                         '{{ URL::asset('build/images/users/avatar-2.jpg') }}' :
                                         '{{ URL::asset('build/images/users/avatar-4.jpg') }}';
 
@@ -412,30 +446,38 @@
                             </li>
                         `;
                                 } else if (item.type === 'call') {
-                                    messageHtml = `
-                            <li class="call-record">
-                                <div class="conversation-list">
-                                    <div class="d-flex">
-                                        <div class="flex-grow-1">
-                                            <div class="ctext-wrap">
-                                                <div class="ctext-wrap-content">
-                                                    <p class="mb-0">Call from ${item.from} to ${item.to}</p>
-                                                    <p class="mb-0">Duration: ${item.duration}</p>
-                                                    <span class="chat-time text-muted">${formattedDate}</span>
-                                                    ${item.recording_url ? `
-                                                                        <audio controls>
-                                                                            <source src="${item.recording_url}" type="audio/mpeg">
-                                                                            Your browser does not support the audio element.
-                                                                        </audio>
-                                                                        <a href="${item.recording_url}" class="btn btn-primary btn-sm" download>Download</a>
-                                                                    ` : '<p>No recording available</p>'}
-                                                </div>
+                                    const callClass = item.direction === 'outgoing' ? 'right' : '';
+                                    const callAvatarSrc = item.direction === 'outgoing' ?
+                                        '{{ URL::asset('build/images/users/avatar-2.jpg') }}' :
+                                        '{{ URL::asset('build/images/users/avatar-4.jpg') }}';
+                                        messageHtml = `
+                        <li class="${callClass}">
+                            <div class="conversation-list">
+                                <div class="d-flex">
+                                    ${callClass === '' ? `<div class="chat-avatar"><img src="${callAvatarSrc}" alt="avatar"></div>` : ''}
+                                    <div class="flex-grow-1">
+                                        <div class="ctext-wrap">
+                                            <div class="ctext-wrap-content">
+                                                <p class="mb-0">Call from ${chatUserName.textContent} to ${item.to}</p>
+                                                <p class="mb-0">Duration: ${item.duration}</p>
+                                                <span class="chat-time text-muted">${formattedDate}</span>
+                                                ${item.recording_url ? `
+                                                    <div class="custom-audio-container">
+                                                        <audio controls>
+                                                            <source src="${item.recording_url}" type="audio/mpeg">
+                                                            Your browser does not support the audio element.
+                                                        </audio>
+                                                    </div>
+                                                    <a href="${item.recording_url}" class="btn btn-primary btn-sm" download>Download</a>
+                                                ` : '<p>No recording available</p>'}
                                             </div>
                                         </div>
                                     </div>
+                                    ${callClass === 'right' ? `<div class="chat-avatar"><img src="${callAvatarSrc}" alt="avatar"></div>` : ''}
                                 </div>
-                            </li>
-                        `;
+                            </div>
+                        </li>
+                    `;
                                 }
 
                                 return messageHtml;

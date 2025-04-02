@@ -1,151 +1,176 @@
 @extends('layouts.master')
 
-@php
-    $pageTitle = 'Send Email';
-@endphp
+@section('title', 'Send Emails')
+
+@section('page-title', 'Send Emails')
 
 @section('content')
-<body data-sidebar="colored">
-<div class="container-fluid">
 
-    <!-- Page Heading -->
-    <div class="card-header py-2">
-        <h1 class="h3 mb-2 text-gray-800">Send Email Template</h1>
-    </div>
-    <div class="card shadow mb-4">
-        <div class="card-body">
-            <div class="row">
-                <div class="w-100 border-top-grey d-block justify-content-start px-4 py-3 text-right">
-                    <a href="{{ route('leads.index') }}" class="btn btn-primary btn-back">Back</a>
-                </div>
+    <body data-sidebar="colored">
+        <div class="card mt-4">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <h3 class="mb-0 text-gray-800">Send Email With Template</h3>
+                <a href="{{ route('leads.index') }}" class="btn btn-info">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
             </div>
+        </div>
 
-            @if ($message = Session::get('success'))
-                <div class="alert alert-success alert-block">
-                    <button type="button" class="close" data-dismiss="alert"><i class="fas fa-times"></i></button>
-                    <strong>{{ $message }}</strong>
-                </div>
-            @endif
+        <div class="container-fluid mt-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
 
-            <div class="row">
-                <div class="col-md-12">
-                    <form id="emailForm" method="POST" action="{{ route('emails.send') }}">
+                    @if (Session::get('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fas fa-check-circle"></i> <strong>{{ Session::get('success') }}</strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+
+                    <form id="emailForm" method="POST" action="{{ route('emails.send') }}" class="p-4">
                         @csrf
-                        <div class="row p-20">
-                            <div class="col-xs-12 col-sm-12 col-md-12">
-                                <div class="row">
-                                    <div class="col-lg-4 col-md-6">
-                                        <div class="form-group my-3">
-                                            <label for="to" class="f-14 text-dark-grey">To <sub class="f-14 mr-1">*</sub></label>
-                                            <input type="text" readonly name="to" id="to" class="form-control" placeholder="To"
-                                                value="{{ implode(',', $uniqueEmails) }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-6">
-                                        <div class="form-group my-3">
-                                            <label for="subject" class="f-14 text-dark-grey">Subject <sub class="f-14 mr-1">*</sub></label>
-                                            <input type="text" name="subject" id="subject" class="form-control height-10 f-14"
-                                                placeholder="Subject">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group my-3">
-                                            <label for="selectedTemplate" class="f-14 text-dark-grey">Email Template<sub class="f-14 mr-1">*</sub></label>
-                                            <select id="selectedTemplate" name="selectedTemplate" class="form-control mb-0">
-                                                <option value="">Select Email Template</option>
-                                                @foreach($emailTemplates as $template)
-                                                    <option value="{{ $template['_id'] }}" data-html_code="{{ $template['html_code'] }}">{{ $template['title'] }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <label for="htmlcode" class="f-14 text-dark-grey">
-                                            Create Template<sub class="f-14 mr-1">*</sub>
-                                        </label>
-                                        <textarea name="html_code" id="summernote" cols="30" rows="10" class="summernote"
-                                            placeholder="html_code"></textarea>
-                                    </div>
-                                </div>
-                                
+
+                        <div class="row g-3">
+                            <!-- To Field -->
+                            <div class="col-md-4">
+                                <label for="to" class="form-label">Recipient Email <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" name="to" id="to" class="form-control"
+                                    placeholder="Add recipient's email"
+                                    value="{{ isset($uniqueEmails) && count($uniqueEmails) > 0 ? implode(',', $uniqueEmails) : '' }}"
+                                    {{ isset($uniqueEmails) && count($uniqueEmails) > 0 ? 'readonly' : '' }}>
+                                <span class="text-danger" id="error-to"></span>
                             </div>
-                    
-                            <div class="col-xs-12 col-sm-12 col-md-12 text-right">
-                                <button type="submit" class="btn btn-primary">Send Email</button>
+
+                            <!-- Subject Field -->
+                            <div class="col-md-4">
+                                <label for="subject" class="form-label">Email Subject <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" name="subject" id="subject" class="form-control"
+                                    placeholder="Enter email subject">
+                                <span class="text-danger" id="error-subject"></span>
+                            </div>
+
+                            <!-- Email Template Dropdown -->
+                            <div class="col-md-4">
+                                <label for="selectedTemplate" class="form-label">Email Template <span
+                                        class="text-danger">*</span></label>
+                                <select id="selectedTemplate" name="selectedTemplate" class="form-select">
+                                    <option value="">Select Email Template</option>
+                                    @foreach ($emailTemplates as $template)
+                                        <option value="{{ $template['_id'] }}"
+                                            data-html_code="{{ $template['html_code'] }}">
+                                            {{ $template['title'] }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
+
+                        <!-- HTML Code Field (Summernote) -->
+                        <div class="mt-4">
+                            <label for="htmlcode" class="form-label">Create Template <span
+                                    class="text-danger">*</span></label>
+                            <textarea name="html_code" id="summernote" class="summernote form-control" placeholder="Write your email template here"></textarea>
+                            <span class="text-danger" id="error-html_code"></span>
+                        </div>
+
+                        <!-- Submit Button with Spinner -->
+                        <div class="text-end mt-4">
+                            <button type="submit" class="btn btn-primary" id="submitButton">
+                                <span class="spinner-border spinner-border-sm d-none" role="status"
+                                    aria-hidden="true"></span>
+                                <span id="buttonText">Send Email</span>
+                            </button>
+                        </div>
                     </form>
+
                 </div>
             </div>
         </div>
-    </div>
+    </body>
 @endsection
 
 @section('scripts')
+    <!-- Summernote Init -->
+    <script src="{{ URL::asset('build/js/pages/form-editor.init.js') }}"></script>
+    <!-- App JS -->
+    <script src="{{ URL::asset('build/js/app.js') }}"></script>
 
-
-<!-- init js -->
-<script src="{{ URL::asset('build/js/pages/form-editor.init.js') }}"></script>
-
-<!-- App js -->
-<script src="{{ URL::asset('build/js/app.js') }}"></script>
-<script>
-    $(document).ready(function () {
-        $('#emailForm').on('submit', function (e) {
-            e.preventDefault();
-            var $submitButton = $('#emailForm button[type="submit"]');
-            $submitButton.prop('disabled', true);
-
-            var formData = new FormData(this);
-
-            $.ajax({
-                type: "POST",
-                url: $(this).attr('action'), // Use the form action attribute for the URL
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function (response) {
-                    if (response.status === 'success') {
-                        // alert('Email sent successfully!');
-                        $('#emailForm')[0].reset();
-                        $('#summernote').summernote('reset'); // Clear Summernote content
-                        
-                        // Redirect to leads index page after successful email sending
-                        window.location.href = response.redirect_url;
-                    } else {
-                        // If there are invalid emails or other issues, show the relevant message
-                        alert('Failed to send some emails. Invalid emails: ' + (response.invalid_emails ? response.invalid_emails.join(', ') : 'None') + '.');
-                    }
-                },
-                error: function (xhr) {
-                    console.log(xhr.responseText);
-                    alert('An error occurred. Please check the console for more details.');
-                },
-                complete: function() {
-                    // Always enable the submit button after request completes, regardless of success or failure
-                    $submitButton.prop('disabled', false);
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const emailInput = document.getElementById('to');
+            if (emailInput.value === '') {
+                emailInput.removeAttribute('readonly');
+            }
+            emailInput.addEventListener('input', function() {
+                if (emailInput.value === '') {
+                    emailInput.removeAttribute('readonly');
                 }
             });
         });
 
+        $(document).ready(function() {
+            $('#emailForm').on('submit', function(e) {
+                e.preventDefault();
+                var $submitButton = $('#submitButton');
+                var $spinner = $submitButton.find('.spinner-border');
+                var $buttonText = $('#buttonText');
 
-        // Update Summernote editor content when a template is selected
-        $('#selectedTemplate').on('change', function () {
-            // Get the selected option
-            var selectedOption = $(this).find('option:selected');
-            
-            // Get the HTML code associated with the selected template
-            var templateContent = selectedOption.data('html_code') || ''; // Default to empty string if no content
-            
-            // Set the content in the Summernote editor
-            $('#summernote').summernote('code', templateContent);
+                // Show spinner and hide button text
+                $spinner.removeClass('d-none');
+                $buttonText.addClass('d-none');
+                $submitButton.prop('disabled', true);
+
+                var formData = new FormData(this);
+
+                $.ajax({
+                    type: "POST",
+                    url: $(this).attr('action'),
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            $('#emailForm')[0].reset();
+                            $('#summernote').summernote('reset');
+                            window.location.href = response.redirect_url;
+                        } else {
+                            let errorMessage = 'Failed to send some emails. ';
+                            if (response.invalid_emails) {
+                                errorMessage += 'Invalid emails: ' + response.invalid_emails
+                                    .join(', ') + '. ';
+                            }
+                            if (response.failed_emails) {
+                                errorMessage += 'Failed to send to: ' + response.failed_emails
+                                    .join(', ') + '.';
+                            }
+                            alert(errorMessage);
+                        }
+                    },
+                    error: function(xhr) {
+                        if (xhr.status === 422) {
+                            var errors = xhr.responseJSON.errors;
+                            $.each(errors, function(field, messages) {
+                                $('#error-' + field).text(messages.join(', '));
+                            });
+                        } else {
+                            alert('An error occurred. Please try again.');
+                        }
+                    },
+                    complete: function() {
+                        // Hide spinner and show button text
+                        $spinner.addClass('d-none');
+                        $buttonText.removeClass('d-none');
+                        $submitButton.prop('disabled', false);
+                    }
+                });
+            });
+
+            $('#selectedTemplate').on('change', function() {
+                var templateContent = $(this).find('option:selected').data('html_code') || '';
+                $('#summernote').summernote('code', templateContent);
+            });
         });
-
-
-       
-    });
-</script>
+    </script>
 @endsection

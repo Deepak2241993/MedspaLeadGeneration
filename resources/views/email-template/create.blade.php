@@ -1,8 +1,8 @@
 @extends('layouts.master')
 
-@section('title', 'Form Editor')
+@section('title', 'Create Email Template')
 
-@section('page-title', 'Form Editor')
+@section('page-title', 'Create Email Template')
 
 @section('body')
 <body data-sidebar="colored">
@@ -23,38 +23,35 @@
                             <strong>{{ $message }}</strong>
                         </div>
                     @endif
-                    <form action="{{ route('email.store') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="floatingFirstnameInput" name="title" placeholder="Enter Your First Name">
-                                <label for="floatingFirstnameInput">Title</label>
+                  <form action="{{ route('email.store') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="floatingTitleInput" name="title" placeholder="Enter the title">
+                                        <label for="floatingTitleInput">Title</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <select class="form-select" name="status" id="floatingStatusSelect" aria-label="Status">
+                                            <option value="1">Active</option>
+                                            <option value="0">Inactive</option>
+                                        </select>
+                                        <label for="floatingStatusSelect">Status</label>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3">
-                                <select class="form-select" name="status" id="floatingSelectGrid" aria-label="Floating label select example">
-                                    <option value="1">Active</option>
-                                    <option value="0">In-Active</option>
-                                </select>
-                                <label for="floatingSelectGrid">Status</label>
+
+                    <div class="mb-4">
+                                <label for="htmlcode" class="form-label">
+                                    Create Template <span class="text-danger">*</span>
+                                </label>
+                                <textarea name="html_code" id="summernote" cols="30" rows="10" class="form-control" placeholder="Enter HTML code here"></textarea>
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <label for="htmlcode" class="f-14 text-dark-grey">
-                                Create Template<sub class="f-14 mr-1">*</sub>
-                            </label>
-                            <textarea name="html_code" id="summernote" cols="30" rows="10" class="summernote" placeholder="html_code"></textarea>
-
-                        </div>
-                    </div>
-                    <div>
-                        <button type="submit" class="btn btn-primary w-md">Submit</button>
-                    </div>
+                    <div class="d-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
                 </form>
                 </div>
             </div>

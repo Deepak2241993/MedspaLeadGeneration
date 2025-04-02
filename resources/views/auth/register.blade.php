@@ -2,6 +2,22 @@
 @section('title')
     Register
 @endsection
+@section('css')
+    <style>
+        .bg-authh {
+            background-image: url('build/images/register.jpg');
+            background-position: bottom;
+            background-size: cover;
+            background-repeat: no-repeat; /* Uncommented for no repeat */
+            position: relative;
+        }
+        .iti {
+            position: relative;
+            display: block !important;
+        }
+
+    </style>
+@endsection
 @section('content')
 
     <div class="auth-maintenance d-flex align-items-center min-vh-100">
@@ -25,9 +41,12 @@
                                 <div class="card my-auto overflow-hidden">
                                     <div class="row g-0">
                                         <div class="col-lg-6">
-                                            <div class="bg-overlay bg-primary"></div>
-                                            <div class="h-100 bg-auth align-items-end">
-                                            </div>
+                                            
+                                           <div class="">
+                                            <img src="{{ URL::asset('build/images/register.jpg') }}" alt="description of image" width="120%" height="150%" style="margin-top: 30px;">
+                                        </div>
+
+
                                         </div>
 
                                         <div class="col-lg-6">
@@ -39,13 +58,13 @@
                                                     </div>
 
                                                     <form method="POST" action="{{ route('register') }}"
-                                                        class="auth-input">
+                                                        class="auth-input" id="registerForm">
                                                         @csrf
                                                         <div class="mb-2">
                                                             <label for="name" class="form-label">Name</label>
                                                             <input id="name" type="text"
                                                                 class="form-control @error('name') is-invalid @enderror"
-                                                                name="name" value="{{ old('name') }}" required
+                                                                name="name"  required
                                                                 autocomplete="name" autofocus placeholder="Enter name">
                                                             @error('name')
                                                                 <span class="invalid-feedback" role="alert">
@@ -58,7 +77,7 @@
                                                             <label for="email" class="form-label">Email</label>
                                                             <input id="email" type="email"
                                                                 class="form-control @error('email') is-invalid @enderror"
-                                                                name="email" value="{{ old('email') }}" required
+                                                                name="email"  required
                                                                 autocomplete="email" placeholder="Enter email">
                                                             @error('email')
                                                                 <span class="invalid-feedback" role="alert">
@@ -67,19 +86,22 @@
                                                             @enderror
                                                         </div>
 
-                                                        <!-- Phone Number Field -->
+                                                       <!-- Phone Number Field -->
                                                         <div class="mb-2">
                                                             <label for="phone" class="form-label">Phone Number</label>
-                                                            <input id="phone" type="text"
-                                                                class="form-control @error('phone') is-invalid @enderror"
-                                                                name="phone" value="{{ old('phone') }}" required
-                                                                placeholder="Enter phone number">
+                                                            <input type="hidden" id="countryCode" name="country_code">
+                                                            <div class="iti iti--allow-dropdown iti--separate-dial-code form-control">
+                                                                <input class="form-control @error('phone') is-invalid @enderror" type="tel" id="phone" name="phone" placeholder="Enter phone number" required>
+                                                            </div>
+                                                            
+                                                            <!-- Validation feedback -->
                                                             @error('phone')
                                                                 <span class="invalid-feedback" role="alert">
                                                                     <strong>{{ $message }}</strong>
                                                                 </span>
                                                             @enderror
                                                         </div>
+
 
 
                                                         <div class="mb-3">
@@ -119,14 +141,15 @@
                                                                 <h5 class="font-size-14 mb-4 title">Sign In with</h5>
                                                             </div>
                                                             <div class="pt-2 hstack gap-2 justify-content-center">
-                                                                <button type="button" class="btn btn-primary btn-sm"><i
-                                                                        class="ri-facebook-fill font-size-16"></i></button>
-                                                                <button type="button" class="btn btn-danger btn-sm"><i
-                                                                        class="ri-google-fill font-size-16"></i></button>
-                                                                <button type="button" class="btn btn-dark btn-sm"><i
-                                                                        class="ri-github-fill font-size-16"></i></button>
-                                                                <button type="button" class="btn btn-info btn-sm"><i
-                                                                        class="ri-twitter-fill font-size-16"></i></button>
+                                                                <a href="https://www.facebook.com/ForeverMedSpaNJ" target="_blank" class="btn btn-primary btn-sm">
+                                                                    <i class="fab fa-facebook-f"></i>
+                                                                </a>
+                                                                <a href="https://www.instagram.com/forevermedspa/" target="_blank" class="btn btn-info btn-sm">
+                                                                    <i class="fab fa-instagram"></i>
+                                                                </a>
+                                                                <a href="https://x.com/ForeverMedSpaNJ" target="_blank" class="btn btn-info btn-sm">
+                                                                    <i class="fab fa-twitter"></i>
+                                                                </a>
                                                             </div>
                                                         </div>
                                                     </form>
@@ -146,8 +169,7 @@
                                     <p class="mb-0">©
                                         <script>
                                             document.write(new Date().getFullYear())
-                                        </script> Medspa. Crafted with <i
-                                            class="mdi mdi-heart text-danger"></i> by Temz
+                                        </script>Medspa. Crafted with <i class="fas fa-heart"></i> by <a target="_blank" href="https://www.thetemz.com/">Temz</a>
                                     </p>
                                 </div>
                             </div>
@@ -163,4 +185,67 @@
 @section('scripts')
     <!-- App js -->
     <script src="{{ URL::asset('build/js/app.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+    <script>
+        (function() {
+
+            var input = document.getElementById('phone');
+            var pattern = /^[6-9][0-9]{0,9}$/;
+            var value = input.value;
+            !pattern.test(value) && (input.value = value = '');
+            input.addEventListener('input', function() {
+                var currentValue = this.value;
+                if (currentValue && !pattern.test(currentValue)) this.value = value;
+                else value = currentValue;
+            });
+        })();
+    </script>
+    <script>
+        // Ensure the script executes after the page is fully loaded
+        document.addEventListener("DOMContentLoaded", function () {
+            const input = document.querySelector("#phone");
+            const countryCodeInput = document.querySelector("#countryCode");
+    
+            // Initialize intl-tel-input
+            const iti = window.intlTelInput(input, {
+                initialCountry: "us",  // Auto-detect country based on IP
+                preferredCountries: ["us", "gb", "in"],  // Preferred countries at top
+                separateDialCode: true,  // Show separate country code
+                utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"  // Enable formatting/validation
+            });
+    
+            // Form submit validation
+            document.querySelector("#registerForm").addEventListener("submit", function (event) {
+                event.preventDefault();
+                
+                // Check if the entered phone number is valid
+                if (iti.isValidNumber()) {
+                    // Get the country code (with +)
+                    const countryCode = `+${iti.getSelectedCountryData().dialCode}`;
+                    
+                    // Get the national phone number without the country code
+                    let nationalNumber = iti.getNumber(intlTelInputUtils.numberFormat.NATIONAL);
+    
+                    // Clean the national number by removing spaces or other formatting
+                    nationalNumber = nationalNumber.replace(/\s+/g, '');  // Remove spaces
+                    
+                    // Remove leading 0 from the national number if present
+                    if (nationalNumber.startsWith('0')) {
+                        nationalNumber = nationalNumber.substring(1);
+                    }
+    
+                    // Update the hidden input with the country code
+                    countryCodeInput.value = countryCode;
+    
+                    // Update the phone input value with the cleaned-up national number
+                    input.value = nationalNumber;
+    
+                    // Now submit the form
+                    this.submit();
+                } else {
+                    alert("Please enter a valid phone number.");
+                }
+            });
+        });
+    </script>
 @endsection

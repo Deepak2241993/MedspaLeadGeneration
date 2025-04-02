@@ -97,29 +97,31 @@ class Builder implements BuilderContract
         'avg',
         'count',
         'dd',
-        'ddRawSql',
-        'doesntExist',
-        'doesntExistOr',
+        'ddrawsql',
+        'doesntexist',
+        'doesntexistor',
         'dump',
-        'dumpRawSql',
+        'dumprawsql',
         'exists',
-        'existsOr',
+        'existsor',
         'explain',
-        'getBindings',
-        'getConnection',
-        'getGrammar',
+        'getbindings',
+        'getconnection',
+        'getgrammar',
+        'getrawbindings',
         'implode',
         'insert',
-        'insertGetId',
-        'insertOrIgnore',
-        'insertUsing',
+        'insertgetid',
+        'insertorignore',
+        'insertusing',
+        'insertorignoreusing',
         'max',
         'min',
         'raw',
-        'rawValue',
+        'rawvalue',
         'sum',
-        'toSql',
-        'toRawSql',
+        'tosql',
+        'torawsql',
     ];
 
     /**
@@ -201,7 +203,7 @@ class Builder implements BuilderContract
      * @param  array|null  $scopes
      * @return $this
      */
-    public function withoutGlobalScopes(array $scopes = null)
+    public function withoutGlobalScopes(?array $scopes = null)
     {
         if (! is_array($scopes)) {
             $scopes = array_keys($this->scopes);
@@ -523,7 +525,7 @@ class Builder implements BuilderContract
      * @param  \Closure|null  $callback
      * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|static[]|static|mixed
      */
-    public function findOr($id, $columns = ['*'], Closure $callback = null)
+    public function findOr($id, $columns = ['*'], ?Closure $callback = null)
     {
         if ($columns instanceof Closure) {
             $callback = $columns;
@@ -563,7 +565,7 @@ class Builder implements BuilderContract
      */
     public function firstOrCreate(array $attributes = [], array $values = [])
     {
-        if (! is_null($instance = $this->where($attributes)->first())) {
+        if (! is_null($instance = (clone $this)->where($attributes)->first())) {
             return $instance;
         }
 
@@ -626,7 +628,7 @@ class Builder implements BuilderContract
      * @param  \Closure|null  $callback
      * @return \Illuminate\Database\Eloquent\Model|static|mixed
      */
-    public function firstOr($columns = ['*'], Closure $callback = null)
+    public function firstOr($columns = ['*'], ?Closure $callback = null)
     {
         if ($columns instanceof Closure) {
             $callback = $columns;
@@ -1453,9 +1455,9 @@ class Builder implements BuilderContract
         // Here we'll check if the given subset of where clauses contains any "or"
         // booleans and in this case create a nested where expression. That way
         // we don't add any unnecessary nesting thus keeping the query clean.
-        if ($whereBooleans->contains('or')) {
+        if ($whereBooleans->contains(fn ($logicalOperator) => str_contains($logicalOperator, 'or'))) {
             $query->wheres[] = $this->createNestedWhere(
-                $whereSlice, $whereBooleans->first()
+                $whereSlice, str_replace(' not', '', $whereBooleans->first())
             );
         } else {
             $query->wheres = array_merge($query->wheres, $whereSlice);
@@ -1727,6 +1729,18 @@ class Builder implements BuilderContract
     }
 
     /**
+     * Get the Eloquent builder instances that are used in the union of the query.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    protected function getUnionBuilders()
+    {
+        return isset($this->query->unions)
+            ? collect($this->query->unions)->pluck('query')
+            : collect();
+    }
+
+    /**
      * Get the underlying query builder instance.
      *
      * @return \Illuminate\Database\Query\Builder
@@ -1964,7 +1978,7 @@ class Builder implements BuilderContract
             return $this->callNamedScope($method, $parameters);
         }
 
-        if (in_array($method, $this->passthru)) {
+        if (in_array(strtolower($method), $this->passthru)) {
             return $this->toBase()->{$method}(...$parameters);
         }
 

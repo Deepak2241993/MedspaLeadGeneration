@@ -26,50 +26,97 @@
             Your role will be assigned soon. Please contact the administrator for more details.
         </div>
     @else
+     @can('lead_view')
         <!-- If the user has roles assigned, display the dashboard -->
         <div class="row">
             <div class="col-xl-3 col-md-6">
-                <div class="card">
+                <div class="card" style="border: 1px solid #47484A;">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div class="avatar-md flex-shrink-0">
                                 <span class="avatar-title bg-subtle-primary text-primary rounded fs-2">
-                                    <i class="uim uim-briefcase"></i>
+                                    <i class="ri-database-2-fill"></i>
                                 </span>
                             </div>
                             <a href="{{ route('leads.index') }}">
                                 <div class="flex-grow-1 overflow-hidden ms-4">
-                                    <p class="text-muted text-truncate font-size-15 mb-2"> Total Leads ({{ $leadCount }})</p>
+                                    <p class="text-muted text-truncate font-size-15 mb-2"> Total Leads</p>
+                                    <h4 class="mb-0">{{ $leadCount }}</h4>
                                 </div>
                             </a>
                         </div>
                     </div>
                 </div>
             </div>
+            @foreach ($leadCountsByStatus as $statusName => $statusData)
             <div class="col-xl-3 col-md-6">
-                <div class="card">
+                <div class="card" style="border: 1px solid #47484A;">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div class="avatar-md flex-shrink-0">
-                                <span class="avatar-title bg-subtle-primary text-primary rounded fs-2">
-                                    <i class="uim uim-briefcase"></i>
+                                <span class="avatar-title rounded fs-2" 
+                                      style="background-color: #{{ $statusData['label_color'] }}; color: #fff;">
+                                    <i class="ri-database-2-fill"></i>
                                 </span>
                             </div>
-                            <div class="flex-grow-1 overflow-hidden ms-4">
-                                <p class="text-muted text-truncate font-size-15 mb-2"> Total Email Template</p>
-                            </div>
-                            <div class="flex-shrink-0 align-self-start">
-                                <div class="dropdown">
-                                    <a class="dropdown-toggle btn-icon border rounded-circle" href="#"
-                                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="ri-more-2-fill text-muted font-size-16"></i>
-                                    </a>
+                            <a href="{{ route('leads.index', ['status_id' => $statusData['status_id']]) }}">
+                                <div class="flex-grow-1 overflow-hidden ms-4">
+                                    <p class="text-muted text-truncate font-size-15 mb-2">
+                                        {{ $statusName }} 
+                                    </p>
+                                    <h4 class="mb-0">{{ $statusData['count'] }}</h4>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
+        @endforeach
+        <div class="col-xl-3 col-md-6">
+            <div class="card" style="border: 1px solid #47484A;">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="avatar-md flex-shrink-0">
+                            <span class="avatar-title rounded fs-2" 
+                                  style="background-color: #ff0000; color: #fff; display: inline-flex; align-items: center; justify-content: center;">
+                                <i class="ri-database-2-fill"></i>
+                            </span>
+                        </div>
+                        
+                        <a href="{{ route('leads.archived') }}">
+                            <div class="flex-grow-1 overflow-hidden ms-4">
+                                <p class="text-muted text-truncate font-size-15 mb-2"> Archived Leads</p>
+                                <h4 class="mb-0">{{ $archivedLeadCount }}</h4>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endcan
+            
+        @can('	email-template_view')              
+        <div class="col-xl-3 col-md-6">
+            <div class="card" style="border: 1px solid #47484A;">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="avatar-md flex-shrink-0">
+                            <span class="avatar-title bg-subtle-primary text-primary rounded fs-2">
+                                <i class=" ri-mail-send-line"></i>
+                            </span>
+                        </div>
+                        <a href="{{ route('email.index') }}">
+                            <div class="flex-grow-1 overflow-hidden ms-4">
+                                <p class="text-muted text-truncate font-size-15 mb-2">Email Templates</p>
+                                <h4 class="mb-0">{{ $emailTemplateCount }}</h4> <!-- Display the count here -->
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endcan
+        
         </div>
     @endif
 
@@ -84,4 +131,6 @@
     <script src="{{ URL::asset('build/js/pages/dashboard.init.js') }}"></script>
     <!-- App js -->
     <script src="{{ URL::asset('build/js/app.js') }}"></script>
+    <!-- Remix icon js-->
+    <script src="http://127.0.0.1:8000/build/js/pages/remix-icons-list.js"></script>
 @endsection

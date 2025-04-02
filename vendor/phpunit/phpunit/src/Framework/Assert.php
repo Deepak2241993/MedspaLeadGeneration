@@ -78,7 +78,7 @@ abstract class Assert
      * @throws Exception
      * @throws ExpectationFailedException
      */
-    final public static function assertArrayHasKey(int|string $key, array|ArrayAccess $array, string $message = ''): void
+    final public static function assertArrayHasKey(mixed $key, array|ArrayAccess $array, string $message = ''): void
     {
         $constraint = new ArrayHasKey($key);
 
@@ -91,7 +91,7 @@ abstract class Assert
      * @throws Exception
      * @throws ExpectationFailedException
      */
-    final public static function assertArrayNotHasKey(int|string $key, array|ArrayAccess $array, string $message = ''): void
+    final public static function assertArrayNotHasKey(mixed $key, array|ArrayAccess $array, string $message = ''): void
     {
         $constraint = new LogicalNot(
             new ArrayHasKey($key),
@@ -1570,6 +1570,39 @@ abstract class Assert
      *
      * @throws ExpectationFailedException
      */
+    final public static function assertFileMatchesFormat(string $format, string $actualFile, string $message = ''): void
+    {
+        static::assertFileExists($actualFile, $message);
+
+        static::assertThat(
+            file_get_contents($actualFile),
+            new StringMatchesFormatDescription($format),
+            $message,
+        );
+    }
+
+    /**
+     * Asserts that a string matches a given format string.
+     *
+     * @throws ExpectationFailedException
+     */
+    final public static function assertFileMatchesFormatFile(string $formatFile, string $actualFile, string $message = ''): void
+    {
+        static::assertFileExists($formatFile, $message);
+        static::assertFileExists($actualFile, $message);
+
+        static::assertThat(
+            file_get_contents($actualFile),
+            new StringMatchesFormatDescription(file_get_contents($formatFile)),
+            $message,
+        );
+    }
+
+    /**
+     * Asserts that a string matches a given format string.
+     *
+     * @throws ExpectationFailedException
+     */
     final public static function assertStringMatchesFormat(string $format, string $string, string $message = ''): void
     {
         static::assertThat($string, new StringMatchesFormatDescription($format), $message);
@@ -1579,6 +1612,8 @@ abstract class Assert
      * Asserts that a string does not match a given format string.
      *
      * @throws ExpectationFailedException
+     *
+     * @deprecated https://github.com/sebastianbergmann/phpunit/issues/5472
      */
     final public static function assertStringNotMatchesFormat(string $format, string $string, string $message = ''): void
     {
@@ -1613,6 +1648,8 @@ abstract class Assert
      * Asserts that a string does not match a given format string.
      *
      * @throws ExpectationFailedException
+     *
+     * @deprecated https://github.com/sebastianbergmann/phpunit/issues/5472
      */
     final public static function assertStringNotMatchesFormatFile(string $formatFile, string $string, string $message = ''): void
     {
@@ -2083,7 +2120,7 @@ abstract class Assert
         return new TraversableContainsOnly($className, false);
     }
 
-    final public static function arrayHasKey(int|string $key): ArrayHasKey
+    final public static function arrayHasKey(mixed $key): ArrayHasKey
     {
         return new ArrayHasKey($key);
     }

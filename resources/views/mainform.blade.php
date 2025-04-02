@@ -32,6 +32,7 @@
     <!--    Stylesheets-->
     <!-- ===============================================-->
     <link href="{{env('APP_URL').'/landing_page/assets/css/theme.css'}}" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
     <style>
         .our-belief {
             padding-top: 4.5rem !important;
@@ -133,6 +134,17 @@
         .form-livedoc-control:focus {
             border: #FCA52A !important;
         }
+        .iti {
+            position: relative;
+            display: block !important;
+        }
+    </style>
+     <!-- Custom styles if needed -->
+     <style>
+        .form-livedoc-control {
+            width: 100%;
+            padding: 10px;
+        }
     </style>
 
 </head>
@@ -205,27 +217,14 @@
                                     name="email" placeholder="Email">
                                 <span id="emailError" class="error-message" style="display: none;"></span>
                             </div>
+                            <!-- Country Code Field (hidden) -->
+                            <input type="hidden" id="countryCode" name="country_code">
                             <div class="mb-3">
-                                <label class="visually-hidden" for="inputPhone">Phone</label>
-                                <input class="form-control form-livedoc-control" type="tel" id="phone"
-                                    name="phone" placeholder="Phone Number">
+                                <label class="visually-hidden" for="phone">Phone</label>
+                                <input class="form-control form-livedoc-control" type="tel" id="phone" name="phone" placeholder="Phone Number">
+                                <small id="phone-feedback" class="form-text text-danger" style="display: none;"></small>
                             </div>
-                            {{-- <div class="mb-3">
-                                <label class="visually-hidden" for="inputPhone">Phone</label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <select class="form-select form-livedoc-control" id="countryCode" name="countryCode">
-                                            <!-- Replace the option values and labels with actual country codes -->
-                                            <option value="+1">+1 (USA)</option>
-                                            <option value="+44">+44 (UK)</option>
-                                            <option value="+91">+91 (UK)</option>
-                                            <!-- Add more country codes as needed -->
-                                        </select>
-                                    </div>
-                                    <input class="form-control form-livedoc-control" type="tel" id="phone" name="phone" placeholder="Phone Number">
-                                </div>
-                            </div> --}}
-                            <span id="phoneError" class="error-message" style="display: none;"></span>
+
                             <div class="mb-3">
                                 <label class="visually-hidden" for="inputMessage">Your Message</label>
                                 <textarea class="form-control form-livedoc-control" id="message" name="message"
@@ -240,11 +239,6 @@
                                     reminders and exclusive offers.
                                 </label>
                             </div>
-                            <!--  <div class="mb-3">-->
-                            <!--  <label class="visually-hidden" for="inputMobile">Mobile</label>-->
-                            <!--  <input class="form-control form-livedoc-control" type="tel" id="mobile" name="mobile" placeholder="Mobile (optional)">-->
-                            <!--  <span id="mobileError" class="error-message" style="display: none;"></span>-->
-                            <!--</div>-->
                             <input type="hidden" id="status_id" name="status_id" value="{{ $dynamicStatusId }}">
 
                             <div class="col-md-12">
@@ -255,10 +249,10 @@
                             </div>
                         </form>
                         @if ($message = Session::get('imperialheaders_success'))
-                            <div class="alert alert-success alert-block">
-                                {{-- <button type="button" class="close" data-dismiss="alert"><i class="fas fa-times"></i></button> --}}
-                                <strong>{{ $message }}</strong>
-                            </div>
+                        <div class="alert alert-success alert-block">
+                            {{-- <button type="button" class="close" data-dismiss="alert"><i class="fas fa-times"></i></button> --}}
+                            <strong>{{ $message }}</strong>
+                        </div>
                         @endif
                         <div id="success-message" style="display: none;"></div>
                         <div id="error-message" style="display: none;"></div>
@@ -330,7 +324,8 @@
                             Aesthetic care of an individual is as unique as an individual.</h2>
                         <p class="text-light">
                             <class="d-none d-sm-block" />We use top-notch technology tackling
-                            problem areas from both spa & medical perspective</p>
+                            problem areas from both spa & medical perspective
+                        </p>
                     </div>
                     <div class="col-md-3">
                         <a class="btn btn-primary rounded-pill orange book-now btn-orange" href="#!"
@@ -684,19 +679,7 @@
                 $("#emailError").empty();
             }
 
-            // Validation logic for Phone
-            const phone = $('#phone').val();
-            const phoneRegex = /^(9|8|7|6)\d{9}$/; // Matches a 10-digit number starting with 9, 8, or 6
-            if (!phoneRegex.test(phone)) {
-                $("#phoneError").html("Please enter a valid phone number").slideDown();
-                isValid = false;
-
-                setTimeout(function() {
-                    $("#phoneError").empty().slideUp();
-                }, 5000);
-            } else {
-                $("#phoneError").empty();
-            }
+            
 
             // Validation logic for Text Message
             const message = $('#message').val();
@@ -731,20 +714,7 @@
                 .catch(error => console.error('Error:', error));
         });
     </script>
-    <script>
-        (function() {
-
-            var input = document.getElementById('phone');
-            var pattern = /^[6-9][0-9]{0,9}$/;
-            var value = input.value;
-            !pattern.test(value) && (input.value = value = '');
-            input.addEventListener('input', function() {
-                var currentValue = this.value;
-                if (currentValue && !pattern.test(currentValue)) this.value = value;
-                else value = currentValue;
-            });
-        })();
-    </script>
+    
     <script>
         (function() {
 
@@ -792,6 +762,109 @@
             });
         });
     </script>
+   <!-- Correct JS link -->
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+    <script>
+        (function() {
+
+            var input = document.getElementById('phone');
+            var pattern = /^[6-9][0-9]{0,9}$/;
+            var value = input.value;
+            !pattern.test(value) && (input.value = value = '');
+            input.addEventListener('input', function() {
+                var currentValue = this.value;
+                if (currentValue && !pattern.test(currentValue)) this.value = value;
+                else value = currentValue;
+            });
+        })();
+    </script>
+   <script>
+    // Ensure the script executes after the page is fully loaded
+    document.addEventListener("DOMContentLoaded", function () {
+        const input = document.querySelector("#phone");
+        const countryCodeInput = document.querySelector("#countryCode");
+
+        // Initialize intl-tel-input
+        const iti = window.intlTelInput(input, {
+            initialCountry: "us",  // Auto-detect country based on IP
+            preferredCountries: ["us", "gb", "in"],  // Preferred countries at top
+            separateDialCode: true,  // Show separate country code
+            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"  // Enable formatting/validation
+        });
+
+        // Form submit validation
+        document.querySelector("#myForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+            
+            // Check if the entered phone number is valid
+            if (iti.isValidNumber()) {
+                // Get the country code (with +)
+                const countryCode = `+${iti.getSelectedCountryData().dialCode}`;
+                
+                // Get the national phone number without the country code
+                let nationalNumber = iti.getNumber(intlTelInputUtils.numberFormat.NATIONAL);
+
+                // Clean the national number by removing spaces or other formatting
+                nationalNumber = nationalNumber.replace(/\s+/g, '');  // Remove spaces
+                
+                // Remove leading 0 from the national number if present
+                if (nationalNumber.startsWith('0')) {
+                    nationalNumber = nationalNumber.substring(1);
+                }
+
+                // Update the hidden input with the country code
+                countryCodeInput.value = countryCode;
+
+                // Update the phone input value with the cleaned-up national number
+                input.value = nationalNumber;
+
+                // Now submit the form
+                this.submit();
+            } else {
+                alert("Please enter a valid phone number.");
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function() {
+    $('#phone').on('blur', function() {
+        var phone = $(this).val();
+
+        // Clear previous feedback
+        $('#phone-feedback').hide().text('');
+        // $('#save-button').prop('disabled', true);
+
+        // Make AJAX request to check phone number
+        $.ajax({
+            url: '/check-phone-number', // The route to the controller method
+            method: 'POST',
+            data: {
+                phone: phone,
+                _token: '{{ csrf_token() }}' // Include CSRF token for security
+            },
+            success: function(response) {
+                if (response.exists) {
+                        // Show the feedback if the phone number exists
+                        $('#phone-feedback').text(response.message).show();
+                        $('#save-button').prop('disabled', true);
+                    } else {
+                        // Optional: handle case where phone does not exist
+                        $('#phone-feedback').text(response.message).show();
+                        $('#save-button').prop('disabled', false);
+                    }
+            },
+            error: function(xhr) {
+                console.error('Error checking phone number:', xhr);
+            }
+        });
+    });
+});
+
+</script>
+
+
+   
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

@@ -1,71 +1,69 @@
 @extends('layouts.master')
 
 @section('title')
-    Role And Permission
+    Create Role
 @endsection
 
 @section('css')
-    <!-- DataTables -->
-    <link href="{{ URL::asset('build/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
-        type="text/css" />
-    <link href="{{ URL::asset('build/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}" rel="stylesheet"
-        type="text/css" />
-    <link href="{{ URL::asset('build/libs/datatables.net-select-bs4/css/select.bootstrap4.min.css') }}" rel="stylesheet"
-        type="text/css" />
-
-    <!-- Responsive datatable examples -->
-    <link href="{{ URL::asset('build/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}"
-        rel="stylesheet" type="text/css" />
+    <!-- Tagify CSS for comma-separated phone numbers -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tagify/4.9.5/tagify.css" rel="stylesheet" integrity="sha384-EhxHf/5eV+8f2uM15W8s4VzJ5/U47b4df9V73wrc76B6p/BVCjs8K3OJlX7L0Sp+" crossorigin="anonymous">
 @endsection
 
 @section('page-title')
-    Leads
+    Create Role
 @endsection
 
 @section('body')
 
     <body data-sidebar="colored">
-    @endsection
+@endsection
 
-    @section('content')
-
-    <div class="container mt-5">
-        <h1>Add Role <a href="{{ url('roles') }}" class="btn btn-danger float-end">Back</a></h1>
-        <form action="{{ route('roles.store') }}" method="POST">
-            @csrf
-            <div class="mb-3">
-                <label for="name" class="form-label">Role Name</label>
-                <input type="text" class="form-control" id="name" name="name" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Save</button>
-        </form>
+@section('content')
+    <div class="card mt-3">
+        <div class="card-body d-flex justify-content-between align-items-center">
+            <h1 class="card-title mb-0" style="font-size: 2.1rem;">Create Role</h1>
+            @can('role_create')
+                <a href="{{ url('roles') }}" class="btn btn-danger float-end">Back</a>
+            @endcan
+        </div>
     </div>
-    @endsection
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="container">
+                        <form action="{{ route('roles.store') }}" method="POST">
+                            @csrf
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Role Name</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
 
-    @section('scripts')
-        <!-- Required datatable js -->
-        <script src="{{ URL::asset('build/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
-        <script src="{{ URL::asset('build/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
-        <!-- Buttons examples -->
-        <script src="{{ URL::asset('build/libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
-        <script src="{{ URL::asset('build/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js') }}"></script>
-        <script src="{{ URL::asset('build/libs/jszip/jszip.min.js') }}"></script>
-        <script src="{{ URL::asset('build/libs/pdfmake/build/pdfmake.min.js') }}"></script>
-        <script src="{{ URL::asset('build/libs/pdfmake/build/vfs_fonts.js') }}"></script>
-        <script src="{{ URL::asset('build/libs/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
-        <script src="{{ URL::asset('build/libs/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
-        <script src="{{ URL::asset('build/libs/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>
+                            <!-- Phone Numbers Input Field -->
+                            <div class="mb-3">
+                                <label for="phone_numbers" class="form-label">Phone Numbers (comma-separated)</label>
+                                <input type="text" class="form-control" id="phone_numbers" name="phone_numbers" placeholder="e.g., +918077477522, +918077477523">
+                            </div>
 
-        <script src="{{ URL::asset('build/libs/datatables.net-keytable/js/dataTables.keyTable.min.js') }}"></script>
-        <script src="{{ URL::asset('build/libs/datatables.net-select/js/dataTables.select.min.js') }}"></script>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
 
-        <!-- Responsive examples -->
-        <script src="{{ URL::asset('build/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
-        <script src="{{ URL::asset('build/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}"></script>
-
-        <!-- Datatable init js -->
-        <script src="{{ URL::asset('build/js/pages/datatables.init.js') }}"></script>
-        <!-- App js -->
-        <script src="{{ URL::asset('build/js/app.js') }}"></script>
-
-    @endsection
+@section('scripts')
+    <!-- Tagify JS for comma-separated input -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tagify/4.9.5/tagify.min.js" integrity="sha384-QRd/ZKkxAlv0GphMgt3otVofLhJwRekEri+N+eJKd93HPDY0+Qu/9wBv3FtzObeN" crossorigin="anonymous"></script>
+    <script>
+        // Initialize Tagify on the phone numbers input
+        var input = document.querySelector('#phone_numbers');
+        new Tagify(input, {
+            whitelist: [],  // Can add a custom list of phone numbers if needed
+            delimiters: ",",  // Ensure the input is comma separated
+            maxTags: 5  // Optional: Limit number of phone numbers
+        });
+    </script>
+@endsection

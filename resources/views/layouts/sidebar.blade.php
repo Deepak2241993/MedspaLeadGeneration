@@ -101,242 +101,256 @@
                 </li>
 
                 @endcan
-
-
-                {{-- <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="uim uim-comment-message"></i>
-                        <span>Apps</span>
-                    </a>
-                    <ul class="sub-menu" aria-expanded="true">
-                        <li>
-                            <a href="javascript: void(0);" class="has-arrow">Email</a>
-                            <ul class="sub-menu" aria-expanded="false">
-                                <li><a href="email-inbox">Inbox</a></li>
-                                <li><a href="email-read">Read Email</a></li>
-                            </ul>
-                        </li>
-
-                        <li><a href="calendar">Calendar</a></li>
-
-                        <li><a href="apps-chat">Chat</a></li>
-
-                        <li><a href="apps-file-manager">File Manager</a></li>
-
-
-                        <li>
-                            <a href="javascript: void(0);" class="has-arrow">Invoice</a>
-                            <ul class="sub-menu" aria-expanded="false">
-                                <li><a href="invoices">Invoices</a></li>
-                                <li><a href="invoice-detail">Invoice Detail</a></li>
-                            </ul>
-                        </li>
-
-                        <li>
-                            <a href="javascript: void(0);" class="has-arrow">Users</a>
-                            <ul class="sub-menu" aria-expanded="false">
-                                <li><a href="users-list">Users List</a></li>
-                                <li><a href="users-detail">Users Detail</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-                 <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="uim uim-window-grid"></i>
-                        <span>Layouts</span>
-                    </a>
-                    <ul class="sub-menu" aria-expanded="true">
-                        <li>
-                            <a href="javascript: void(0);" class="has-arrow">Vertical</a>
-                            <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="layouts-dark-sidebar">Dark Sidebar</a></li>
-                                <li><a href="layouts-light-sidebar">Light Sidebar</a></li>
-                                <li><a href="layouts-compact-sidebar">Compact Sidebar</a></li>
-                                <li><a href="layouts-icon-sidebar">Icon Sidebar</a></li>
-                                <li><a href="layouts-boxed">Boxed Layout</a></li>
-                                <li><a href="layouts-preloader">Preloader</a></li>
-                            </ul>
-                        </li>
-
-                        <li>
-                            <a href="javascript: void(0);" class="has-arrow">Horizontal</a>
-                            <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="layouts-horizontal">Horizontal</a></li>
-                                <li><a href="layouts-hori-light-header">Light Header</a></li>
-                                <li><a href="layouts-hori-topbar-dark">Topbar Dark</a></li>
-                                <li><a href="layouts-hori-boxed-width">Boxed width</a></li>
-                                <li><a href="layouts-hori-preloader">Preloader</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="menu-title">Pages</li>
-
                 <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="uim uim-sign-in-alt"></i>
-                        <span>Authentication</span>
+                    <a href="{{ route('unique-chat-dashboard') }}" class="waves-effect">
+                        <i class="fa-solid fa-people-arrows"></i> <span class="badge rounded-pill bg-success float-end"></span>
+                        <span>Social Media Message</span>
                     </a>
-                    <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="auth-login">Login</a></li>
-                        <li><a href="auth-register">Register</a></li>
-                        <li><a href="auth-recoverpw">Recover Password</a></li>
-                        <li><a href="auth-lock-screen">Lock Screen</a></li>
-                    </ul>
+                </li>
+                 @can('lead_create')
+                <li>
+                    <a href="{{ route('leads.create') }}" class="waves-effect">
+                        <i class="fas fa-envelope"></i><span class="badge rounded-pill bg-success float-end"></span>
+                        <span>Create Leads</span>
+                    </a>
                 </li>
 
-                <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="uim uim-box"></i>
-                        <span>Extra Pages</span>
-                    </a>
-                    <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="pages-starter">Starter Page</a></li>
-                        <li><a href="pages-maintenance">Maintenance</a></li>
-                        <li><a href="pages-comingsoon">Coming Soon</a></li>
-                        <li><a href="pages-404">Error 404</a></li>
-                        <li><a href="pages-500">Error 500</a></li>
-                        <li><a href="pages-faq">(Help Center) FAQ</a></li>
-                        <li><a href="pages-profile">Profile</a></li>
-                        <li><a href="pages-pricing">Pricing</a></li>
-                        <li><a href="pages-terms-conditions">Terms & Conditions</a></li>
-                    </ul>
-                </li>
+                @endcan
 
-                <li class="menu-title">Components</li>
+ <!--<li>-->
+ <!--                   <a href="javascript: void(0);" class="has-arrow waves-effect">-->
+ <!--                       <i class="uim uim-comment-message"></i>-->
+ <!--                       <span>Apps</span>-->
+ <!--                   </a>-->
+ <!--                   <ul class="sub-menu" aria-expanded="true">-->
+ <!--                       <li>-->
+ <!--                           <a href="javascript: void(0);" class="has-arrow">Email</a>-->
+ <!--                           <ul class="sub-menu" aria-expanded="false">-->
+ <!--                               <li><a href="email-inbox">Inbox</a></li>-->
+ <!--                               <li><a href="email-read">Read Email</a></li>-->
+ <!--                           </ul>-->
+ <!--                       </li>-->
 
-                <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="uim uim-layer-group"></i>
-                        <span>UI Elements</span>
-                    </a>
-                    <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="ui-alerts">Alerts</a></li>
-                        <li><a href="ui-buttons">Buttons</a></li>
-                        <li><a href="ui-cards">Cards</a></li>
-                        <li><a href="ui-carousel">Carousel</a></li>
-                        <li><a href="ui-dropdowns">Dropdowns</a></li>
-                        <li><a href="ui-grid">Grid</a></li>
-                        <li><a href="ui-images">Images</a></li>
-                        <li><a href="ui-lightbox">Lightbox</a></li>
-                        <li><a href="ui-modals">Modals</a></li>
-                        <li><a href="ui-offcanvas">Offcavas</a></li>
-                        <li><a href="ui-rangeslider">Range Slider</a></li>
-                        <li><a href="ui-roundslider">Round Slider</a></li>
-                        <li><a href="ui-session-timeout">Session Timeout</a></li>
-                        <li><a href="ui-progressbars">Progress Bars</a></li>
-                        <li><a href="ui-sweet-alert">Sweetalert 2</a></li>
-                        <li><a href="ui-tabs-accordions">Tabs & Accordions</a></li>
-                        <li><a href="ui-typography">Typography</a></li>
-                        <li><a href="ui-video">Video</a></li>
-                        <li><a href="ui-general">General</a></li>
-                        <li><a href="ui-rating">Rating</a></li>
-                        <li><a href="ui-notifications">Notifications</a></li>
-                    </ul>
-                </li>
+ <!--                       <li><a href="calendar">Calendar</a></li>-->
 
-                <li>
-                    <a href="javascript: void(0);" class="waves-effect">
-                        <i class="uim uim-document-layout-left"></i>
-                        <span class="badge rounded-pill bg-danger float-end">6</span>
-                        <span>Forms</span>
-                    </a>
-                    <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="form-elements">Basic Elements</a></li>
-                        <li><a href="form-validation">Validation</a></li>
-                        <li><a href="form-plugins">Plugins</a></li>
-                        <li><a href="form-editors">Editors</a></li>
-                        <li><a href="form-uploads">File Upload</a></li>
-                        <li><a href="form-wizard">Wizard</a></li>
-                    </ul>
-                </li>
+ <!--                       <li><a href="apps-chat">Chat</a></li>-->
 
-                <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="uim uim-table"></i>
-                        <span>Tables</span>
-                    </a>
-                    <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="tables-bootstrap">Bootstrap Tables</a></li>
-                        <li><a href="tables-datatable">Data Tables</a></li>
-                        <li><a href="tables-editable">Editable Table</a></li>
-                    </ul>
-                </li>
+ <!--                       <li><a href="apps-file-manager">File Manager</a></li>-->
 
-                <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="uim uim-chart-pie"></i>
-                        <span>Charts</span>
-                    </a>
-                    <ul class="sub-menu" aria-expanded="true">
-                        <li><a href="javascript: void(0);" class="has-arrow">Apexcharts Part 1</a>
-                            <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="charts-line">Line</a></li>
-                                <li><a href="charts-area">Area</a></li>
-                                <li><a href="charts-column">Column</a></li>
-                                <li><a href="charts-bar">Bar</a></li>
-                                <li><a href="charts-mixed">Mixed</a></li>
-                                <li><a href="charts-timeline">Timeline</a></li>
-                                <li><a href="charts-candlestick">Candlestick</a></li>
-                                <li><a href="charts-boxplot">Boxplot</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="javascript: void(0);" class="has-arrow">Apexcharts Part 2</a>
-                            <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="charts-bubble">Bubble</a></li>
-                                <li><a href="charts-scatter">Scatter</a></li>
-                                <li><a href="charts-heatmap">Heatmap</a></li>
-                                <li><a href="charts-treemap">Treemap</a></li>
-                                <li><a href="charts-pie">Pie</a></li>
-                                <li><a href="charts-radialbar">Radialbar</a></li>
-                                <li><a href="charts-radar">Radar</a></li>
-                                <li><a href="charts-polararea">Polararea</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="charts-echart">E Charts</a></li>
-                    </ul>
-                </li>
 
-                <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="uim uim-object-ungroup"></i>
-                        <span>Icons</span>
-                    </a>
-                    <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="icons-remix">Remix Icons</a></li>
-                        <li><a href="icons-materialdesign">Material Design</a></li>
-                        <li><a href="icons-unicons">Unicons</a></li>
-                    </ul>
-                </li>
+ <!--                       <li>-->
+ <!--                           <a href="javascript: void(0);" class="has-arrow">Invoice</a>-->
+ <!--                           <ul class="sub-menu" aria-expanded="false">-->
+ <!--                               <li><a href="invoices">Invoices</a></li>-->
+ <!--                               <li><a href="invoice-detail">Invoice Detail</a></li>-->
+ <!--                           </ul>-->
+ <!--                       </li>-->
 
-                <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="uim uim-comment-plus"></i>
-                        <span>Maps</span>
-                    </a>
-                    <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="maps-google">Google Maps</a></li>
-                        <li><a href="maps-vector">Vector Maps</a></li>
-                    </ul>
-                </li>
+ <!--                       <li>-->
+ <!--                           <a href="javascript: void(0);" class="has-arrow">Users</a>-->
+ <!--                           <ul class="sub-menu" aria-expanded="false">-->
+ <!--                               <li><a href="users-list">Users List</a></li>-->
+ <!--                               <li><a href="users-detail">Users Detail</a></li>-->
+ <!--                           </ul>-->
+ <!--                       </li>-->
+ <!--                   </ul>-->
+ <!--               </li>-->
+ <!--                <li>-->
+ <!--                   <a href="javascript: void(0);" class="has-arrow waves-effect">-->
+ <!--                       <i class="uim uim-window-grid"></i>-->
+ <!--                       <span>Layouts</span>-->
+ <!--                   </a>-->
+ <!--                   <ul class="sub-menu" aria-expanded="true">-->
+ <!--                       <li>-->
+ <!--                           <a href="javascript: void(0);" class="has-arrow">Vertical</a>-->
+ <!--                           <ul class="sub-menu" aria-expanded="true">-->
+ <!--                               <li><a href="layouts-dark-sidebar">Dark Sidebar</a></li>-->
+ <!--                               <li><a href="layouts-light-sidebar">Light Sidebar</a></li>-->
+ <!--                               <li><a href="layouts-compact-sidebar">Compact Sidebar</a></li>-->
+ <!--                               <li><a href="layouts-icon-sidebar">Icon Sidebar</a></li>-->
+ <!--                               <li><a href="layouts-boxed">Boxed Layout</a></li>-->
+ <!--                               <li><a href="layouts-preloader">Preloader</a></li>-->
+ <!--                           </ul>-->
+ <!--                       </li>-->
 
-                <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="uim uim-layers-alt"></i>
-                        <span>Multi Level</span>
-                    </a>
-                    <ul class="sub-menu" aria-expanded="true">
-                        <li><a href="javascript: void(0);">Level 1.1</a></li>
-                        <li><a href="javascript: void(0);" class="has-arrow">Level 1.2</a>
-                            <ul class="sub-menu" aria-expanded="true">
-                                <li><a href="javascript: void(0);">Level 2.1</a></li>
-                                <li><a href="javascript: void(0);">Level 2.2</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>  --}}
+ <!--                       <li>-->
+ <!--                           <a href="javascript: void(0);" class="has-arrow">Horizontal</a>-->
+ <!--                           <ul class="sub-menu" aria-expanded="true">-->
+ <!--                               <li><a href="layouts-horizontal">Horizontal</a></li>-->
+ <!--                               <li><a href="layouts-hori-light-header">Light Header</a></li>-->
+ <!--                               <li><a href="layouts-hori-topbar-dark">Topbar Dark</a></li>-->
+ <!--                               <li><a href="layouts-hori-boxed-width">Boxed width</a></li>-->
+ <!--                               <li><a href="layouts-hori-preloader">Preloader</a></li>-->
+ <!--                           </ul>-->
+ <!--                       </li>-->
+ <!--                   </ul>-->
+ <!--               </li>-->
+
+ <!--               <li class="menu-title">Pages</li>-->
+
+ <!--               <li>-->
+ <!--                   <a href="javascript: void(0);" class="has-arrow waves-effect">-->
+ <!--                       <i class="uim uim-sign-in-alt"></i>-->
+ <!--                       <span>Authentication</span>-->
+ <!--                   </a>-->
+ <!--                   <ul class="sub-menu" aria-expanded="false">-->
+ <!--                       <li><a href="auth-login">Login</a></li>-->
+ <!--                       <li><a href="auth-register">Register</a></li>-->
+ <!--                       <li><a href="auth-recoverpw">Recover Password</a></li>-->
+ <!--                       <li><a href="auth-lock-screen">Lock Screen</a></li>-->
+ <!--                   </ul>-->
+ <!--               </li>-->
+
+ <!--               <li>-->
+ <!--                   <a href="javascript: void(0);" class="has-arrow waves-effect">-->
+ <!--                       <i class="uim uim-box"></i>-->
+ <!--                       <span>Extra Pages</span>-->
+ <!--                   </a>-->
+ <!--                   <ul class="sub-menu" aria-expanded="false">-->
+ <!--                       <li><a href="pages-starter">Starter Page</a></li>-->
+ <!--                       <li><a href="pages-maintenance">Maintenance</a></li>-->
+ <!--                       <li><a href="pages-comingsoon">Coming Soon</a></li>-->
+ <!--                       <li><a href="pages-404">Error 404</a></li>-->
+ <!--                       <li><a href="pages-500">Error 500</a></li>-->
+ <!--                       <li><a href="pages-faq">(Help Center) FAQ</a></li>-->
+ <!--                       <li><a href="pages-profile">Profile</a></li>-->
+ <!--                       <li><a href="pages-pricing">Pricing</a></li>-->
+ <!--                       <li><a href="pages-terms-conditions">Terms & Conditions</a></li>-->
+ <!--                   </ul>-->
+ <!--               </li>-->
+
+ <!--               <li class="menu-title">Components</li>-->
+
+ <!--               <li>-->
+ <!--                   <a href="javascript: void(0);" class="has-arrow waves-effect">-->
+ <!--                       <i class="uim uim-layer-group"></i>-->
+ <!--                       <span>UI Elements</span>-->
+ <!--                   </a>-->
+ <!--                   <ul class="sub-menu" aria-expanded="false">-->
+ <!--                       <li><a href="ui-alerts">Alerts</a></li>-->
+ <!--                       <li><a href="ui-buttons">Buttons</a></li>-->
+ <!--                       <li><a href="ui-cards">Cards</a></li>-->
+ <!--                       <li><a href="ui-carousel">Carousel</a></li>-->
+ <!--                       <li><a href="ui-dropdowns">Dropdowns</a></li>-->
+ <!--                       <li><a href="ui-grid">Grid</a></li>-->
+ <!--                       <li><a href="ui-images">Images</a></li>-->
+ <!--                       <li><a href="ui-lightbox">Lightbox</a></li>-->
+ <!--                       <li><a href="ui-modals">Modals</a></li>-->
+ <!--                       <li><a href="ui-offcanvas">Offcavas</a></li>-->
+ <!--                       <li><a href="ui-rangeslider">Range Slider</a></li>-->
+ <!--                       <li><a href="ui-roundslider">Round Slider</a></li>-->
+ <!--                       <li><a href="ui-session-timeout">Session Timeout</a></li>-->
+ <!--                       <li><a href="ui-progressbars">Progress Bars</a></li>-->
+ <!--                       <li><a href="ui-sweet-alert">Sweetalert 2</a></li>-->
+ <!--                       <li><a href="ui-tabs-accordions">Tabs & Accordions</a></li>-->
+ <!--                       <li><a href="ui-typography">Typography</a></li>-->
+ <!--                       <li><a href="ui-video">Video</a></li>-->
+ <!--                       <li><a href="ui-general">General</a></li>-->
+ <!--                       <li><a href="ui-rating">Rating</a></li>-->
+ <!--                       <li><a href="ui-notifications">Notifications</a></li>-->
+ <!--                   </ul>-->
+ <!--               </li>-->
+
+ <!--               <li>-->
+ <!--                   <a href="javascript: void(0);" class="waves-effect">-->
+ <!--                       <i class="uim uim-document-layout-left"></i>-->
+ <!--                       <span class="badge rounded-pill bg-danger float-end">6</span>-->
+ <!--                       <span>Forms</span>-->
+ <!--                   </a>-->
+ <!--                   <ul class="sub-menu" aria-expanded="false">-->
+ <!--                       <li><a href="form-elements">Basic Elements</a></li>-->
+ <!--                       <li><a href="form-validation">Validation</a></li>-->
+ <!--                       <li><a href="form-plugins">Plugins</a></li>-->
+ <!--                       <li><a href="form-editors">Editors</a></li>-->
+ <!--                       <li><a href="form-uploads">File Upload</a></li>-->
+ <!--                       <li><a href="form-wizard">Wizard</a></li>-->
+ <!--                   </ul>-->
+ <!--               </li>-->
+
+ <!--               <li>-->
+ <!--                   <a href="javascript: void(0);" class="has-arrow waves-effect">-->
+ <!--                       <i class="uim uim-table"></i>-->
+ <!--                       <span>Tables</span>-->
+ <!--                   </a>-->
+ <!--                   <ul class="sub-menu" aria-expanded="false">-->
+ <!--                       <li><a href="tables-bootstrap">Bootstrap Tables</a></li>-->
+ <!--                       <li><a href="tables-datatable">Data Tables</a></li>-->
+ <!--                       <li><a href="tables-editable">Editable Table</a></li>-->
+ <!--                   </ul>-->
+ <!--               </li>-->
+
+ <!--               <li>-->
+ <!--                   <a href="javascript: void(0);" class="has-arrow waves-effect">-->
+ <!--                       <i class="uim uim-chart-pie"></i>-->
+ <!--                       <span>Charts</span>-->
+ <!--                   </a>-->
+ <!--                   <ul class="sub-menu" aria-expanded="true">-->
+ <!--                       <li><a href="javascript: void(0);" class="has-arrow">Apexcharts Part 1</a>-->
+ <!--                           <ul class="sub-menu" aria-expanded="true">-->
+ <!--                               <li><a href="charts-line">Line</a></li>-->
+ <!--                               <li><a href="charts-area">Area</a></li>-->
+ <!--                               <li><a href="charts-column">Column</a></li>-->
+ <!--                               <li><a href="charts-bar">Bar</a></li>-->
+ <!--                               <li><a href="charts-mixed">Mixed</a></li>-->
+ <!--                               <li><a href="charts-timeline">Timeline</a></li>-->
+ <!--                               <li><a href="charts-candlestick">Candlestick</a></li>-->
+ <!--                               <li><a href="charts-boxplot">Boxplot</a></li>-->
+ <!--                           </ul>-->
+ <!--                       </li>-->
+ <!--                       <li><a href="javascript: void(0);" class="has-arrow">Apexcharts Part 2</a>-->
+ <!--                           <ul class="sub-menu" aria-expanded="true">-->
+ <!--                               <li><a href="charts-bubble">Bubble</a></li>-->
+ <!--                               <li><a href="charts-scatter">Scatter</a></li>-->
+ <!--                               <li><a href="charts-heatmap">Heatmap</a></li>-->
+ <!--                               <li><a href="charts-treemap">Treemap</a></li>-->
+ <!--                               <li><a href="charts-pie">Pie</a></li>-->
+ <!--                               <li><a href="charts-radialbar">Radialbar</a></li>-->
+ <!--                               <li><a href="charts-radar">Radar</a></li>-->
+ <!--                               <li><a href="charts-polararea">Polararea</a></li>-->
+ <!--                           </ul>-->
+ <!--                       </li>-->
+ <!--                       <li><a href="charts-echart">E Charts</a></li>-->
+ <!--                   </ul>-->
+ <!--               </li>-->
+
+ <!--               <li>-->
+ <!--                   <a href="javascript: void(0);" class="has-arrow waves-effect">-->
+ <!--                       <i class="uim uim-object-ungroup"></i>-->
+ <!--                       <span>Icons</span>-->
+ <!--                   </a>-->
+ <!--                   <ul class="sub-menu" aria-expanded="false">-->
+ <!--                       <li><a href="icons-remix">Remix Icons</a></li>-->
+ <!--                       <li><a href="icons-materialdesign">Material Design</a></li>-->
+ <!--                       <li><a href="icons-unicons">Unicons</a></li>-->
+ <!--                   </ul>-->
+ <!--               </li>-->
+
+ <!--               <li>-->
+ <!--                   <a href="javascript: void(0);" class="has-arrow waves-effect">-->
+ <!--                       <i class="uim uim-comment-plus"></i>-->
+ <!--                       <span>Maps</span>-->
+ <!--                   </a>-->
+ <!--                   <ul class="sub-menu" aria-expanded="false">-->
+ <!--                       <li><a href="maps-google">Google Maps</a></li>-->
+ <!--                       <li><a href="maps-vector">Vector Maps</a></li>-->
+ <!--                   </ul>-->
+ <!--               </li>-->
+
+ <!--               <li>-->
+ <!--                   <a href="javascript: void(0);" class="has-arrow waves-effect">-->
+ <!--                       <i class="uim uim-layers-alt"></i>-->
+ <!--                       <span>Multi Level</span>-->
+ <!--                   </a>-->
+ <!--                   <ul class="sub-menu" aria-expanded="true">-->
+ <!--                       <li><a href="javascript: void(0);">Level 1.1</a></li>-->
+ <!--                       <li><a href="javascript: void(0);" class="has-arrow">Level 1.2</a>-->
+ <!--                           <ul class="sub-menu" aria-expanded="true">-->
+ <!--                               <li><a href="javascript: void(0);">Level 2.1</a></li>-->
+ <!--                               <li><a href="javascript: void(0);">Level 2.2</a></li>-->
+ <!--                           </ul>-->
+ <!--                       </li>-->
+ <!--                   </ul>-->
+ <!--               </li>  -->
 
             </ul>
 
@@ -349,8 +363,12 @@
             aria-haspopup="true" aria-expanded="false">
             <span class="d-flex align-items-center">
                 <div class="flex-shrink-0">
-                    <img src="{{ URL::asset('build/images/users/avatar-2.jpg') }}"
-                        class="img-fluid header-profile-user rounded-circle" alt="">
+                   <img src="{{ Auth::user()->profile_pic ? asset('uploads/profile_pics/' . Auth::user()->profile_pic) : asset('build/images/users/avatar-2.jpg') }}"
+     class="img-fluid header-profile-user rounded-circle" 
+     alt="Profile Picture">
+
+                    <!--<img src="{{ URL::asset('build/images/users/avatar-2.jpg') }}"-->
+                    <!--    class="img-fluid header-profile-user rounded-circle" alt="">-->
                 </div>
                 @php
                 use Illuminate\Support\Facades\Auth;
@@ -390,7 +408,7 @@
             <a class="dropdown-item" href="pages-profile"><i
                     class="mdi mdi-wallet text-muted font-size-16 align-middle me-1"></i> <span
                     class="align-middle">Balance : <b>$5971.67</b></span></a> --}}
-            <a class="dropdown-item" href="#"><span class="badge bg-primary mt-1 float-end">New</span><i
+            <a class="dropdown-item" href="{{ route('settings')}}"><span class="badge bg-primary mt-1 float-end">New</span><i
                     class="mdi mdi-cog-outline text-muted font-size-16 align-middle me-1"></i> <span
                     class="align-middle">Settings</span></a>
             <a class="dropdown-item" href="javascript:void();"

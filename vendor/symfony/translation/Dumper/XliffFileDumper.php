@@ -176,7 +176,7 @@ class XliffFileDumper extends FileDumper
             $metadata = $messages->getMetadata($source, $domain);
 
             // Add notes section
-            if ($this->hasMetadataArrayInfo('notes', $metadata)) {
+            if ($this->hasMetadataArrayInfo('notes', $metadata) && $metadata['notes']) {
                 $notesElement = $dom->createElement('notes');
                 foreach ($metadata['notes'] as $note) {
                     $n = $dom->createElement('note');
@@ -214,7 +214,7 @@ class XliffFileDumper extends FileDumper
         return $dom->saveXML();
     }
 
-    private function hasMetadataArrayInfo(string $key, array $metadata = null): bool
+    private function hasMetadataArrayInfo(string $key, ?array $metadata = null): bool
     {
         return is_iterable($metadata[$key] ?? null);
     }

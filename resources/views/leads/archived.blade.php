@@ -16,7 +16,7 @@
     <!-- Responsive datatable examples -->
     <link href="{{ URL::asset('build/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}"
         rel="stylesheet" type="text/css" />
-        <link rel="stylesheet" type="text/css" href="{{ URL::asset('build/libs/toastr/build/toastr.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('build/libs/toastr/build/toastr.min.css') }}">
 @endsection
 
 @section('page-title')
@@ -37,14 +37,22 @@
                             <div class="col-md-6">
                                 <div id="bulk-actions" class="d-flex justify-content-start align-items-center">
                                     <button id="delete-all" class="btn btn-danger mr-6">Delete All</button>
-                                    <form id="restore-all-form" action="{{ route('leads.restoreMultiple') }}" method="POST">
+                                    <!-- Loader (Initially hidden) -->
+                                    <div id="loader" style="display:none;">
+                                        <div class="spinner-border text-danger" role="status">
+                                            <span class="sr-only">Loading...</span>
+                                        </div>
+                                    </div>
+                                    <form id="restore-all-form" action="{{ route('leads.restoreMultiple') }}"
+                                        method="POST">
                                         @csrf
                                         <input type="hidden" name="ids" id="emails-input">
-                                        <button type="submit" id="restore-all-btn" class="btn btn-info">Restore All</button>
+                                        <button type="submit" id="restore-all-btn" class="btn btn-info">Restore
+                                            All</button>
                                     </form>
-                                    
+
                                 </div>
-                                
+
 
 
                             </div>
@@ -69,56 +77,56 @@
                                 {{ session('error') }}
                             </div>
                         @endif
-                        <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap"
-                            style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                            <thead>
-                                <tr>
-                                    <th><input type="checkbox" id="check-all"></th>
-                                    <th>Sr No.</th>
-                                    <th>First Name</th>
-                                    <th>Last Name</th>
-                                    <th>Email</th>
-                                    <th>Phone Number</th>
-                                    <th>Text</th>
-                                    <th>Source</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse ($data as $lead)
-                                    <tr>
-                                        <td style="width: 60px;">
-                                            <div class="form-check font-size-16 text-center">
-                                                <input type="checkbox" class="row-checkbox" data-ids="{{ $lead['_id'] }}"
-                                                    class="tasks-activeCheck2" id="tasks-activeCheck2">
-                                                <label class="form-check-label" for="tasks-activeCheck2"></label>
-                                            </div>
-                                        </td>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $lead['first_name'] }}</td>
-                                        <td>{{ $lead['last_name'] }}</td>
-                                        <td>{{ $lead['email'] }}</td>
-                                        <td>{{ $lead['phone'] }}</td>
-                                        <td>{{ $lead['message'] }}</td>
-                                        <td>{{ $lead['source'] }}</td>
-                                        <td>
-                                            <a href="{{ route('leads.restore', $lead['_id']) }}"
-                                                class="btn btn-primary btn-sm">Restore</a>
-                                            <form action="{{ route('leads.permanentdelete', $lead['_id']) }}"
-                                                method="POST" style="display:inline;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="9" class="text-center">No data found.</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                        @if (isset($error_message))
+                    <div class="alert alert-warning text-center">{{ $error_message }}</div>
+                    @else
+                    <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap"
+                        style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="check-all"></th>
+                                <th>Sr No.</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Email</th>
+                                <th>Phone Number</th>
+                                <th>Source</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($data as $lead)
+                            <tr>
+                                <td style="width: 60px;">
+                                    <div class="form-check font-size-16 text-center">
+                                        <input type="checkbox" class="row-checkbox tasks-activeCheck2"
+                                            data-ids="{{ $lead['_id'] }}" id="tasks-activeCheck2-{{ $lead['_id'] }}">
+                                        <label class="form-check-label" for="tasks-activeCheck2-{{ $lead['_id'] }}"></label>
+                                    </div>
+                                </td>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $lead['first_name'] }}</td>
+                                <td>{{ $lead['last_name'] }}</td>
+                                <td>{{ $lead['email'] }}</td>
+                                <td>{{ $lead['country_code'] }}{{ $lead['phone'] }}</td>
+                                <td>{{ $lead['source'] }}</td>
+                                <td>
+                                    <a href="{{ route('leads.restore', $lead['_id']) }}" class="btn btn-primary btn-sm">Restore</a>
+                                    <form action="{{ route('leads.permanentdelete', $lead['_id']) }}" method="POST" style="display:inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="8" class="text-center">No archived leads available.</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                    @endif
                     </div>
                 </div>
             </div> <!-- end col -->
@@ -205,39 +213,54 @@
 
                     // Handle Delete All action
                     $('#delete-all').click(function() {
-                        if (confirm('Are you sure you want to delete the selected columns?')) {
-                            var ids = $('.row-checkbox:checked').map(function() {
-                                return $(this).data(
-                                    'ids'); // Ensure data-ids attribute is used correctly
-                            }).get();
+                        // Check if any checkboxes are selected
+                        var ids = $('.row-checkbox:checked').map(function() {
+                            return $(this).data(
+                            'ids'); // Ensure data-ids attribute is used correctly
+                        }).get();
 
-                            if (ids.length > 0) {
-                                var url =
-                                    "{{ route('leads.destroyMultiple') }}"; // Updated route name for multiple delete
-                                $.ajax({
-                                    url: url,
-                                    type: 'DELETE',
-                                    data: {
-                                        _token: '{{ csrf_token() }}',
-                                        ids: ids
-                                    },
-                                    success: function(response) {
-                                        toastr.success(
-                                            'Selected columns deleted successfully');
-                                        location
-                                            .reload(); // Reload the page to see the changes
-                                    },
-                                    error: function(xhr) {
-                                        toastr.error('Error deleting columns: ' + xhr
-                                            .responseJSON.message);
-                                    }
-                                });
-                            } else {
-                                toastr.warning('No columns selected for deletion');
-                            }
+                        if (ids.length === 0) {
+                            toastr.warning('No columns selected for deletion');
+                            return; // Exit if no IDs are selected
+                        }
+
+                        // Confirm the deletion action
+                        if (confirm('Are you sure you want to delete the selected columns?')) {
+                            var url =
+                            "{{ route('leads.destroyMultiple') }}"; // Updated route name for multiple delete
+
+                            // Show the loader
+                            $('#loader').show();
+                            $('#delete-all').prop('disabled',
+                            true); // Disable the button to prevent multiple clicks
+
+                            $.ajax({
+                                url: url,
+                                type: 'DELETE',
+                                data: {
+                                    _token: '{{ csrf_token() }}',
+                                    ids: ids
+                                },
+                                success: function(response) {
+                                    toastr.success(response
+                                    .message); // Use response message for success
+                                    location.reload(); // Reload the page to see the changes
+                                },
+                                error: function(xhr) {
+                                    toastr.error('Error deleting columns: ' + xhr
+                                        .responseJSON.message);
+                                },
+                                complete: function() {
+                                    // Hide the loader and re-enable the delete button
+                                    $('#loader').hide();
+                                    $('#delete-all').prop('disabled', false);
+                                }
+                            });
                         }
                     });
                 });
+
+
             });
             $('#restore-all-btn').click(function(e) {
                 e.preventDefault();
@@ -253,6 +276,5 @@
                     toastr.warning('No leads selected for restoration');
                 }
             });
-
         </script>
     @endsection

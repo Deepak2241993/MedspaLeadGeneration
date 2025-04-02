@@ -19,35 +19,40 @@ use Twilio\Values;
 abstract class InstalledAddOnUsageModels
 {
     /**
-     * @property string $quantity 
-     * @property string $sid 
+     * @property string $quantity Total amount in local currency that was billed for this Billing Item. Can be any floating number greater than 0.
+     * @property string $sid BillingSid to use for billing.
+     * @property bool $submitted Whether the billing event was successfully generated for this Billable Item.
     */
-    public static function createCreateMarketplaceBillingUsageRequestBillableItems(array $payload = []): CreateMarketplaceBillingUsageRequestBillableItems
+    public static function createMarketplaceV1InstalledAddOnInstalledAddOnUsageBillableItems(array $payload = []): MarketplaceV1InstalledAddOnInstalledAddOnUsageBillableItems
     {
-        return new CreateMarketplaceBillingUsageRequestBillableItems($payload);
+        return new MarketplaceV1InstalledAddOnInstalledAddOnUsageBillableItems($payload);
     }
 
     /**
-     * @property CreateMarketplaceBillingUsageRequestBillableItems[] $billableItems
+     * @property string $totalSubmitted Total amount in local currency that was billed in this request. Aggregates all billable_items that were successfully submitted.
+     * @property string[] $billableItems
     */
-    public static function createCreateMarketplaceBillingUsageRequest(array $payload = []): CreateMarketplaceBillingUsageRequest
+    public static function createMarketplaceV1InstalledAddOnInstalledAddOnUsage(array $payload = []): MarketplaceV1InstalledAddOnInstalledAddOnUsage
     {
-        return new CreateMarketplaceBillingUsageRequest($payload);
+        return new MarketplaceV1InstalledAddOnInstalledAddOnUsage($payload);
     }
 
 }
 
-class CreateMarketplaceBillingUsageRequestBillableItems implements \JsonSerializable
+class MarketplaceV1InstalledAddOnInstalledAddOnUsageBillableItems implements \JsonSerializable
 {
     /**
-     * @property string $quantity 
-     * @property string $sid 
+     * @property string $quantity Total amount in local currency that was billed for this Billing Item. Can be any floating number greater than 0.
+     * @property string $sid BillingSid to use for billing.
+     * @property bool $submitted Whether the billing event was successfully generated for this Billable Item.
     */
         protected $quantity;
         protected $sid;
+        protected $submitted;
     public function __construct(array $payload = []) {
         $this->quantity = Values::array_get($payload, 'quantity');
         $this->sid = Values::array_get($payload, 'sid');
+        $this->submitted = Values::array_get($payload, 'submitted');
     }
 
     public function toArray(): array
@@ -59,19 +64,23 @@ class CreateMarketplaceBillingUsageRequestBillableItems implements \JsonSerializ
     {
         return [
             'quantity' => $this->quantity,
-            'sid' => $this->sid
+            'sid' => $this->sid,
+            'submitted' => $this->submitted
         ];
     }
 }
 
-class CreateMarketplaceBillingUsageRequest implements \JsonSerializable
+class MarketplaceV1InstalledAddOnInstalledAddOnUsage implements \JsonSerializable
 {
     /**
-     * @property CreateMarketplaceBillingUsageRequestBillableItems[] $billableItems
+     * @property string $totalSubmitted Total amount in local currency that was billed in this request. Aggregates all billable_items that were successfully submitted.
+     * @property string[] $billableItems
     */
+        protected $totalSubmitted;
         protected $billableItems;
     public function __construct(array $payload = []) {
-        $this->billableItems = Values::array_get($payload, 'billableItems');
+        $this->totalSubmitted = Values::array_get($payload, 'total_submitted');
+        $this->billableItems = Values::array_get($payload, 'billable_items');
     }
 
     public function toArray(): array
@@ -82,7 +91,8 @@ class CreateMarketplaceBillingUsageRequest implements \JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            'billableItems' => $this->billableItems
+            'total_submitted' => $this->totalSubmitted,
+            'billable_items' => $this->billableItems
         ];
     }
 }

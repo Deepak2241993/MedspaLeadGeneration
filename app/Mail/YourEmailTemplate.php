@@ -5,7 +5,6 @@ namespace App\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class YourEmailTemplate extends Mailable
 {
@@ -13,17 +12,14 @@ class YourEmailTemplate extends Mailable
 
     public $toAddress;
     public $subject;
-    public $selectedTemplate;
     public $htmlCode;
 
-    public function __construct($toAddress, $subject, $selectedTemplate, $htmlCode)
+    public function __construct($toAddress, $subject, $htmlCode)
     {
         $this->toAddress = $toAddress;
         $this->subject = $subject;
-        $this->selectedTemplate = $selectedTemplate;
         $this->htmlCode = $htmlCode;
     }
-
 
     /**
      * Build the message.
@@ -33,11 +29,7 @@ class YourEmailTemplate extends Mailable
     public function build()
     {
         return $this->to($this->toAddress)
-        ->subject($this->subject)
-        ->view('emails.your_template') // Update with your actual email template
-        ->with([
-            'selectedTemplate' => $this->selectedTemplate,
-            'htmlCode' => $this->htmlCode,
-        ]);
+            ->subject($this->subject)
+            ->html($this->htmlCode); // Use the `html` method to send raw HTML content
     }
 }

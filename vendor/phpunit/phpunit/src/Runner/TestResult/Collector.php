@@ -16,6 +16,7 @@ use function str_contains;
 use PHPUnit\Event\Code\TestMethod;
 use PHPUnit\Event\EventFacadeIsSealedException;
 use PHPUnit\Event\Facade;
+use PHPUnit\Event\Test\AfterLastTestMethodErrored;
 use PHPUnit\Event\Test\BeforeFirstTestMethodErrored;
 use PHPUnit\Event\Test\ConsideredRisky;
 use PHPUnit\Event\Test\DeprecationTriggered;
@@ -33,7 +34,6 @@ use PHPUnit\Event\Test\PhpunitWarningTriggered;
 use PHPUnit\Event\Test\PhpWarningTriggered;
 use PHPUnit\Event\Test\Skipped as TestSkipped;
 use PHPUnit\Event\Test\WarningTriggered;
-use PHPUnit\Event\TestData\NoDataSetFromDataProviderException;
 use PHPUnit\Event\TestRunner\DeprecationTriggered as TestRunnerDeprecationTriggered;
 use PHPUnit\Event\TestRunner\ExecutionStarted;
 use PHPUnit\Event\TestRunner\WarningTriggered as TestRunnerWarningTriggered;
@@ -48,6 +48,8 @@ use PHPUnit\TextUI\Configuration\Source;
 use PHPUnit\TextUI\Configuration\SourceFilter;
 
 /**
+ * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
+ *
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
  */
 final class Collector
@@ -60,7 +62,12 @@ final class Collector
     private bool $currentTestSuiteForTestClassFailed = false;
 
     /**
-     * @psalm-var list<BeforeFirstTestMethodErrored|Errored>
+     * @psalm-var non-negative-int
+     */
+    private int $numberOfIssuesIgnoredByBaseline = 0;
+
+    /**
+     * @psalm-var list<AfterLastTestMethodErrored|BeforeFirstTestMethodErrored|Errored>
      */
     private array $testErroredEvents = [];
 
@@ -163,6 +170,7 @@ final class Collector
             new TestPreparedSubscriber($this),
             new TestFinishedSubscriber($this),
             new BeforeTestClassMethodErroredSubscriber($this),
+            new AfterTestClassMethodErroredSubscriber($this),
             new TestErroredSubscriber($this),
             new TestFailedSubscriber($this),
             new TestMarkedIncompleteSubscriber($this),
@@ -209,6 +217,7 @@ final class Collector
             array_values($this->phpDeprecations),
             array_values($this->phpNotices),
             array_values($this->phpWarnings),
+            $this->numberOfIssuesIgnoredByBaseline,
         );
     }
 
@@ -239,9 +248,6 @@ final class Collector
         $this->currentTestSuiteForTestClassFailed = false;
     }
 
-    /**
-     * @throws NoDataSetFromDataProviderException
-     */
     public function testSuiteFinished(TestSuiteFinished $event): void
     {
         if ($this->currentTestSuiteForTestClassFailed) {
@@ -290,6 +296,11 @@ final class Collector
         $this->testErroredEvents[] = $event;
 
         $this->numberOfTestsRun++;
+    }
+
+    public function afterTestClassMethodErrored(AfterLastTestMethodErrored $event): void
+    {
+        $this->testErroredEvents[] = $event;
     }
 
     public function testErrored(Errored $event): void
@@ -342,11 +353,21 @@ final class Collector
 
     public function testTriggeredDeprecation(DeprecationTriggered $event): void
     {
+        if ($event->ignoredByTest()) {
+            return;
+        }
+
+        if ($event->ignoredByBaseline()) {
+            $this->numberOfIssuesIgnoredByBaseline++;
+
+            return;
+        }
+
         if (!$this->source->ignoreSuppressionOfDeprecations() && $event->wasSuppressed()) {
             return;
         }
 
-        if ($this->source->restrictDeprecations() && !(new SourceFilter)->includes($this->source, $event->file())) {
+        if ($this->source->restrictDeprecations() && !SourceFilter::instance()->includes($event->file())) {
             return;
         }
 
@@ -368,11 +389,21 @@ final class Collector
 
     public function testTriggeredPhpDeprecation(PhpDeprecationTriggered $event): void
     {
+        if ($event->ignoredByTest()) {
+            return;
+        }
+
+        if ($event->ignoredByBaseline()) {
+            $this->numberOfIssuesIgnoredByBaseline++;
+
+            return;
+        }
+
         if (!$this->source->ignoreSuppressionOfPhpDeprecations() && $event->wasSuppressed()) {
             return;
         }
 
-        if ($this->source->restrictDeprecations() && !(new SourceFilter)->includes($this->source, $event->file())) {
+        if ($this->source->restrictDeprecations() && !SourceFilter::instance()->includes($event->file())) {
             return;
         }
 
@@ -425,11 +456,17 @@ final class Collector
 
     public function testTriggeredNotice(NoticeTriggered $event): void
     {
+        if ($event->ignoredByBaseline()) {
+            $this->numberOfIssuesIgnoredByBaseline++;
+
+            return;
+        }
+
         if (!$this->source->ignoreSuppressionOfNotices() && $event->wasSuppressed()) {
             return;
         }
 
-        if ($this->source->restrictNotices() && !(new SourceFilter)->includes($this->source, $event->file())) {
+        if ($this->source->restrictNotices() && !SourceFilter::instance()->includes($event->file())) {
             return;
         }
 
@@ -451,11 +488,17 @@ final class Collector
 
     public function testTriggeredPhpNotice(PhpNoticeTriggered $event): void
     {
+        if ($event->ignoredByBaseline()) {
+            $this->numberOfIssuesIgnoredByBaseline++;
+
+            return;
+        }
+
         if (!$this->source->ignoreSuppressionOfPhpNotices() && $event->wasSuppressed()) {
             return;
         }
 
-        if ($this->source->restrictNotices() && !(new SourceFilter)->includes($this->source, $event->file())) {
+        if ($this->source->restrictNotices() && !SourceFilter::instance()->includes($event->file())) {
             return;
         }
 
@@ -477,11 +520,17 @@ final class Collector
 
     public function testTriggeredWarning(WarningTriggered $event): void
     {
+        if ($event->ignoredByBaseline()) {
+            $this->numberOfIssuesIgnoredByBaseline++;
+
+            return;
+        }
+
         if (!$this->source->ignoreSuppressionOfWarnings() && $event->wasSuppressed()) {
             return;
         }
 
-        if ($this->source->restrictWarnings() && !(new SourceFilter)->includes($this->source, $event->file())) {
+        if ($this->source->restrictWarnings() && !SourceFilter::instance()->includes($event->file())) {
             return;
         }
 
@@ -503,11 +552,17 @@ final class Collector
 
     public function testTriggeredPhpWarning(PhpWarningTriggered $event): void
     {
+        if ($event->ignoredByBaseline()) {
+            $this->numberOfIssuesIgnoredByBaseline++;
+
+            return;
+        }
+
         if (!$this->source->ignoreSuppressionOfPhpWarnings() && $event->wasSuppressed()) {
             return;
         }
 
-        if ($this->source->restrictWarnings() && !(new SourceFilter)->includes($this->source, $event->file())) {
+        if ($this->source->restrictWarnings() && !SourceFilter::instance()->includes($event->file())) {
             return;
         }
 

@@ -29,13 +29,13 @@ use Twilio\Deserialize;
  * @property string|null $accountSid
  * @property \DateTime|null $startTime
  * @property \DateTime|null $endTime
- * @property array[]|null $activityDurations
- * @property int|null $reservationsCreated
- * @property int|null $reservationsAccepted
- * @property int|null $reservationsRejected
- * @property int|null $reservationsTimedOut
- * @property int|null $reservationsCanceled
- * @property int|null $reservationsRescinded
+ * @property object[]|null $activityDurations
+ * @property int $reservationsCreated
+ * @property int $reservationsAccepted
+ * @property int $reservationsRejected
+ * @property int $reservationsTimedOut
+ * @property int $reservationsCanceled
+ * @property int $reservationsRescinded
  * @property string|null $workspaceSid
  * @property string|null $url
  */

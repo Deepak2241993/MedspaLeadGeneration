@@ -297,7 +297,8 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
     public function prefetch()
     {
         return strcasecmp($this->server->get('HTTP_X_MOZ') ?? '', 'prefetch') === 0 ||
-               strcasecmp($this->headers->get('Purpose') ?? '', 'prefetch') === 0;
+               strcasecmp($this->headers->get('Purpose') ?? '', 'prefetch') === 0 ||
+               strcasecmp($this->headers->get('Sec-Purpose') ?? '', 'prefetch') === 0;
     }
 
     /**
@@ -403,7 +404,7 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
     public function json($key = null, $default = null)
     {
         if (! isset($this->json)) {
-            $this->json = new InputBag((array) json_decode($this->getContent(), true));
+            $this->json = new InputBag((array) json_decode($this->getContent() ?: '[]', true));
         }
 
         if (is_null($key)) {
@@ -477,9 +478,9 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
      */
     public static function createFromBase(SymfonyRequest $request)
     {
-        $newRequest = (new static)->duplicate(
+        $newRequest = new static(
             $request->query->all(), $request->request->all(), $request->attributes->all(),
-            $request->cookies->all(), $request->files->all(), $request->server->all()
+            $request->cookies->all(), (new static)->filterFiles($request->files->all()) ?? [], $request->server->all()
         );
 
         $newRequest->headers->replace($request->headers->all());
@@ -498,7 +499,7 @@ class Request extends SymfonyRequest implements Arrayable, ArrayAccess
      *
      * @return static
      */
-    public function duplicate(array $query = null, array $request = null, array $attributes = null, array $cookies = null, array $files = null, array $server = null): static
+    public function duplicate(?array $query = null, ?array $request = null, ?array $attributes = null, ?array $cookies = null, ?array $files = null, ?array $server = null): static
     {
         return parent::duplicate($query, $request, $attributes, $cookies, $this->filterFiles($files), $server);
     }

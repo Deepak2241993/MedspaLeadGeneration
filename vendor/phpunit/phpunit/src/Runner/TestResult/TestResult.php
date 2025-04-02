@@ -10,6 +10,7 @@
 namespace PHPUnit\TestRunner\TestResult;
 
 use function count;
+use PHPUnit\Event\Test\AfterLastTestMethodErrored;
 use PHPUnit\Event\Test\BeforeFirstTestMethodErrored;
 use PHPUnit\Event\Test\ConsideredRisky;
 use PHPUnit\Event\Test\Errored;
@@ -25,6 +26,8 @@ use PHPUnit\Event\TestSuite\Skipped as TestSuiteSkipped;
 use PHPUnit\TestRunner\TestResult\Issues\Issue;
 
 /**
+ * @no-named-arguments Parameter names are not covered by the backward compatibility promise for PHPUnit
+ *
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
  */
 final class TestResult
@@ -34,7 +37,7 @@ final class TestResult
     private readonly int $numberOfAssertions;
 
     /**
-     * @psalm-var list<BeforeFirstTestMethodErrored|Errored>
+     * @psalm-var list<AfterLastTestMethodErrored|BeforeFirstTestMethodErrored|Errored>
      */
     private readonly array $testErroredEvents;
 
@@ -124,7 +127,12 @@ final class TestResult
     private readonly array $phpWarnings;
 
     /**
-     * @psalm-param list<BeforeFirstTestMethodErrored|Errored> $testErroredEvents
+     * @psalm-var non-negative-int
+     */
+    private readonly int $numberOfIssuesIgnoredByBaseline;
+
+    /**
+     * @psalm-param list<AfterLastTestMethodErrored|BeforeFirstTestMethodErrored|Errored> $testErroredEvents
      * @psalm-param list<Failed> $testFailedEvents
      * @psalm-param array<string,list<ConsideredRisky>> $testConsideredRiskyEvents
      * @psalm-param list<TestSuiteSkipped> $testSuiteSkippedEvents
@@ -142,8 +150,9 @@ final class TestResult
      * @psalm-param list<Issue> $phpDeprecations
      * @psalm-param list<Issue> $phpNotices
      * @psalm-param list<Issue> $phpWarnings
+     * @psalm-param non-negative-int $numberOfIssuesIgnoredByBaseline
      */
-    public function __construct(int $numberOfTests, int $numberOfTestsRun, int $numberOfAssertions, array $testErroredEvents, array $testFailedEvents, array $testConsideredRiskyEvents, array $testSuiteSkippedEvents, array $testSkippedEvents, array $testMarkedIncompleteEvents, array $testTriggeredPhpunitDeprecationEvents, array $testTriggeredPhpunitErrorEvents, array $testTriggeredPhpunitWarningEvents, array $testRunnerTriggeredDeprecationEvents, array $testRunnerTriggeredWarningEvents, array $errors, array $deprecations, array $notices, array $warnings, array $phpDeprecations, array $phpNotices, array $phpWarnings)
+    public function __construct(int $numberOfTests, int $numberOfTestsRun, int $numberOfAssertions, array $testErroredEvents, array $testFailedEvents, array $testConsideredRiskyEvents, array $testSuiteSkippedEvents, array $testSkippedEvents, array $testMarkedIncompleteEvents, array $testTriggeredPhpunitDeprecationEvents, array $testTriggeredPhpunitErrorEvents, array $testTriggeredPhpunitWarningEvents, array $testRunnerTriggeredDeprecationEvents, array $testRunnerTriggeredWarningEvents, array $errors, array $deprecations, array $notices, array $warnings, array $phpDeprecations, array $phpNotices, array $phpWarnings, int $numberOfIssuesIgnoredByBaseline)
     {
         $this->numberOfTests                         = $numberOfTests;
         $this->numberOfTestsRun                      = $numberOfTestsRun;
@@ -166,6 +175,7 @@ final class TestResult
         $this->phpDeprecations                       = $phpDeprecations;
         $this->phpNotices                            = $phpNotices;
         $this->phpWarnings                           = $phpWarnings;
+        $this->numberOfIssuesIgnoredByBaseline       = $numberOfIssuesIgnoredByBaseline;
     }
 
     public function numberOfTestsRun(): int
@@ -179,7 +189,7 @@ final class TestResult
     }
 
     /**
-     * @psalm-return list<BeforeFirstTestMethodErrored|Errored>
+     * @psalm-return list<AfterLastTestMethodErrored|BeforeFirstTestMethodErrored|Errored>
      */
     public function testErroredEvents(): array
     {
@@ -483,6 +493,28 @@ final class TestResult
         return $this->numberOfDeprecations() > 0;
     }
 
+    public function hasPhpOrUserDeprecations(): bool
+    {
+        return $this->numberOfPhpOrUserDeprecations() > 0;
+    }
+
+    public function numberOfPhpOrUserDeprecations(): int
+    {
+        return count($this->deprecations) +
+               count($this->phpDeprecations);
+    }
+
+    public function hasPhpunitDeprecations(): bool
+    {
+        return $this->numberOfPhpunitDeprecations() > 0;
+    }
+
+    public function numberOfPhpunitDeprecations(): int
+    {
+        return count($this->testTriggeredPhpunitDeprecationEvents) +
+               count($this->testRunnerTriggeredDeprecationEvents);
+    }
+
     public function numberOfDeprecations(): int
     {
         return count($this->deprecations) +
@@ -528,5 +560,18 @@ final class TestResult
     public function hasSkippedTests(): bool
     {
         return !empty($this->testSkippedEvents);
+    }
+
+    public function hasIssuesIgnoredByBaseline(): bool
+    {
+        return $this->numberOfIssuesIgnoredByBaseline > 0;
+    }
+
+    /**
+     * @psalm-return non-negative-int
+     */
+    public function numberOfIssuesIgnoredByBaseline(): int
+    {
+        return $this->numberOfIssuesIgnoredByBaseline;
     }
 }

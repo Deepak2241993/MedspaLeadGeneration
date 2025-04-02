@@ -17,15 +17,13 @@ use Nette;
  */
 final class FileSystem
 {
-	use Nette\StaticClass;
-
 	/**
 	 * Creates a directory if it does not exist, including parent directories.
 	 * @throws Nette\IOException  on error occurred
 	 */
 	public static function createDir(string $dir, int $mode = 0777): void
 	{
-		if (!is_dir($dir) && !@mkdir($dir, $mode, true) && !is_dir($dir)) { // @ - dir may already exist
+		if (!is_dir($dir) && !@mkdir($dir, $mode, recursive: true) && !is_dir($dir)) { // @ - dir may already exist
 			throw new Nette\IOException(sprintf(
 				"Unable to create directory '%s' with mode %s. %s",
 				self::normalizePath($dir),
@@ -273,7 +271,7 @@ final class FileSystem
 	 */
 	public static function isAbsolute(string $path): bool
 	{
-		return (bool) preg_match('#([a-z]:)?[/\\\\]|[a-z][a-z0-9+.-]*://#Ai', $path);
+		return (bool) preg_match('#([a-z]:)?[/\\\]|[a-z][a-z0-9+.-]*://#Ai', $path);
 	}
 
 
@@ -282,7 +280,7 @@ final class FileSystem
 	 */
 	public static function normalizePath(string $path): string
 	{
-		$parts = $path === '' ? [] : preg_split('~[/\\\\]+~', $path);
+		$parts = $path === '' ? [] : preg_split('~[/\\\]+~', $path);
 		$res = [];
 		foreach ($parts as $part) {
 			if ($part === '..' && $res && end($res) !== '..' && end($res) !== '') {
@@ -304,6 +302,19 @@ final class FileSystem
 	public static function joinPaths(string ...$paths): string
 	{
 		return self::normalizePath(implode('/', $paths));
+	}
+
+
+	/**
+	 * Resolves a path against a base path. If the path is absolute, returns it directly, if it's relative, joins it with the base path.
+	 */
+	public static function resolvePath(string $basePath, string $path): string
+	{
+		return match (true) {
+			self::isAbsolute($path) => self::platformSlashes($path),
+			$path === '' => self::platformSlashes($basePath),
+			default => self::joinPaths($basePath, $path),
+		};
 	}
 
 

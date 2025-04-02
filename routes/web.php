@@ -18,6 +18,12 @@ use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\UserController;
+use App\Events\CallEnded;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\UniqueChatController;
+use App\Models\UniqueConversation;
+use App\Events\UniqueMessageSent;
+use App\Events\FacebookMessageSent;
 
 
 /*
@@ -47,21 +53,40 @@ Route::get('/puser', function () {
     return view('puser');
 });
 
+Route::get('/test-broadcast', function () {
+    $callSid = 'Test Call SID ' . rand(1000, 9999);
+    Log::info("Broadcasting CallEnded event with Call SID: {$callSid}"); // Log the SID
+    broadcast(new CallEnded($callSid));
+    return "Event has been broadcasted with Call SID: {$callSid}";
+});
+
+
+Route::post('/check-phone-number', [LeadController::class, 'checkPhoneNumber'])->name('check.phone.number');
+
 Route::post('/messages/receive', [MessageController::class, 'receiveMessage']);
 
-// Outbound call
-    Route::post('/outbound-call', [CallController::class, 'outboundCall'])->name('outbound-call');
-    Route::match(['get', 'post'], '/twilio/user-gather', [CallController::class, 'userGather'])->name('twilio.user-gather');
 
-    // Inbound call
-    Route::post('/twilio/inbound-call', [TwilioController::class, 'handleIncomingCall']);
-    Route::post('/handle-gather', [TwilioController::class, 'handleGather'])->name('handle-gather');
+// Outbound call (From Application To User)
+Route::post('/twilio/outbound-call', [CallController::class, 'outboundCall'])->name('twilio.outbound-call');
+Route::post('/twilio/user-gather', [CallController::class, 'userGather'])->name('twilio.user-gather');
+Route::post('/twilio/end-call', [CallController::class, 'endCall'])->name('twilio.end-call');
+Route::post('/twilio/call-status', [CallController::class, 'handleCallStatus'])->name('twilio.call-status');
+Route::post('/twilio/connect-client', [CallController::class, 'connectClient'])->name('twilio.connect-client');
+Route::post('/twilio/recording-status', [CallController::class, 'handleRecordingStatus'])->name('twilio.handle-recording-status');
+Route::post('/twilio/recording-status-callback', [CallController::class, 'handleRecordingStatus'])->name('twilio.recording-status');
 
-    // Record the call
-    Route::post('/twilio/connect-client', [CallController::class, 'connectClient'])->name('twilio.connect-client');
-    Route::post('/twilio/recording-status', [TwilioController::class, 'handleRecordingStatus'])->name('twilio.recording-status');
-    
-     Route::post('/emails/send', [EmailSendController::class, 'sendEmails'])->name('emails.send');
+//incoming call from users
+Route::post('/twilio/inbound-call', [CallController::class, 'handleIncomingCall']);
+Route::post('/twilio/handle-gather', [CallController::class, 'handleGather']);
+Route::post('/twilio/handle-busy', [CallController::class, 'handleBusy'])->name('twilio.handleBusy');
+Route::post('/twilio/handle-waiting', [CallController::class, 'handleWaiting'])->name('twilio.handleWaiting');
+Route::post('/twilio/handle-recording-status', [CallController::class, 'incomingHandleRecordingStatus']);
+Route::post('/twilio/fallback', [CallController::class, 'fallback']);
+Route::post('/twilio/recording-status', [CallController::class, 'incomingHandleRecordingStatus'])->name('twilio.recording-status');
+
+
+
+Route::post('/emails/send', [EmailSendController::class, 'sendEmails'])->name('emails.send');
 
 
 Route::post('/submit-form', [LeadController::class, 'submitForm'])->name('submit-form');
@@ -77,6 +102,7 @@ Route::middleware(['isAdmin'])->group(function () {
     // Role and Permission routes
     Route::resource('roles', RolePermissionController::class);
     Route::get('roles/{role}/give-permissions', [RolePermissionController::class, 'addPermissionToRole'])->name('roles.give-permissions');
+    Route::post('moduleUpdate/{id}', [RolePermissionController::class, 'moduleUpdate'])->name('roles.moduleUpdate');
 
     // Additional routes for managing permissions if needed
     Route::get('permissions', [PermissionController::class, 'permissionsIndex'])->name('role-permission.permissions.index');
@@ -96,41 +122,28 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/dashboard', [HomeController::class, 'root'])->name('dashboard');
 
-    // Route::middleware(['role:Super Admin'])->group(function () {
-        
-    // Route::get('/dashboard', [SuperAdminController::class, 'dashboard'])->name('super-admin.dashboard');
-
-    // // Role and Permission routes
-    // Route::resource('roles', RolePermissionController::class);
-    // Route::get('roles/{role}/give-permissions', [RolePermissionController::class, 'addPermissionToRole'])->name('roles.give-permissions');
-
-
-    // // Additional routes for managing permissions if needed
-    // Route::get('permissions', [PermissionController::class, 'permissionsIndex'])->name('role-permission.permissions.index');
-    // Route::get('permissions/create', [PermissionController::class, 'createPermission'])->name('permissions.create');
-    // Route::post('permissions', [PermissionController::class, 'storePermission'])->name('permissions.store');
-    // Route::get('permissions/{id}/edit', [PermissionController::class, 'editPermission'])->name('permissions.edit');
-    // Route::put('permissions/{id}', [PermissionController::class, 'updatePermission'])->name('permissions.update');
-    // Route::delete('permissions/{id}', [PermissionController::class, 'destroyPermission'])->name('permissions.destroy');
-
-
-    // Route::resource('users', App\Http\Controllers\UserController::class);
-    // Route::get('users/{userId}/delete',[UserController::class, 'destroy']);
-      
-    // });
 
 
 
 
     Route::get('/profile', [HomeController::class, 'profile'])->name('pages-profile');
+    Route::put('/profile/update', [HomeController::class, 'updateProfile'])->name('profile.update');
+    Route::get('/settings', [HomeController::class, 'settingView'])->name('settings');
+    // Route for password update
+    Route::post('/settings/password', [HomeController::class, 'updatePassword'])->name('password.update');
 
-    
+
 
     // Add other super admin routes here
     Route::get('/lead', [LeadController::class, 'index'])->name('leads.index');
     Route::get('/lead/{id}/edit', [LeadController::class, 'edit'])->name('leads.edit');
     Route::post('/lead/update/{id}', [LeadController::class, 'update'])->name('leads.update');
     Route::delete('/lead/{id}', [LeadController::class, 'destroy'])->name('leads.destroy');
+    Route::get('/create/lead', [LeadController::class, 'create'])->name('leads.create');
+    Route::post('/create', [LeadController::class, 'store'])->name('leads.store');
+    Route::get('leads/export', [LeadController::class, 'exportLeadsCsv'])->name('leads.export');
+    Route::get('/export-headers', [LeadController::class, 'exportHeadersOnly'])->name('export.headers');
+    Route::post('/leads/import', [LeadController::class, 'importLeads'])->name('leads.import');
 
     //multi delete
     Route::delete('/leads', [LeadController::class, 'destroyMultiple'])->name('leads.destroyMultiple');
@@ -145,6 +158,7 @@ Route::middleware(['auth'])->group(function () {
     // Leadboard
     Route::get('/leadboards', [LeadBoardController::class, 'index'])->name('leadboard');
     Route::post('leadboards/updateIndex', [LeadBoardController::class, 'updateIndex'])->name('leadboards.update_index');
+    Route::post('leadboards/updateAssignee', [LeadBoardController::class, 'updateAssignee'])->name('leadboards.update_assignee');
 
     // Lead status settings
     // Route::get('/lead-status-settings', [LeadStatusSettingController::class, 'create'])->name('lead-status.create');
@@ -176,19 +190,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/status-callback', [TwilioController::class, 'statusCallback'])->name('statusCallback');
     Route::post('status-callback', [TwilioController::class, 'callStatusCallback'])->name('callStatusCallback');
     Route::get('/get-call-duration', [TwilioController::class, 'getCallDuration'])->name('get-call-duration');
-    Route::post('/end-call', [TwilioController::class, 'endCall'])->name('end-call');
 
-    // // Outbound call
-    // Route::post('/outbound-call', [CallController::class, 'outboundCall'])->name('outbound-call');
-    // Route::match(['get', 'post'], '/twilio/user-gather', [CallController::class, 'userGather'])->name('twilio.user-gather');
 
-    // // Inbound call
-    // Route::post('/twilio/inbound-call', [TwilioController::class, 'handleIncomingCall']);
-    // Route::post('/handle-gather', [TwilioController::class, 'handleGather'])->name('handle-gather');
-
-    // // Record the call
-    // Route::post('/twilio/connect-client', [CallController::class, 'connectClient'])->name('twilio.connect-client');
-    // Route::post('/twilio/recording-status', [TwilioController::class, 'handleRecordingStatus'])->name('twilio.recording-status');
 
     // Mess
     Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');
@@ -201,6 +204,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/sendPusher', [MessageController::class, 'sendpusher'])->name('messages.sendPusher');
     Route::get('/get-messages/{currentUserPhone}', [MessageController::class, 'getMessages'])->name('messages.getMessages');
 
+    // Unique Conversation
+    Route::get('/unique-chat-dashboard', [UniqueChatController::class, 'dashboard'])->name('unique-chat-dashboard');
+    Route::get('/instagram-unique-chat-dashboard', [UniqueChatController::class, 'instagramdashboard'])->name('instagram-unique-chat-dashboard');
+    Route::get('/unique-conversations', [UniqueChatController::class, 'getConversations']);
+    Route::get('/unique-messages/{conversationId}', [UniqueChatController::class, 'getMessages']);
+    Route::post('/unique-send-message', [UniqueChatController::class, 'sendMessage']);
 
 
     // test tinker 
@@ -208,7 +217,6 @@ Route::middleware(['auth'])->group(function () {
         event(new \App\Events\MessageReceived('+918077477522', 'vishal'));
         return 'Event dispatched!';
     });
-    
 });
 
 

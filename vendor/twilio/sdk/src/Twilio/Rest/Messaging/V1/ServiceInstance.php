@@ -25,6 +25,7 @@ use Twilio\Version;
 use Twilio\Deserialize;
 use Twilio\Rest\Messaging\V1\Service\AlphaSenderList;
 use Twilio\Rest\Messaging\V1\Service\PhoneNumberList;
+use Twilio\Rest\Messaging\V1\Service\DestinationAlphaSenderList;
 use Twilio\Rest\Messaging\V1\Service\UsAppToPersonUsecaseList;
 use Twilio\Rest\Messaging\V1\Service\ChannelSenderList;
 use Twilio\Rest\Messaging\V1\Service\ShortCodeList;
@@ -49,7 +50,7 @@ use Twilio\Rest\Messaging\V1\Service\UsAppToPersonList;
  * @property bool|null $fallbackToLongCode
  * @property bool|null $areaCodeGeomatch
  * @property bool|null $synchronousValidation
- * @property int|null $validityPeriod
+ * @property int $validityPeriod
  * @property string|null $url
  * @property array|null $links
  * @property string|null $usecase
@@ -60,6 +61,7 @@ class ServiceInstance extends InstanceResource
 {
     protected $_alphaSenders;
     protected $_phoneNumbers;
+    protected $_destinationAlphaSenders;
     protected $_usAppToPersonUsecases;
     protected $_channelSenders;
     protected $_shortCodes;
@@ -175,6 +177,14 @@ class ServiceInstance extends InstanceResource
     protected function getPhoneNumbers(): PhoneNumberList
     {
         return $this->proxy()->phoneNumbers;
+    }
+
+    /**
+     * Access the destinationAlphaSenders
+     */
+    protected function getDestinationAlphaSenders(): DestinationAlphaSenderList
+    {
+        return $this->proxy()->destinationAlphaSenders;
     }
 
     /**
